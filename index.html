@@ -2641,19 +2641,42 @@ canvas.custom-chart {
         </div>
 
         <!-- Trend Overview Charts -->
-        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
           <div class="chart-container">
-            <div class="chart-title">
-              <span>📅 월별 총 매입금액 추이</span>
-              <span id="trendChartSubtitle" style="font-size: 0.75rem; color: var(--slate-400);"></span>
+            <div class="chart-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="trendChartTitle" style="font-weight: 700;">📅 월별 총 매입금액 추이</span>
+                <span id="trendVendorBadge" style="display: none; font-size: 0.78rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe;"></span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <button id="btnResetTrendVendor" class="btn btn-sm btn-outline" style="display: none; padding: 2px 8px; font-size: 0.75rem; color: var(--primary); border-color: var(--primary);" onclick="resetTrendVendor()">✕ 전체 거래처 보기</button>
+                <span id="trendChartSubtitle" style="font-size: 0.75rem; color: var(--text-muted);"></span>
+              </div>
             </div>
-            <canvas id="monthlyTrendChart" class="custom-chart"></canvas>
+            <div class="chart-canvas-wrapper" style="position: relative;">
+              <canvas id="monthlyTrendChart" class="custom-chart"></canvas>
+              <div id="trendChartTooltip" class="chart-hover-tooltip" style="opacity: 0; display: none;"></div>
+            </div>
           </div>
           <div class="chart-container">
-            <div class="chart-title">
-              <span>🏆 최근 1년 매입 상위 TOP 5 거래처</span>
+            <div class="chart-title" style="display: flex; justify-content: space-between; align-items: center;">
+              <span id="topVendorChartTitle" style="font-weight: 700;">🏆 최근 1년 매입 상위 TOP 5 거래처</span>
             </div>
-            <canvas id="topVendorChart" class="custom-chart"></canvas>
+            <div class="chart-canvas-wrapper" style="position: relative;">
+              <canvas id="topVendorChart" class="custom-chart"></canvas>
+              <div id="topVendorTooltip" class="chart-hover-tooltip" style="opacity: 0; display: none;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vendor Selection Guide Bar -->
+        <div style="margin-bottom: 8px; padding: 6px 12px; background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: 6px; font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span>💡</span>
+            <span>아래 피벗 표 또는 랭킹 목록에서 <strong>거래처명(예: 하나테크)</strong>을 클릭하면 해당 거래처의 <strong>월별 매입추이 그래프</strong>가 즉시 표시됩니다.</span>
+          </div>
+          <div id="trendGuideActiveVendor" style="font-size: 0.78rem; font-weight: 700; color: var(--primary);">
+            현재: 전체 거래처 합산
           </div>
         </div>
 
@@ -3291,6 +3314,7 @@ let vendorContacts = {};     // Managed vendor info: { vendorName: { contact, ph
 let customReportData = {};   // Edited report data: key = `${ym}|${vendor || 'ALL'}` -> rows
 let editingReportRows = [];  // Currently active rows in report edit modal
 let pastedSpreadsheetRows = []; // Rows in Tab 5 Excel paste live spreadsheet grid
+let currentTrendVendor = ''; // Tab 2: Selected vendor filter for trend graphs ('': all vendors)
 
 let searchDebounceTimer = null; // [NEW] Debounce timer for real-time search
 
@@ -4589,12 +4613,49 @@ function initItemChartHover() {
 // ==========================================
 // 7. TAB 2: Pivot & Trends (UserForm 4)
 // ==========================================
+let trendChartBarBoxes = [];
+let trendChartHoveredIndex = -1;
+let trendChartListenerAttached = false;
+let lastTrendChartData = null;
+
+let topChartBarBoxes = [];
+let topChartHoveredIndex = -1;
+let topChartListenerAttached = false;
+let lastTopChartData = null;
+
+function toggleTrendVendor(vendorName) {
+  if (currentTrendVendor === vendorName) {
+    currentTrendVendor = ''; // Unselect if already selected
+  } else {
+    currentTrendVendor = vendorName;
+  }
+  renderPivotView();
+
+  // Smooth scroll up so user can see the updated charts immediately
+  const chartEl = document.getElementById('monthlyTrendChart');
+  if (chartEl) {
+    chartEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+function resetTrendVendor() {
+  currentTrendVendor = '';
+  renderPivotView();
+}
+
+function filterByVendorFromPivot(v) {
+  document.querySelector('[data-tab="tab-search"]').click();
+  selectVendor(v);
+}
+
 function renderPivotView() {
   const periodMonths = parseInt(document.getElementById('pivotPeriodSelect').value, 10);
   
-  // 1. Gather all month keys (YYYY-MM) and vendor sums
+  // 1. Gather all month keys (YYYY-MM), vendor sums, and transaction counts
   const vendorMonthMap = {};
+  const vendorMonthCounts = {};
   const monthTotals = {};
+  const monthCounts = {};
   const vendorTotals = {};
   const allMonthsSet = new Set();
 
@@ -4608,10 +4669,12 @@ function renderPivotView() {
     allMonthsSet.add(ym);
 
     monthTotals[ym] = (monthTotals[ym] || 0) + amt;
+    monthCounts[ym] = (monthCounts[ym] || 0) + 1;
     vendorTotals[v] = (vendorTotals[v] || 0) + amt;
 
     const key = v + '|' + ym;
     vendorMonthMap[key] = (vendorMonthMap[key] || 0) + amt;
+    vendorMonthCounts[key] = (vendorMonthCounts[key] || 0) + 1;
   }
 
   // Sort months descending (latest month first)
@@ -4627,7 +4690,7 @@ function renderPivotView() {
     return vendorTotals[b] - vendorTotals[a];
   });
 
-  // [NEW] Calculate max value per column for heatmap coloring
+  // Calculate max value per column for heatmap coloring
   const columnMaxValues = {};
   displayMonths.forEach(m => {
     let maxVal = 0;
@@ -4640,7 +4703,7 @@ function renderPivotView() {
 
   // 2. Build Pivot Matrix HTML
   const thead = document.getElementById('pivotTableHead');
-  let headHtml = '<tr><th style="min-width: 140px;">업체명</th>';
+  let headHtml = '<tr><th style="min-width: 150px;">업체명 (클릭시 그래프)</th>';
   displayMonths.forEach(m => {
     headHtml += `<th style="min-width: 95px;">${m}</th>`;
   });
@@ -4653,15 +4716,17 @@ function renderPivotView() {
   sortedVendors.forEach(v => {
     let rowSum = 0;
     let colsHtml = '';
+    const isSelected = (v === currentTrendVendor);
+
     displayMonths.forEach(m => {
       const val = vendorMonthMap[v + '|' + m] || 0;
       rowSum += val;
 
-      // [NEW] Heatmap coloring based on cell value relative to column max
       let bgStyle = '';
-      if (val > 0 && columnMaxValues[m] > 0) {
-        const intensity = val / columnMaxValues[m]; // 0..1
-        // Light blue (#eff6ff) to darker blue (#93c5fd)
+      if (isSelected) {
+        bgStyle = 'background: #eff6ff; font-weight: 700;';
+      } else if (val > 0 && columnMaxValues[m] > 0) {
+        const intensity = val / columnMaxValues[m];
         const r = Math.round(239 - (239 - 147) * intensity);
         const g = Math.round(246 - (246 - 197) * intensity);
         const b = Math.round(255 - (255 - 253) * intensity);
@@ -4671,9 +4736,15 @@ function renderPivotView() {
       colsHtml += `<td class="text-right" style="${bgStyle}">${val > 0 ? formatNumber(val) : '-'}</td>`;
     });
 
+    const rowStyle = isSelected ? 'background: #eff6ff; border-left: 4px solid var(--primary); font-weight: 700;' : '';
+    const activeBadge = isSelected ? '<span style="font-size: 0.72rem; color: #1e40af; margin-left: 5px; background: #dbeafe; padding: 1px 6px; border-radius: 4px; font-weight: 700;">선택됨</span>' : '';
+
     bodyHtml += `
-      <tr>
-        <td onclick="filterByVendorFromPivot('${v}')" style="cursor: pointer; color: var(--primary);">${v}</td>
+      <tr style="${rowStyle}">
+        <td style="cursor: pointer; color: var(--primary); font-weight: 600;" onclick="toggleTrendVendor('${v}')" title="클릭하여 ${v} 월별 추이 그래프 보기">
+          <span>${v}</span>${activeBadge}
+          <a href="javascript:void(0)" onclick="event.stopPropagation(); filterByVendorFromPivot('${v}')" title="상세 검색 탭에서 ${v} 내역 보기" style="margin-left: 6px; font-size: 0.72rem; text-decoration: none; opacity: 0.65;">🔍</a>
+        </td>
         ${colsHtml}
         <td class="text-right" style="font-weight: 700; background: #f8fafc; color: #1e3a8a;">${formatNumber(rowSum)}</td>
       </tr>
@@ -4681,21 +4752,67 @@ function renderPivotView() {
   });
   tbody.innerHTML = bodyHtml;
 
-  // 3. Render 1-Year Summary Ranking Table (lst_1년집계)
+  // 3. Render 1-Year Summary Ranking Table
   render1YearRanking(sortedMonths);
 
-  // 4. Render Monthly Total Table (lst_월별집계표)
+  // 4. Render Monthly Total Table
   renderMonthlySummaryTable(sortedMonths, monthTotals);
 
-  // 5. Draw Charts
-  drawMonthlySpendChart(displayMonths, monthTotals);
-  drawTopVendorsChart(sortedVendors, vendorTotals);
-}
+  // 5. Update UI Titles & Badges for Selected Vendor
+  const trendTitleEl = document.getElementById('trendChartTitle');
+  const trendBadgeEl = document.getElementById('trendVendorBadge');
+  const resetBtnEl = document.getElementById('btnResetTrendVendor');
+  const topTitleEl = document.getElementById('topVendorChartTitle');
+  const guideVendorEl = document.getElementById('trendGuideActiveVendor');
 
+  if (currentTrendVendor) {
+    if (trendTitleEl) trendTitleEl.textContent = `📅 [${currentTrendVendor}] 월별 매입금액 추이`;
+    if (trendBadgeEl) {
+      trendBadgeEl.textContent = `🏢 ${currentTrendVendor}`;
+      trendBadgeEl.style.display = 'inline-block';
+    }
+    if (resetBtnEl) resetBtnEl.style.display = 'inline-block';
+    if (topTitleEl) topTitleEl.textContent = `📦 [${currentTrendVendor}] 매입 상위 TOP 5 품목`;
+    if (guideVendorEl) guideVendorEl.textContent = `현재: [${currentTrendVendor}] 단독 분석 중`;
+  } else {
+    if (trendTitleEl) trendTitleEl.textContent = '📅 월별 총 매입금액 추이';
+    if (trendBadgeEl) trendBadgeEl.style.display = 'none';
+    if (resetBtnEl) resetBtnEl.style.display = 'none';
+    if (topTitleEl) topTitleEl.textContent = '🏆 최근 1년 매입 상위 TOP 5 거래처';
+    if (guideVendorEl) guideVendorEl.textContent = '현재: 전체 거래처 합산';
+  }
 
-function filterByVendorFromPivot(v) {
-  document.querySelector('[data-tab="tab-search"]').click();
-  selectVendor(v);
+  // 6. Draw Trend Chart (Single Vendor or All Vendors)
+  let chartTotals = {};
+  let chartCounts = {};
+  if (currentTrendVendor) {
+    displayMonths.forEach(m => {
+      chartTotals[m] = vendorMonthMap[currentTrendVendor + '|' + m] || 0;
+      chartCounts[m] = vendorMonthCounts[currentTrendVendor + '|' + m] || 0;
+    });
+  } else {
+    chartTotals = monthTotals;
+    chartCounts = monthCounts;
+  }
+  drawMonthlySpendChart(displayMonths, chartTotals, currentTrendVendor, chartCounts);
+
+  // 7. Draw Top 5 Chart (Top Vendors or Top Items for selected vendor)
+  if (currentTrendVendor) {
+    const itemMap = {};
+    for (let i = 0; i < allData.length; i++) {
+      if (allData[i][1] === currentTrendVendor && allData[i][6] > 0) {
+        const item = allData[i][2] || '기타';
+        itemMap[item] = (itemMap[item] || 0) + allData[i][6];
+      }
+    }
+    const topItemsData = Object.keys(itemMap)
+      .map(name => ({ name, amount: itemMap[name] }))
+      .sort((a, b) => b.amount - a.amount);
+    drawTopVendorsOrItemsChart(topItemsData, true);
+  } else {
+    const topVendorsData = sortedVendors.map(v => ({ name: v, amount: vendorTotals[v] || 0 }));
+    drawTopVendorsOrItemsChart(topVendorsData, false);
+  }
 }
 
 function render1YearRanking(sortedMonths) {
@@ -4721,14 +4838,22 @@ function render1YearRanking(sortedMonths) {
   tbody.innerHTML = '';
   ranking.forEach((r, idx) => {
     const pct = total1Year > 0 ? ((r.amount / total1Year) * 100).toFixed(1) : '0.0';
+    const isSelected = (r.vendor === currentTrendVendor);
+    const rowStyle = isSelected ? 'background: #eff6ff; border-left: 3px solid var(--primary); font-weight: 700;' : '';
+
     const tr = document.createElement('tr');
+    if (rowStyle) tr.setAttribute('style', rowStyle);
+    tr.style.cursor = 'pointer';
+    tr.title = `클릭하여 ${r.vendor} 전용 그래프 보기`;
     tr.innerHTML = `
       <td class="text-center" style="font-weight: 700;">${idx + 1}</td>
-      <td style="font-weight: 600;">${r.vendor}</td>
+      <td style="font-weight: 600; color: var(--primary);">
+        ${r.vendor} ${isSelected ? '<span style="font-size: 0.72rem; color: #1e40af; background: #dbeafe; padding: 1px 4px; border-radius: 3px;">선택됨</span>' : ''}
+      </td>
       <td class="text-right" style="font-weight: 700; color: #1e40af;">${formatCurrency(r.amount)}</td>
       <td class="text-right" style="color: var(--slate-500);">${pct}%</td>
     `;
-    tr.onclick = () => filterByVendorFromPivot(r.vendor);
+    tr.onclick = () => toggleTrendVendor(r.vendor);
     tbody.appendChild(tr);
   });
 }
@@ -4765,12 +4890,23 @@ function renderMonthlySummaryTable(sortedMonths, monthTotals) {
   }
 }
 
-// Pure Canvas Bar Chart for Monthly Spend
-function drawMonthlySpendChart(months, totals) {
+// Pure Canvas Bar Chart with Interactive Tooltips
+function drawMonthlySpendChart(months, totals, vendorName, counts) {
+  lastTrendChartData = { months, totals, vendorName, counts };
+  renderMonthlySpendChartCanvas();
+}
+
+function renderMonthlySpendChartCanvas() {
+  if (!lastTrendChartData) return;
+  const { months, totals, vendorName, counts } = lastTrendChartData;
+
   const canvas = document.getElementById('monthlyTrendChart');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const width = canvas.parentElement.clientWidth - 32;
-  const height = 180;
+  const wrapper = canvas.parentElement;
+  const width = wrapper.clientWidth;
+  const height = 185;
+
   canvas.width = width * window.devicePixelRatio;
   canvas.height = height * window.devicePixelRatio;
   canvas.style.width = width + 'px';
@@ -4783,16 +4919,18 @@ function drawMonthlySpendChart(months, totals) {
   const chartMonths = [...months].reverse().slice(-18);
   let maxVal = 0;
   chartMonths.forEach(m => {
-    if ((totals[m] || 0) > maxVal) maxVal = totals[m];
+    const val = totals[m] || 0;
+    if (val > maxVal) maxVal = val;
   });
-  maxVal = maxVal * 1.15 || 1000000;
+  maxVal = (maxVal * 1.18) || 1000000;
 
-  const padding = { top: 20, right: 20, bottom: 30, left: 65 };
+  const padding = { top: 22, right: 18, bottom: 32, left: 70 };
   const chartW = width - padding.left - padding.right;
   const chartH = height - padding.top - padding.bottom;
 
-  // Draw Grid
+  // Draw Grid Lines & Y-axis labels
   ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 1;
   ctx.fillStyle = '#64748b';
   ctx.font = '10px "Pretendard Variable", Pretendard, sans-serif';
   ctx.textAlign = 'right';
@@ -4804,42 +4942,171 @@ function drawMonthlySpendChart(months, totals) {
     ctx.moveTo(padding.left, y);
     ctx.lineTo(padding.left + chartW, y);
     ctx.stroke();
-    ctx.fillText(formatCompactCurrency(val), padding.left - 8, y + 3);
+    ctx.fillText(formatCompactCurrency(val), padding.left - 8, y + 3.5);
   }
 
   // Draw Bars
-  const barW = Math.max(8, (chartW / chartMonths.length) * 0.65);
   const gap = chartW / chartMonths.length;
+  const barW = Math.max(8, Math.min(gap * 0.65, 36));
+  trendChartBarBoxes = [];
 
   chartMonths.forEach((m, idx) => {
     const val = totals[m] || 0;
     const bH = (val / maxVal) * chartH;
     const x = padding.left + (idx * gap) + (gap - barW) / 2;
     const y = padding.top + chartH - bH;
+    const isHovered = (idx === trendChartHoveredIndex);
+
+    // Save bounding box for hover detection
+    trendChartBarBoxes.push({
+      index: idx,
+      month: m,
+      value: val,
+      count: (counts && counts[m]) || 0,
+      x: x,
+      y: y,
+      width: barW,
+      height: bH,
+      centerX: x + barW / 2,
+      topY: y
+    });
 
     // Bar gradient
     const grad = ctx.createLinearGradient(0, y, 0, padding.top + chartH);
-    grad.addColorStop(0, '#3b82f6');
-    grad.addColorStop(1, '#1e40af');
-    ctx.fillStyle = grad;
-    ctx.fillRect(x, y, barW, bH);
+    if (isHovered) {
+      grad.addColorStop(0, '#60a5fa');
+      grad.addColorStop(1, '#2563eb');
+    } else if (vendorName) {
+      grad.addColorStop(0, '#10b981');
+      grad.addColorStop(1, '#047857');
+    } else {
+      grad.addColorStop(0, '#3b82f6');
+      grad.addColorStop(1, '#1e40af');
+    }
 
-    // Date Label
-    if (chartMonths.length <= 12 || idx % 2 === 0) {
-      ctx.fillStyle = '#64748b';
-      ctx.font = '9px "Pretendard Variable", Pretendard, sans-serif';
-      ctx.textAlign = 'center';
+    ctx.fillStyle = grad;
+    const radius = Math.min(4, barW / 2);
+    ctx.beginPath();
+    if (bH > radius) {
+      ctx.moveTo(x, padding.top + chartH);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.lineTo(x + barW - radius, y);
+      ctx.quadraticCurveTo(x + barW, y, x + barW, y + radius);
+      ctx.lineTo(x + barW, padding.top + chartH);
+    } else {
+      ctx.rect(x, y, barW, bH);
+    }
+    ctx.closePath();
+    ctx.fill();
+
+    if (isHovered) {
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // X-axis Month Label
+    ctx.fillStyle = isHovered ? '#1e40af' : '#64748b';
+    ctx.font = isHovered ? 'bold 10px "Pretendard Variable", Pretendard, sans-serif' : '9.5px "Pretendard Variable", Pretendard, sans-serif';
+    ctx.textAlign = 'center';
+
+    if (chartMonths.length <= 14 || idx % 2 === 0 || isHovered) {
       ctx.fillText(m.substring(2), x + barW / 2, padding.top + chartH + 16);
+    }
+  });
+
+  if (!trendChartListenerAttached) {
+    attachTrendChartHover(canvas);
+    trendChartListenerAttached = true;
+  }
+}
+
+function attachTrendChartHover(canvas) {
+  const tooltip = document.getElementById('trendChartTooltip');
+
+  function handleMove(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    let found = -1;
+    for (let i = 0; i < trendChartBarBoxes.length; i++) {
+      const b = trendChartBarBoxes[i];
+      if (mouseX >= b.x - 3 && mouseX <= b.x + b.width + 3) {
+        found = i;
+        break;
+      }
+    }
+
+    if (found !== -1) {
+      const b = trendChartBarBoxes[found];
+      if (trendChartHoveredIndex !== found) {
+        trendChartHoveredIndex = found;
+        renderMonthlySpendChartCanvas();
+      }
+
+      canvas.style.cursor = 'pointer';
+      if (tooltip) {
+        const vTitle = currentTrendVendor ? `🏢 ${currentTrendVendor}` : '🏢 전체 거래처';
+        tooltip.innerHTML = `
+          <div style="font-size: 0.73rem; color: #93c5fd; font-weight: 700; margin-bottom: 2px;">
+            ${b.month} · ${vTitle}
+          </div>
+          <div style="font-size: 0.96rem; font-weight: 800; color: #ffffff;">
+            ${formatNumber(b.value)}원
+          </div>
+          ${b.count ? `<div style="font-size: 0.72rem; color: #cbd5e1; margin-top: 2px;">구매 건수: ${formatNumber(b.count)}건</div>` : ''}
+        `;
+        tooltip.style.display = 'block';
+        tooltip.style.opacity = '1';
+
+        const clampedY = Math.max(12, b.topY);
+        tooltip.style.left = `${b.centerX}px`;
+        tooltip.style.top = `${clampedY}px`;
+      }
+    } else {
+      if (trendChartHoveredIndex !== -1) {
+        trendChartHoveredIndex = -1;
+        renderMonthlySpendChartCanvas();
+      }
+      canvas.style.cursor = 'default';
+      if (tooltip) {
+        tooltip.style.display = 'none';
+        tooltip.style.opacity = '0';
+      }
+    }
+  }
+
+  canvas.addEventListener('mousemove', handleMove);
+  canvas.addEventListener('mouseleave', () => {
+    trendChartHoveredIndex = -1;
+    renderMonthlySpendChartCanvas();
+    canvas.style.cursor = 'default';
+    if (tooltip) {
+      tooltip.style.display = 'none';
+      tooltip.style.opacity = '0';
     }
   });
 }
 
-// Pure Canvas Horizontal Bar Chart for Top Vendors
-function drawTopVendorsChart(vendors, totals) {
+// Pure Canvas Horizontal Bar Chart for Top Vendors or Top Items
+function drawTopVendorsOrItemsChart(items, isVendorItems) {
+  lastTopChartData = { items, isVendorItems };
+  renderTopChartCanvas();
+}
+
+function renderTopChartCanvas() {
+  if (!lastTopChartData) return;
+  const { items, isVendorItems } = lastTopChartData;
+
   const canvas = document.getElementById('topVendorChart');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  const width = canvas.parentElement.clientWidth - 32;
-  const height = 180;
+  const wrapper = canvas.parentElement;
+  const width = wrapper.clientWidth;
+  const height = 185;
+
   canvas.width = width * window.devicePixelRatio;
   canvas.height = height * window.devicePixelRatio;
   canvas.style.width = width + 'px';
@@ -4848,34 +5115,171 @@ function drawTopVendorsChart(vendors, totals) {
 
   ctx.clearRect(0, 0, width, height);
 
-  const top5 = vendors.slice(0, 5);
-  const maxVal = totals[top5[0]] || 1;
+  const top5 = items.slice(0, 5);
+  if (top5.length === 0) {
+    ctx.fillStyle = '#64748b';
+    ctx.font = '11px "Pretendard Variable", Pretendard, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('표시할 데이터가 없습니다.', width / 2, height / 2);
+    return;
+  }
 
-  const padding = { top: 10, right: 65, bottom: 10, left: 80 };
+  const maxVal = top5[0].amount || 1;
+  const totalSum = top5.reduce((acc, cur) => acc + cur.amount, 0);
+
+  const padding = { top: 12, right: 65, bottom: 12, left: 88 };
   const chartW = width - padding.left - padding.right;
   const chartH = height - padding.top - padding.bottom;
-  const barH = chartH / top5.length * 0.6;
+  const rowH = chartH / top5.length;
+  const barH = rowH * 0.6;
 
-  top5.forEach((v, idx) => {
-    const val = totals[v] || 0;
-    const bW = (val / maxVal) * chartW;
-    const y = padding.top + (idx * (chartH / top5.length)) + ((chartH / top5.length - barH) / 2);
+  topChartBarBoxes = [];
 
-    // Vendor name label
-    ctx.fillStyle = '#334155';
-    ctx.font = '10px "Pretendard Variable", Pretendard, sans-serif';
+  top5.forEach((item, idx) => {
+    const val = item.amount || 0;
+    const bW = Math.max(4, (val / maxVal) * chartW);
+    const y = padding.top + (idx * rowH) + ((rowH - barH) / 2);
+    const isHovered = (idx === topChartHoveredIndex);
+    const pct = totalSum > 0 ? ((val / totalSum) * 100).toFixed(1) : '0.0';
+
+    topChartBarBoxes.push({
+      index: idx,
+      name: item.name,
+      amount: val,
+      pct: pct,
+      x: padding.left,
+      y: y,
+      width: bW,
+      height: barH,
+      isVendor: !isVendorItems
+    });
+
+    // Label on the left
+    ctx.fillStyle = isHovered ? '#1e40af' : '#334155';
+    ctx.font = isHovered ? 'bold 10px "Pretendard Variable", Pretendard, sans-serif' : '10px "Pretendard Variable", Pretendard, sans-serif';
     ctx.textAlign = 'right';
-    ctx.fillText(v.length > 7 ? v.substring(0, 6) + '..' : v, padding.left - 8, y + barH * 0.75);
+    const label = item.name.length > 7 ? item.name.substring(0, 6) + '..' : item.name;
+    ctx.fillText(label, padding.left - 8, y + barH * 0.72);
 
-    // Bar
-    ctx.fillStyle = idx === 0 ? '#2563eb' : '#60a5fa';
-    ctx.fillRect(padding.left, y, bW, barH);
+    // Bar gradient
+    const grad = ctx.createLinearGradient(padding.left, 0, padding.left + bW, 0);
+    if (isHovered) {
+      grad.addColorStop(0, '#38bdf8');
+      grad.addColorStop(1, '#0284c7');
+    } else if (isVendorItems) {
+      grad.addColorStop(0, '#34d399');
+      grad.addColorStop(1, '#059669');
+    } else {
+      grad.addColorStop(0, idx === 0 ? '#3b82f6' : '#93c5fa');
+      grad.addColorStop(1, idx === 0 ? '#1e40af' : '#3b82f6');
+    }
+    ctx.fillStyle = grad;
 
-    // Value label
-    ctx.fillStyle = '#1e3a8a';
-    ctx.font = '10px "Pretendard Variable", Pretendard, sans-serif';
+    const r = Math.min(3, barH / 2);
+    ctx.beginPath();
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(padding.left + bW - r, y);
+    ctx.quadraticCurveTo(padding.left + bW, y, padding.left + bW, y + r);
+    ctx.lineTo(padding.left + bW, y + barH - r);
+    ctx.quadraticCurveTo(padding.left + bW, y + barH, padding.left + bW - r, y + barH);
+    ctx.lineTo(padding.left, y + barH);
+    ctx.closePath();
+    ctx.fill();
+
+    if (isHovered) {
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Value text on the right
+    ctx.fillStyle = isHovered ? '#1e3a8a' : '#475569';
+    ctx.font = isHovered ? 'bold 10px "Pretendard Variable", Pretendard, sans-serif' : '10px "Pretendard Variable", Pretendard, sans-serif';
     ctx.textAlign = 'left';
-    ctx.fillText(formatCompactCurrency(val), padding.left + bW + 6, y + barH * 0.75);
+    ctx.fillText(formatCompactCurrency(val), padding.left + bW + 6, y + barH * 0.72);
+  });
+
+  if (!topChartListenerAttached) {
+    attachTopChartHover(canvas);
+    topChartListenerAttached = true;
+  }
+}
+
+function attachTopChartHover(canvas) {
+  const tooltip = document.getElementById('topVendorTooltip');
+
+  function handleMove(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    let found = -1;
+    for (let i = 0; i < topChartBarBoxes.length; i++) {
+      const b = topChartBarBoxes[i];
+      if (mouseY >= b.y - 2 && mouseY <= b.y + b.height + 2 && mouseX >= 10 && mouseX <= b.x + b.width + 50) {
+        found = i;
+        break;
+      }
+    }
+
+    if (found !== -1) {
+      const b = topChartBarBoxes[found];
+      if (topChartHoveredIndex !== found) {
+        topChartHoveredIndex = found;
+        renderTopChartCanvas();
+      }
+
+      canvas.style.cursor = b.isVendor ? 'pointer' : 'default';
+      if (tooltip) {
+        const typeLabel = b.isVendor ? '거래처 매입' : '품목 매입';
+        tooltip.innerHTML = `
+          <div style="font-size: 0.72rem; color: #93c5fd; font-weight: 700; margin-bottom: 2px;">
+            ${b.name} (${typeLabel})
+          </div>
+          <div style="font-size: 0.96rem; font-weight: 800; color: #ffffff;">
+            ${formatNumber(b.amount)}원
+          </div>
+          <div style="font-size: 0.72rem; color: #cbd5e1; margin-top: 2px;">
+            상위 5개 중 비중: ${b.pct}% ${b.isVendor ? '· 클릭하여 단독 그래프' : ''}
+          </div>
+        `;
+        tooltip.style.display = 'block';
+        tooltip.style.opacity = '1';
+        tooltip.style.left = `${b.x + b.width / 2}px`;
+        tooltip.style.top = `${b.y}px`;
+      }
+    } else {
+      if (topChartHoveredIndex !== -1) {
+        topChartHoveredIndex = -1;
+        renderTopChartCanvas();
+      }
+      canvas.style.cursor = 'default';
+      if (tooltip) {
+        tooltip.style.display = 'none';
+        tooltip.style.opacity = '0';
+      }
+    }
+  }
+
+  canvas.addEventListener('mousemove', handleMove);
+  canvas.addEventListener('mouseleave', () => {
+    topChartHoveredIndex = -1;
+    renderTopChartCanvas();
+    canvas.style.cursor = 'default';
+    if (tooltip) {
+      tooltip.style.display = 'none';
+      tooltip.style.opacity = '0';
+    }
+  });
+
+  // Clicking a vendor bar in the top 5 vendors list switches to that vendor!
+  canvas.addEventListener('click', () => {
+    if (topChartHoveredIndex !== -1) {
+      const b = topChartBarBoxes[topChartHoveredIndex];
+      if (b && b.isVendor) {
+        toggleTrendVendor(b.name);
+      }
+    }
   });
 }
 
