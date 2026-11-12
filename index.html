@@ -2931,33 +2931,68 @@ canvas.custom-chart {
         </div>
 
         <!-- Profit Simulator & Market Insight Box -->
-        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: var(--card-shadow); display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: var(--card-shadow); display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; align-items: stretch;">
           <div>
-            <h3 style="font-size: 1rem; font-weight: 700; margin: 0 0 8px 0; display: flex; align-items: center; gap: 6px;">
-              <span>🧮 폐팁 매각 예상 수익 간이 계산기</span>
-            </h3>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 12px 0;">
-              공장 현장에 모아둔 폐팁의 예상 중량을 입력하면 최신 시세 기준 매각 수익금을 즉시 산출합니다.
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <h3 style="font-size: 1rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 6px;">
+                <span>🧮 폐초경 &amp; 하이스 매각 예상 수익 계산기</span>
+              </h3>
+              <span style="font-size: 0.72rem; color: var(--text-muted); background: var(--slate-100); padding: 2px 6px; border-radius: 4px;">실시간 단가 연동</span>
+            </div>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 10px 0;">
+              공장 내 보관 중인 <b>폐초경(인서트 팁)</b>과 <b>폐하이스(HSS 공구)</b>의 중량을 입력하면 매각 수익금을 즉시 산출합니다.
             </p>
-            <div style="display: flex; gap: 10px; align-items: center;">
-              <div style="display: flex; align-items: center; gap: 6px; background: var(--input-bg); border: 1px solid var(--slate-300); border-radius: 6px; padding: 6px 12px;">
-                <span style="font-size: 0.85rem; font-weight: 600;">보관 중량:</span>
-                <input type="number" id="scrapCalcWeight" value="50" min="1" step="1" style="width: 80px; border: none; outline: none; font-weight: 700; font-size: 0.95rem; text-align: right;" oninput="updateScrapCalculator()">
-                <span style="font-size: 0.85rem; color: var(--text-secondary);">kg</span>
+
+            <!-- Inputs Grid -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+              <!-- Carbide Tip Input -->
+              <div style="background: var(--input-bg); border: 1px solid var(--slate-300); border-radius: 8px; padding: 8px 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px;">
+                  <span style="font-weight: 700; color: #1e40af;">🪙 폐초경 (인서트 팁)</span>
+                  <span id="scrapCalcTipUnitPrice" style="color: var(--text-muted); font-size: 0.72rem;">@60,000원/kg</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <input type="number" id="scrapCalcWeightTip" value="50" min="0" step="1" style="width: 60px; border: 1px solid var(--slate-300); border-radius: 4px; padding: 2px 6px; font-weight: 700; font-size: 0.92rem; text-align: right;" oninput="updateScrapCalculator()">
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">kg</span>
+                  </div>
+                  <div id="scrapCalcTipSubtotal" style="font-size: 0.95rem; font-weight: 800; color: #1e40af;">3,000,000원</div>
+                </div>
               </div>
-              <div style="flex: 1; padding: 8px 14px; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 6px;">
-                <div style="font-size: 0.75rem; color: var(--text-secondary);">폐초경 팁 기준 예상 매각 대금</div>
-                <div id="scrapCalcResult" style="font-size: 1.25rem; font-weight: 800; color: #1e40af;">3,000,000원</div>
+
+              <!-- HSS Input -->
+              <div style="background: var(--input-bg); border: 1px solid var(--slate-300); border-radius: 8px; padding: 8px 12px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px;">
+                  <span style="font-weight: 700; color: #7c3aed;">⚙️ HSS (하이스 공구)</span>
+                  <span id="scrapCalcHssUnitPrice" style="color: var(--text-muted); font-size: 0.72rem;">@5,500원/kg</span>
+                </div>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 6px;">
+                  <div style="display: flex; align-items: center; gap: 4px;">
+                    <input type="number" id="scrapCalcWeightHss" value="100" min="0" step="1" style="width: 60px; border: 1px solid var(--slate-300); border-radius: 4px; padding: 2px 6px; font-weight: 700; font-size: 0.92rem; text-align: right;" oninput="updateScrapCalculator()">
+                    <span style="font-size: 0.8rem; color: var(--text-secondary);">kg</span>
+                  </div>
+                  <div id="scrapCalcHssSubtotal" style="font-size: 0.95rem; font-weight: 800; color: #7c3aed;">550,000원</div>
+                </div>
               </div>
+            </div>
+
+            <!-- Grand Total Bar -->
+            <div style="padding: 10px 14px; background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(124, 58, 237, 0.08)); border: 1px solid rgba(37, 99, 235, 0.25); border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-size: 0.75rem; color: var(--text-secondary); font-weight: 700;">💰 총 예상 매각 수익금 합계</div>
+                <div id="scrapCalcSubNote" style="font-size: 0.72rem; color: var(--text-muted); margin-top: 2px;">(초경 3,000,000원 + 하이스 550,000원)</div>
+              </div>
+              <div id="scrapCalcGrandTotal" style="font-size: 1.35rem; font-weight: 800; color: #1e3a8a;">3,550,000원</div>
             </div>
           </div>
 
           <div style="border-left: 1px solid var(--card-border); padding-left: 1.25rem; display: flex; flex-direction: column; justify-content: center;">
-            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
-              <span>💡</span> <span>현재 폐초경 시세 진단 &amp; 매각 타이밍 분석</span>
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+              <span>💡</span> <span>현재 시세 진단 &amp; 매각 타이밍 분석</span>
             </div>
-            <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
-              현재 폐초경(팁) 시세는 <b>60,000원/kg</b>으로, 지난달(10월) 저점인 <b>40,000원</b> 대비 <span style="color: #dc2626; font-weight: 700;">+50% 급반등</span> 중입니다. 과거 2026년 6월 최고점(100,000원)에는 못 미치나, <b>단기 저점을 탈출하여 상승 탄력</b>을 받고 있으므로 공장 내 보관 폐팁 매각을 적극 검토하기에 유리한 시점입니다.
+            <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.55;">
+              • <b>폐초경 (인서트 팁)</b>: 현재 <b>60,000원/kg</b>으로 지난달 저점(40,000원) 대비 <span style="color: #dc2626; font-weight: 700;">+50% 급반등</span> 중입니다. 보관 물량 매각에 매우 유리한 구간입니다.<br>
+              • <b>HSS (하이스 공구)</b>: 현재 <b>5,500원/kg</b>으로 연중 안정세(5,500~6,500원)를 유지하고 있으며, 공구실 폐드릴/폐탭과 함께 일괄 매각하기 적합합니다.
             </div>
           </div>
         </div>
@@ -6922,15 +6957,44 @@ function updateScrapCalculator() {
   if (!data || !data.length) return;
   const latest = data[data.length - 1];
 
-  const weightInput = document.getElementById('scrapCalcWeight');
-  const weight = parseFloat(weightInput ? weightInput.value : 50) || 0;
+  // Unit price labels
+  const tipPriceEl = document.getElementById('scrapCalcTipUnitPrice');
+  if (tipPriceEl) tipPriceEl.textContent = `@${formatNumber(latest.tip)}원/kg`;
 
-  const tipTotal = Math.round(weight * latest.tip);
-  const endmillTotal = Math.round(weight * latest.endmill);
+  const hssPriceEl = document.getElementById('scrapCalcHssUnitPrice');
+  if (hssPriceEl) hssPriceEl.textContent = `@${formatNumber(latest.hss)}원/kg`;
 
+  // Weights
+  const tipWeightInput = document.getElementById('scrapCalcWeightTip') || document.getElementById('scrapCalcWeight');
+  const hssWeightInput = document.getElementById('scrapCalcWeightHss');
+
+  const tipWeight = parseFloat(tipWeightInput ? tipWeightInput.value : 50) || 0;
+  const hssWeight = parseFloat(hssWeightInput ? hssWeightInput.value : 100) || 0;
+
+  const tipTotal = Math.round(tipWeight * (latest.tip || 0));
+  const hssTotal = Math.round(hssWeight * (latest.hss || 0));
+  const grandTotal = tipTotal + hssTotal;
+
+  // Subtotals
+  const tipSubEl = document.getElementById('scrapCalcTipSubtotal');
+  if (tipSubEl) tipSubEl.textContent = `${formatNumber(tipTotal)}원`;
+
+  const hssSubEl = document.getElementById('scrapCalcHssSubtotal');
+  if (hssSubEl) hssSubEl.textContent = `${formatNumber(hssTotal)}원`;
+
+  // Grand Total & Sub note
+  const grandEl = document.getElementById('scrapCalcGrandTotal');
+  if (grandEl) grandEl.textContent = `${formatNumber(grandTotal)}원`;
+
+  const subNoteEl = document.getElementById('scrapCalcSubNote');
+  if (subNoteEl) {
+    subNoteEl.textContent = `(초경 ${formatNumber(tipTotal)}원 + 하이스 ${formatNumber(hssTotal)}원)`;
+  }
+
+  // Backward compatibility with previous single result if any
   const resEl = document.getElementById('scrapCalcResult');
   if (resEl) {
-    resEl.innerHTML = `${formatNumber(tipTotal)}원 <span style="font-size: 0.78rem; font-weight: 500; color: var(--text-muted); display: block; margin-top: 2px;">(엔드밀/드릴 전량 매각 시: ${formatNumber(endmillTotal)}원)</span>`;
+    resEl.innerHTML = `${formatNumber(tipTotal)}원 <span style="font-size: 0.78rem; font-weight: 500; color: var(--text-muted); display: block; margin-top: 2px;">(하이스 포함 총액: ${formatNumber(grandTotal)}원)</span>`;
   }
 }
 
