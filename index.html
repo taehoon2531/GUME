@@ -2432,6 +2432,9 @@ canvas.custom-chart {
       <button class="nav-tab" data-tab="tab-closing">
         <span>📅</span> <span class="nav-tab-text">월마감 &amp; 보고서</span>
       </button>
+      <button class="nav-tab" data-tab="tab-scrap">
+        <span>💎</span> <span class="nav-tab-text">폐팁 시세 동향</span>
+      </button>
       <button class="nav-tab" data-tab="tab-vendors">
         <span>🏢</span> <span class="nav-tab-text">거래처 관리</span>
       </button>
@@ -2855,6 +2858,162 @@ canvas.custom-chart {
               </div>
 
             </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB: 폐팁 & 초경 시세 동향 (올메탈 실시간 연동) -->
+    <!-- ========================================== -->
+    <section id="tab-scrap" class="tab-content">
+      <div class="data-panel" style="padding: 1.5rem; max-width: 1300px; margin: 0 auto; width: 100%;">
+        
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 1.25rem;">
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+              <span>💎 올메탈(AllMetal) 폐초경 및 폐팁 시세 동향</span>
+              <span id="scrapLatestBadge" class="brand-badge" style="background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe;">최신 공지 연동</span>
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+              국내 최대 금속스크랩 거래소 <b>올메탈(allmetal.co.kr)</b> 공지 데이터를 기반으로 폐초경 팁, 엔드밀, HSS 하이스의 주차별 시세를 실시간 분석합니다.
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <a href="https://allmetal.co.kr/bbs/board.php?bo_table=price&wr_id=173" target="_blank" class="btn btn-outline btn-sm" style="text-decoration: none; display: flex; align-items: center; gap: 4px;" title="올메탈 공식 시세 게시판 새창 열기">
+              🔗 올메탈 원문 시세표 바로가기 ↗
+            </a>
+            <button class="btn btn-primary btn-sm" onclick="exportScrapToCSV()" title="143회차 전체 시세 이력 엑셀 다운로드">
+              📥 폐초경 시세 이력 엑셀(CSV) 저장
+            </button>
+          </div>
+        </div>
+
+        <!-- KPI Status Bar (Today's Prices) -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+          <div class="detail-kpi-card" style="border-left: 4px solid #2563eb; background: var(--card-bg);">
+            <div class="kpi-title" style="display: flex; justify-content: space-between;">
+              <span>🪙 폐초경 (인서트 팁)</span>
+              <span id="scrapTipDiffBadge" style="font-size: 0.75rem; font-weight: 700; color: #dc2626;">▲ +5,000원 (+9.1%)</span>
+            </div>
+            <div class="kpi-num" id="scrapTipLatestPrice" style="color: #1e40af; font-size: 1.6rem;">60,000원 <span style="font-size: 0.82rem; font-weight: 400; color: var(--text-muted);">/ kg</span></div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">가장 많이 나오는 인서트 폐팁 시세</div>
+          </div>
+
+          <div class="detail-kpi-card" style="border-left: 4px solid #10b981; background: var(--card-bg);">
+            <div class="kpi-title" style="display: flex; justify-content: space-between;">
+              <span>🔪 폐초경 (엔드밀 / 드릴)</span>
+              <span id="scrapEndmillDiffBadge" style="font-size: 0.75rem; font-weight: 700; color: #dc2626;">▲ +7,000원 (+9.6%)</span>
+            </div>
+            <div class="kpi-num" id="scrapEndmillLatestPrice" style="color: #059669; font-size: 1.6rem;">80,000원 <span style="font-size: 0.82rem; font-weight: 400; color: var(--text-muted);">/ kg</span></div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">초경 통엔드밀 및 솔리드 드릴 스크랩</div>
+          </div>
+
+          <div class="detail-kpi-card" style="border-left: 4px solid #f59e0b; background: var(--card-bg);">
+            <div class="kpi-title" style="display: flex; justify-content: space-between;">
+              <span>🪨 초경 (덩어리 / 블록)</span>
+              <span style="font-size: 0.75rem; font-weight: 700; color: #d97706;">보합세</span>
+            </div>
+            <div class="kpi-num" id="scrapLumpLatestPrice" style="color: #d97706; font-size: 1.6rem;">57,500원 <span style="font-size: 0.82rem; font-weight: 400; color: var(--text-muted);">/ kg</span></div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">공구강 제외 순수 초경 덩어리</div>
+          </div>
+
+          <div class="detail-kpi-card" style="border-left: 4px solid #8b5cf6; background: var(--card-bg);">
+            <div class="kpi-title" style="display: flex; justify-content: space-between;">
+              <span>⚙️ HSS (하이스 공구)</span>
+              <span style="font-size: 0.75rem; font-weight: 700; color: #7c3aed;">안정세</span>
+            </div>
+            <div class="kpi-num" id="scrapHssLatestPrice" style="color: #7c3aed; font-size: 1.6rem;">5,500원 <span style="font-size: 0.82rem; font-weight: 400; color: var(--text-muted);">/ kg</span></div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">고속도 공구강(HSS) 스크랩</div>
+          </div>
+        </div>
+
+        <!-- Profit Simulator & Market Insight Box -->
+        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: var(--card-shadow); display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+          <div>
+            <h3 style="font-size: 1rem; font-weight: 700; margin: 0 0 8px 0; display: flex; align-items: center; gap: 6px;">
+              <span>🧮 폐팁 매각 예상 수익 간이 계산기</span>
+            </h3>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin: 0 0 12px 0;">
+              공장 현장에 모아둔 폐팁의 예상 중량을 입력하면 최신 시세 기준 매각 수익금을 즉시 산출합니다.
+            </p>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <div style="display: flex; align-items: center; gap: 6px; background: var(--input-bg); border: 1px solid var(--slate-300); border-radius: 6px; padding: 6px 12px;">
+                <span style="font-size: 0.85rem; font-weight: 600;">보관 중량:</span>
+                <input type="number" id="scrapCalcWeight" value="50" min="1" step="1" style="width: 80px; border: none; outline: none; font-weight: 700; font-size: 0.95rem; text-align: right;" oninput="updateScrapCalculator()">
+                <span style="font-size: 0.85rem; color: var(--text-secondary);">kg</span>
+              </div>
+              <div style="flex: 1; padding: 8px 14px; background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 6px;">
+                <div style="font-size: 0.75rem; color: var(--text-secondary);">폐초경 팁 기준 예상 매각 대금</div>
+                <div id="scrapCalcResult" style="font-size: 1.25rem; font-weight: 800; color: #1e40af;">3,000,000원</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="border-left: 1px solid var(--card-border); padding-left: 1.25rem; display: flex; flex-direction: column; justify-content: center;">
+            <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+              <span>💡</span> <span>현재 폐초경 시세 진단 &amp; 매각 타이밍 분석</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.5;">
+              현재 폐초경(팁) 시세는 <b>60,000원/kg</b>으로, 지난달(10월) 저점인 <b>40,000원</b> 대비 <span style="color: #dc2626; font-weight: 700;">+50% 급반등</span> 중입니다. 과거 2026년 6월 최고점(100,000원)에는 못 미치나, <b>단기 저점을 탈출하여 상승 탄력</b>을 받고 있으므로 공장 내 보관 폐팁 매각을 적극 검토하기에 유리한 시점입니다.
+            </div>
+          </div>
+        </div>
+
+        <!-- Historical Trend Chart Section -->
+        <div class="chart-container" style="margin-bottom: 1.25rem; background: var(--card-bg); padding: 1.25rem; border: 1px solid var(--card-border); border-radius: 12px;">
+          <div class="chart-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-weight: 700; font-size: 1.05rem;">📈 폐초경(폐팁) 주차별 시세 변동 추이 (2025 ~ 2026)</span>
+              <span id="scrapChartItemBadge" style="font-size: 0.78rem; font-weight: 700; padding: 2px 8px; border-radius: 4px; background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe;">폐초경(팁)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div class="chart-btn-group" id="scrapChartItemGroup">
+                <button class="chart-pill-btn active" data-item="tip" onclick="setScrapChartItem('tip')">폐초경(팁)</button>
+                <button class="chart-pill-btn" data-item="endmill" onclick="setScrapChartItem('endmill')">폐초경(엔드밀)</button>
+                <button class="chart-pill-btn" data-item="lump" onclick="setScrapChartItem('lump')">초경(덩어리)</button>
+                <button class="chart-pill-btn" data-item="hss" onclick="setScrapChartItem('hss')">HSS(하이스)</button>
+              </div>
+            </div>
+          </div>
+          <div class="chart-canvas-wrapper" style="position: relative; margin-top: 10px;">
+            <canvas id="scrapTrendChart" class="custom-chart" style="height: 220px;"></canvas>
+            <div id="scrapChartTooltip" class="chart-hover-tooltip" style="opacity: 0; display: none;"></div>
+          </div>
+        </div>
+
+        <!-- Historical Table Section -->
+        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 12px;">
+            <div>
+              <h3 style="margin: 0; font-size: 1rem; font-weight: 700;">📋 올메탈 공지 전체 시세 이력 (총 <span id="scrapTotalRowsCount">143</span>회차)</h3>
+              <p style="margin: 3px 0 0 0; font-size: 0.78rem; color: var(--text-muted);">
+                공지 일자별 폐초경 및 하이스 kg당 단가 기록 (최신 공지순)
+              </p>
+            </div>
+            <input type="text" id="scrapSearchInput" placeholder="공지 제목 또는 일자 검색..." style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.82rem; width: 220px;" oninput="renderScrapTable()">
+          </div>
+
+          <div style="max-height: 400px; overflow-y: auto; overflow-x: auto; border: 1px solid var(--card-border); border-radius: 8px;">
+            <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.82rem; min-width: 900px;">
+              <thead style="position: sticky; top: 0; background: var(--table-header-bg); z-index: 2;">
+                <tr>
+                  <th style="width: 45px; text-align: center;">No.</th>
+                  <th style="width: 105px; text-align: center;">공지일자</th>
+                  <th style="min-width: 250px;">게시글 공지 제목</th>
+                  <th style="width: 120px; text-align: right; color: #1e40af; font-weight: 700;">폐초경(팁)</th>
+                  <th style="width: 120px; text-align: right; color: #059669; font-weight: 700;">폐초경(엔드밀)</th>
+                  <th style="width: 120px; text-align: right; color: #d97706;">초경(덩어리)</th>
+                  <th style="width: 105px; text-align: right; color: #7c3aed;">HSS(하이스)</th>
+                  <th style="width: 75px; text-align: center;">원문</th>
+                </tr>
+              </thead>
+              <tbody id="scrapTableBody">
+                <!-- Dynamic Rows -->
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -3293,6 +3452,7 @@ canvas.custom-chart {
 
   <!-- Load pre-compiled data -->
   <script src="data.js"></script>
+  <script src="scrap_data.js"></script>
 
   <!-- Main Application Script -->
   <script>
@@ -3442,6 +3602,7 @@ async function initApp() {
   renderVendorSidebar();
   renderPivotView();
   renderClosingView();
+  renderScrapView();
   renderVendorMgmtTable();
   updateSyncInfo();
 
@@ -3492,6 +3653,8 @@ function initNavTabs() {
         renderPivotView();
       } else if (target === 'tab-closing') {
         renderClosingView();
+      } else if (target === 'tab-scrap') {
+        renderScrapView();
       }
     });
   });
@@ -4606,6 +4769,10 @@ function initItemChartHover() {
     const modal = document.getElementById('detailModal');
     if (modal && modal.classList.contains('show') && activeChartSorted.length > 0) {
       drawItemPriceChartBase(activeChartSorted, null);
+    }
+    const scrapTab = document.getElementById('tab-scrap');
+    if (scrapTab && scrapTab.classList.contains('active') && typeof drawScrapTrendChart === 'function') {
+      drawScrapTrendChart();
     }
   });
 }
@@ -6510,6 +6677,10 @@ function toggleDarkMode() {
   if (modal && modal.classList.contains('show') && typeof drawItemPriceChartBase === 'function' && activeChartSorted && activeChartSorted.length > 0) {
     drawItemPriceChartBase(activeChartSorted, null);
   }
+  const scrapTab = document.getElementById('tab-scrap');
+  if (scrapTab && scrapTab.classList.contains('active') && typeof drawScrapTrendChart === 'function') {
+    drawScrapTrendChart();
+  }
 }
 
 function loadDarkModePreference() {
@@ -6527,6 +6698,10 @@ function loadDarkModePreference() {
   const modal = document.getElementById('detailModal');
   if (modal && modal.classList.contains('show') && typeof drawItemPriceChartBase === 'function' && activeChartSorted && activeChartSorted.length > 0) {
     drawItemPriceChartBase(activeChartSorted, null);
+  }
+  const scrapTab = document.getElementById('tab-scrap');
+  if (scrapTab && scrapTab.classList.contains('active') && typeof drawScrapTrendChart === 'function') {
+    drawScrapTrendChart();
   }
 }
 
@@ -6627,6 +6802,535 @@ function addShortcutHints() {
     <span><kbd style="background: var(--slate-100); border: 1px solid var(--slate-300); border-radius: 3px; padding: 1px 5px; font-size: 0.65rem; font-family: inherit;">ESC</kbd> 모달 닫기</span>
   `;
   searchWrapper.parentNode.insertBefore(hints, searchWrapper.nextSibling);
+}
+
+// ==========================================
+// 16. 폐초경 및 폐팁 시세 동향 (올메탈 연동)
+// ==========================================
+let currentScrapItem = 'tip';
+let scrapChartPoints = [];
+let scrapChartHoveredIndex = -1;
+let scrapChartListenerAttached = false;
+
+const SCRAP_ITEM_META = {
+  tip: {
+    name: '폐초경(인서트 팁)',
+    color: '#2563eb',
+    gradientStart: 'rgba(37, 99, 235, 0.28)',
+    gradientEnd: 'rgba(37, 99, 235, 0.01)',
+    badgeBg: '#dbeafe',
+    badgeColor: '#1e40af'
+  },
+  endmill: {
+    name: '폐초경(엔드밀/드릴)',
+    color: '#059669',
+    gradientStart: 'rgba(5, 150, 105, 0.28)',
+    gradientEnd: 'rgba(5, 150, 105, 0.01)',
+    badgeBg: '#d1fae5',
+    badgeColor: '#065f46'
+  },
+  lump: {
+    name: '초경(덩어리/블록)',
+    color: '#d97706',
+    gradientStart: 'rgba(217, 119, 6, 0.28)',
+    gradientEnd: 'rgba(217, 119, 6, 0.01)',
+    badgeBg: '#fef3c7',
+    badgeColor: '#92400e'
+  },
+  hss: {
+    name: 'HSS(하이스 공구)',
+    color: '#7c3aed',
+    gradientStart: 'rgba(124, 58, 237, 0.28)',
+    gradientEnd: 'rgba(124, 58, 237, 0.01)',
+    badgeBg: '#ede9fe',
+    badgeColor: '#5b21b6'
+  }
+};
+
+function renderScrapView() {
+  const data = window.SCRAP_PRICES_DATA;
+  if (!data || !Array.isArray(data) || data.length === 0) return;
+
+  const latest = data[data.length - 1];
+  const prev = data.length > 1 ? data[data.length - 2] : latest;
+
+  // 1. Update Latest Badge
+  const badge = document.getElementById('scrapLatestBadge');
+  if (badge) {
+    badge.textContent = `최신: ${latest.date} 공지 (총 ${data.length}회차)`;
+  }
+
+  // 2. Update KPI Cards
+  const tipEl = document.getElementById('scrapTipLatestPrice');
+  if (tipEl) {
+    tipEl.innerHTML = `${formatNumber(latest.tip)}원 <span style="font-size: 0.82rem; font-weight: 400; color: var(--text-muted);">/ kg</span>`;
+  }
+  const tipDiffEl = document.getElementById('scrapTipDiffBadge');
+  if (tipDiffEl) {
+    const diff = latest.tip - (prev.tip || latest.tip);
+    const pct = prev.tip ? ((diff / prev.tip) * 100).toFixed(1) : '0.0';
+    if (diff > 0) {
+      tipDiffEl.textContent = `▲ +${formatNumber(diff)}원 (+${pct}%)`;
+      tipDiffEl.style.color = '#dc2626';
+    } else if (diff < 0) {
+      tipDiffEl.textContent = `▼ ${formatNumber(diff)}원 (${pct}%)`;
+      tipDiffEl.style.color = '#2563eb';
+    } else {
+      tipDiffEl.textContent = '보합 (-)';
+      tipDiffEl.style.color = 'var(--text-muted)';
+    }
+  }
+
+  const endmillEl = document.getElementById('scrapEndmillLatestPrice');
+  if (endmillEl) {
+    endmillEl.innerHTML = `${formatNumber(latest.endmill)}원 <span style="font-size: 0.82rem; font-weight: 400; color: var(--text-muted);">/ kg</span>`;
+  }
+  const endmillDiffEl = document.getElementById('scrapEndmillDiffBadge');
+  if (endmillDiffEl) {
+    const diff = latest.endmill - (prev.endmill || latest.endmill);
+    const pct = prev.endmill ? ((diff / prev.endmill) * 100).toFixed(1) : '0.0';
+    if (diff > 0) {
+      endmillDiffEl.textContent = `▲ +${formatNumber(diff)}원 (+${pct}%)`;
+      endmillDiffEl.style.color = '#dc2626';
+    } else if (diff < 0) {
+      endmillDiffEl.textContent = `▼ ${formatNumber(diff)}원 (${pct}%)`;
+      endmillDiffEl.style.color = '#2563eb';
+    } else {
+      endmillDiffEl.textContent = '보합 (-)';
+      endmillDiffEl.style.color = 'var(--text-muted)';
+    }
+  }
+
+  const lumpEl = document.getElementById('scrapLumpLatestPrice');
+  if (lumpEl) {
+    lumpEl.innerHTML = `${formatNumber(latest.lump)}원 <span style="font-size: 0.82rem; font-weight: 400; color: var(--text-muted);">/ kg</span>`;
+  }
+
+  const hssEl = document.getElementById('scrapHssLatestPrice');
+  if (hssEl) {
+    hssEl.innerHTML = `${formatNumber(latest.hss)}원 <span style="font-size: 0.82rem; font-weight: 400; color: var(--text-muted);">/ kg</span>`;
+  }
+
+  // 3. Update Calculator & Table & Chart
+  updateScrapCalculator();
+  drawScrapTrendChart();
+  renderScrapTable();
+}
+
+function updateScrapCalculator() {
+  const data = window.SCRAP_PRICES_DATA;
+  if (!data || !data.length) return;
+  const latest = data[data.length - 1];
+
+  const weightInput = document.getElementById('scrapCalcWeight');
+  const weight = parseFloat(weightInput ? weightInput.value : 50) || 0;
+
+  const tipTotal = Math.round(weight * latest.tip);
+  const endmillTotal = Math.round(weight * latest.endmill);
+
+  const resEl = document.getElementById('scrapCalcResult');
+  if (resEl) {
+    resEl.innerHTML = `${formatNumber(tipTotal)}원 <span style="font-size: 0.78rem; font-weight: 500; color: var(--text-muted); display: block; margin-top: 2px;">(엔드밀/드릴 전량 매각 시: ${formatNumber(endmillTotal)}원)</span>`;
+  }
+}
+
+function setScrapChartItem(itemKey) {
+  if (!SCRAP_ITEM_META[itemKey]) return;
+  currentScrapItem = itemKey;
+
+  // Toggle button styling
+  const buttons = document.querySelectorAll('#scrapChartItemGroup button');
+  buttons.forEach(btn => {
+    if (btn.getAttribute('data-item') === itemKey) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  // Toggle item badge
+  const badge = document.getElementById('scrapChartItemBadge');
+  if (badge) {
+    const meta = SCRAP_ITEM_META[itemKey];
+    badge.textContent = meta.name;
+    badge.style.background = meta.badgeBg;
+    badge.style.color = meta.badgeColor;
+    badge.style.borderColor = meta.color;
+  }
+
+  drawScrapTrendChart();
+}
+
+function drawScrapTrendChart() {
+  const canvas = document.getElementById('scrapTrendChart');
+  if (!canvas) return;
+
+  const data = window.SCRAP_PRICES_DATA;
+  if (!data || !Array.isArray(data) || data.length === 0) return;
+
+  const ctx = canvas.getContext('2d');
+  const wrapper = canvas.parentElement;
+  const width = wrapper.clientWidth || 900;
+  const height = 220;
+
+  canvas.width = width * window.devicePixelRatio;
+  canvas.height = height * window.devicePixelRatio;
+  canvas.style.width = width + 'px';
+  canvas.style.height = height + 'px';
+  ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  ctx.clearRect(0, 0, width, height);
+
+  const meta = SCRAP_ITEM_META[currentScrapItem] || SCRAP_ITEM_META.tip;
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+  // Filter valid data points
+  const points = [];
+  data.forEach(item => {
+    const val = item[currentScrapItem];
+    if (typeof val === 'number' && val > 0) {
+      points.push({
+        id: item.id,
+        date: item.date,
+        title: item.title,
+        value: val
+      });
+    }
+  });
+
+  if (points.length === 0) return;
+
+  // Min and Max values for Y-axis
+  let minVal = points[0].value;
+  let maxVal = points[0].value;
+  let minIdx = 0;
+  let maxIdx = 0;
+
+  points.forEach((p, idx) => {
+    if (p.value < minVal) { minVal = p.value; minIdx = idx; }
+    if (p.value > maxVal) { maxVal = p.value; maxIdx = idx; }
+  });
+
+  const yMargin = Math.max(1000, (maxVal - minVal) * 0.15);
+  const chartMinY = Math.max(0, Math.floor((minVal - yMargin) / 5000) * 5000);
+  const chartMaxY = Math.ceil((maxVal + yMargin) / 5000) * 5000;
+  const yRange = chartMaxY - chartMinY || 1;
+
+  const padding = { top: 28, right: 35, bottom: 32, left: 70 };
+  const chartW = width - padding.left - padding.right;
+  const chartH = height - padding.top - padding.bottom;
+
+  // Grid Lines & Y-Axis Labels
+  const gridCount = 4;
+  ctx.strokeStyle = isDark ? '#334155' : '#e2e8f0';
+  ctx.lineWidth = 1;
+  ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+  ctx.font = '10px "Pretendard Variable", Pretendard, sans-serif';
+  ctx.textAlign = 'right';
+
+  for (let i = 0; i <= gridCount; i++) {
+    const val = chartMinY + (yRange * (i / gridCount));
+    const y = padding.top + chartH - (chartH * (i / gridCount));
+    ctx.beginPath();
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(padding.left + chartW, y);
+    ctx.stroke();
+    ctx.fillText(formatCompactCurrency(val), padding.left - 8, y + 3.5);
+  }
+
+  // Calculate coordinates for all points
+  scrapChartPoints = [];
+  const count = points.length;
+  const stepX = chartW / Math.max(1, count - 1);
+
+  points.forEach((p, idx) => {
+    const x = padding.left + (idx * stepX);
+    const y = padding.top + chartH - ((p.value - chartMinY) / yRange) * chartH;
+    scrapChartPoints.push({
+      ...p,
+      x: x,
+      y: y,
+      index: idx
+    });
+  });
+
+  // Draw Area Gradient Fill
+  const gradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
+  gradient.addColorStop(0, meta.gradientStart);
+  gradient.addColorStop(1, meta.gradientEnd);
+
+  ctx.beginPath();
+  ctx.moveTo(scrapChartPoints[0].x, padding.top + chartH);
+  scrapChartPoints.forEach(pt => ctx.lineTo(pt.x, pt.y));
+  ctx.lineTo(scrapChartPoints[scrapChartPoints.length - 1].x, padding.top + chartH);
+  ctx.closePath();
+  ctx.fillStyle = gradient;
+  ctx.fill();
+
+  // Draw Line
+  ctx.beginPath();
+  ctx.strokeStyle = meta.color;
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  scrapChartPoints.forEach((pt, idx) => {
+    if (idx === 0) ctx.moveTo(pt.x, pt.y);
+    else ctx.lineTo(pt.x, pt.y);
+  });
+  ctx.stroke();
+
+  // Draw X-Axis Date Labels
+  ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+  ctx.font = '9.5px "Pretendard Variable", Pretendard, sans-serif';
+  ctx.textAlign = 'center';
+
+  let lastLabelX = -100;
+  scrapChartPoints.forEach((pt, idx) => {
+    const isFirst = idx === 0;
+    const isLast = idx === count - 1;
+    if (isFirst || isLast || (idx % 22 === 0 && pt.x - lastLabelX > 65)) {
+      ctx.fillText(pt.date.substring(2), pt.x, padding.top + chartH + 18);
+      lastLabelX = pt.x;
+    }
+  });
+
+  // Highlight Min & Max Badges
+  const minPt = scrapChartPoints[minIdx];
+  const maxPt = scrapChartPoints[maxIdx];
+
+  function drawPointBadge(pt, text, isMax) {
+    if (!pt) return;
+    ctx.save();
+    ctx.font = 'bold 9px "Pretendard Variable", Pretendard, sans-serif';
+    const textW = ctx.measureText(text).width;
+    const bW = textW + 10;
+    const bH = 18;
+    const bX = Math.max(padding.left, Math.min(pt.x - bW / 2, padding.left + chartW - bW));
+    const bY = isMax ? pt.y - 22 : pt.y + 6;
+
+    ctx.fillStyle = isMax ? '#dc2626' : (isDark ? '#1e293b' : '#334155');
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(bX, bY, bW, bH, 4) : ctx.rect(bX, bY, bW, bH);
+    ctx.fill();
+
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText(text, bX + bW / 2, bY + 12);
+
+    // Indicator Dot
+    ctx.beginPath();
+    ctx.arc(pt.x, pt.y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = isMax ? '#dc2626' : '#2563eb';
+    ctx.fill();
+    ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  if (maxPt) drawPointBadge(maxPt, `최고 ${formatCompactCurrency(maxPt.value)}`, true);
+  if (minPt && minIdx !== maxIdx) drawPointBadge(minPt, `최저 ${formatCompactCurrency(minPt.value)}`, false);
+
+  // If hovered, draw crosshair and hover circle
+  if (scrapChartHoveredIndex >= 0 && scrapChartHoveredIndex < scrapChartPoints.length) {
+    const hPt = scrapChartPoints[scrapChartHoveredIndex];
+    ctx.save();
+    // Vertical dashed crosshair
+    ctx.beginPath();
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.lineWidth = 1;
+    ctx.moveTo(hPt.x, padding.top);
+    ctx.lineTo(hPt.x, padding.top + chartH);
+    ctx.stroke();
+
+    // Hover dot
+    ctx.beginPath();
+    ctx.arc(hPt.x, hPt.y, 6.5, 0, Math.PI * 2);
+    ctx.fillStyle = meta.color;
+    ctx.fill();
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  if (!scrapChartListenerAttached) {
+    attachScrapChartHover(canvas);
+    scrapChartListenerAttached = true;
+  }
+}
+
+function attachScrapChartHover(canvas) {
+  const tooltip = document.getElementById('scrapChartTooltip');
+
+  function handleMove(e) {
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    if (!scrapChartPoints || scrapChartPoints.length === 0) return;
+
+    // Find closest point by X distance
+    let closestIdx = -1;
+    let minDist = 99999;
+    for (let i = 0; i < scrapChartPoints.length; i++) {
+      const dist = Math.abs(mouseX - scrapChartPoints[i].x);
+      if (dist < minDist) {
+        minDist = dist;
+        closestIdx = i;
+      }
+    }
+
+    if (closestIdx !== -1 && minDist < 35) {
+      if (scrapChartHoveredIndex !== closestIdx) {
+        scrapChartHoveredIndex = closestIdx;
+        drawScrapTrendChart();
+      }
+
+      canvas.style.cursor = 'pointer';
+      const pt = scrapChartPoints[closestIdx];
+      const meta = SCRAP_ITEM_META[currentScrapItem] || SCRAP_ITEM_META.tip;
+
+      // Diff from previous entry
+      let diffHtml = '';
+      if (closestIdx > 0) {
+        const prevPt = scrapChartPoints[closestIdx - 1];
+        const diff = pt.value - prevPt.value;
+        const pct = prevPt.value ? ((diff / prevPt.value) * 100).toFixed(1) : '0';
+        if (diff > 0) {
+          diffHtml = `<div style="font-size: 0.73rem; color: #f87171; font-weight: 700; margin-top: 3px;">▲ +${formatNumber(diff)}원 (+${pct}%) 상승</div>`;
+        } else if (diff < 0) {
+          diffHtml = `<div style="font-size: 0.73rem; color: #60a5fa; font-weight: 700; margin-top: 3px;">▼ ${formatNumber(diff)}원 (${pct}%) 하락</div>`;
+        } else {
+          diffHtml = `<div style="font-size: 0.73rem; color: #94a3b8; margin-top: 3px;">전회 대비 보합 (-)</div>`;
+        }
+      }
+
+      if (tooltip) {
+        tooltip.innerHTML = `
+          <div style="font-size: 0.73rem; color: #93c5fd; font-weight: 700; margin-bottom: 2px;">
+            📅 ${pt.date} · ${meta.name}
+          </div>
+          <div style="font-size: 1.05rem; font-weight: 800; color: #ffffff;">
+            ${formatNumber(pt.value)}원 <span style="font-size: 0.75rem; font-weight: 400; color: #cbd5e1;">/ kg</span>
+          </div>
+          ${diffHtml}
+          <div style="font-size: 0.68rem; color: #94a3b8; margin-top: 4px; max-width: 240px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+            ${escapeHtml(pt.title)}
+          </div>
+        `;
+        tooltip.style.display = 'block';
+        tooltip.style.opacity = '1';
+
+        // Position tooltip
+        const canvasW = canvas.clientWidth;
+        let tX = pt.x;
+        if (tX > canvasW - 130) tX = canvasW - 130;
+        if (tX < 130) tX = 130;
+        tooltip.style.left = `${tX}px`;
+        tooltip.style.top = `${Math.max(10, pt.y - 75)}px`;
+      }
+    } else {
+      if (scrapChartHoveredIndex !== -1) {
+        scrapChartHoveredIndex = -1;
+        drawScrapTrendChart();
+      }
+      if (tooltip) {
+        tooltip.style.opacity = '0';
+        tooltip.style.display = 'none';
+      }
+      canvas.style.cursor = 'default';
+    }
+  }
+
+  function handleLeave() {
+    if (scrapChartHoveredIndex !== -1) {
+      scrapChartHoveredIndex = -1;
+      drawScrapTrendChart();
+    }
+    if (tooltip) {
+      tooltip.style.opacity = '0';
+      tooltip.style.display = 'none';
+    }
+    canvas.style.cursor = 'default';
+  }
+
+  canvas.addEventListener('mousemove', handleMove);
+  canvas.addEventListener('mouseleave', handleLeave);
+}
+
+function renderScrapTable() {
+  const data = window.SCRAP_PRICES_DATA;
+  const tbody = document.getElementById('scrapTableBody');
+  const countEl = document.getElementById('scrapTotalRowsCount');
+  if (!tbody || !data || !Array.isArray(data)) return;
+
+  const searchInput = document.getElementById('scrapSearchInput');
+  const query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+
+  const filtered = [...data].reverse().filter(item => {
+    if (!query) return true;
+    return (item.date && item.date.toLowerCase().includes(query)) ||
+           (item.title && item.title.toLowerCase().includes(query)) ||
+           String(item.id).includes(query);
+  });
+
+  if (countEl) countEl.textContent = filtered.length;
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">검색 조건과 일치하는 공지 데이터가 없습니다.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(item => {
+    const tipStr = item.tip ? `${formatNumber(item.tip)}원` : '-';
+    const endmillStr = item.endmill ? `${formatNumber(item.endmill)}원` : '-';
+    const lumpStr = item.lump ? `${formatNumber(item.lump)}원` : '-';
+    const hssStr = item.hss ? `${formatNumber(item.hss)}원` : '-';
+    const postUrl = `https://allmetal.co.kr/bbs/board.php?bo_table=price&wr_id=${item.id}`;
+
+    return `
+      <tr>
+        <td style="text-align: center; color: var(--text-muted); font-size: 0.78rem;">${item.id}</td>
+        <td style="text-align: center; font-weight: 600;">${item.date}</td>
+        <td>
+          <a href="${postUrl}" target="_blank" style="color: inherit; text-decoration: none; font-weight: 500;" onmouseover="this.style.color='#2563eb'" onmouseout="this.style.color='inherit'" title="올메탈 공지 원문 보기">
+            ${escapeHtml(item.title)}
+          </a>
+        </td>
+        <td style="text-align: right; font-weight: 700; color: #1e40af;">${tipStr}</td>
+        <td style="text-align: right; font-weight: 700; color: #059669;">${endmillStr}</td>
+        <td style="text-align: right; color: #d97706;">${lumpStr}</td>
+        <td style="text-align: right; color: #7c3aed;">${hssStr}</td>
+        <td style="text-align: center;">
+          <a href="${postUrl}" target="_blank" class="btn btn-sm btn-outline" style="padding: 2px 6px; font-size: 0.72rem; text-decoration: none;">
+            보기 ↗
+          </a>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function exportScrapToCSV() {
+  const data = window.SCRAP_PRICES_DATA;
+  if (!data || !data.length) {
+    showToast('폐초경 시세 데이터가 없습니다.', 'warning');
+    return;
+  }
+  const headers = ['공지번호(ID)', '공지일자', '공지제목', '폐초경_팁(원/kg)', '폐초경_엔드밀(원/kg)', '초경_덩어리(원/kg)', 'HSS_하이스(원/kg)', '올메탈_원문링크'];
+  const rows = [...data].reverse().map(item => [
+    item.id,
+    item.date,
+    item.title,
+    item.tip || 0,
+    item.endmill || 0,
+    item.lump || 0,
+    item.hss || 0,
+    `https://allmetal.co.kr/bbs/board.php?bo_table=price&wr_id=${item.id}`
+  ]);
+  exportToCSV(headers, rows, `올메탈_폐초경_폐팁_시세이력_${new Date().toISOString().substring(0,10)}.csv`);
+  showToast('올메탈 폐초경 시세 이력 CSV 파일이 다운로드되었습니다.', 'success');
 }
   </script>
 </body>
