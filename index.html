@@ -2,7 +2,11 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="소모품 대시보드">
+  <meta name="theme-color" content="#1e40af">
   <title>소모품 구매 관리 대시보드 | 에스앤더블류 구매부</title>
   <!-- Pretendard Web Font CDN (가독성 향상을 위한 프리텐다드 서체 적용) -->
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
@@ -2237,67 +2241,111 @@ canvas.custom-chart {
 /* ─── Mobile: ≤768px ─── */
 @media (max-width: 768px) {
   header {
-    padding: 0 0.75rem;
-    height: 52px;
+    height: auto !important;
+    flex-wrap: wrap !important;
+    padding: 0.5rem 0.75rem 0 !important;
+    gap: 6px 10px !important;
+    align-items: center !important;
   }
 
   .brand {
     font-size: 0.95rem;
-    gap: 8px;
+    gap: 6px;
+    flex: 1;
+    min-width: 150px;
   }
 
   .brand-badge {
-    font-size: 0.65rem;
-    padding: 1px 6px;
-  }
-
-  /* Nav tabs: icons only, hide text */
-  .nav-tab {
-    padding: 0.4rem 0.7rem;
-    font-size: 1.1rem;
-    gap: 0;
-    height: 42px;
-  }
-
-  .nav-tab .tab-text,
-  .nav-tab .nav-tab-text {
-    display: none;
+    font-size: 0.62rem;
+    padding: 1px 5px;
   }
 
   .header-actions {
-    gap: 6px;
+    gap: 5px;
+    margin-left: auto;
+  }
+
+  .header-actions .btn {
+    padding: 4px 8px;
+    font-size: 0.72rem;
+  }
+
+  /* Keep dark mode and fullscreen visible, hide CSV export from compact header */
+  .header-actions button[onclick="exportCurrentTableToCSV()"] {
+    display: none;
   }
 
   .data-status-pill {
     display: none;
   }
 
-  main {
-    padding: 0.75rem;
-    gap: 0.85rem;
+  /* Nav tabs: App-style horizontal swipeable bar */
+  .nav-tabs {
+    order: 3;
+    width: 100% !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    white-space: nowrap !important;
+    -webkit-overflow-scrolling: touch !important;
+    scrollbar-width: none;
+    display: flex !important;
+    gap: 4px !important;
+    padding: 2px 0 4px 0 !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
   }
 
-  /* KPI: single column, smaller cards */
+  .nav-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-tab {
+    flex-shrink: 0 !important;
+    padding: 0.4rem 0.75rem !important;
+    height: 36px !important;
+    font-size: 0.8rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    border-radius: 6px !important;
+  }
+
+  .nav-tab .tab-text,
+  .nav-tab .nav-tab-text {
+    display: inline !important;
+    font-size: 0.76rem !important;
+    font-weight: 600 !important;
+  }
+
+  main {
+    padding: 0.6rem 0.6rem 2rem 0.6rem;
+    gap: 0.75rem;
+  }
+
+  /* KPI: 2x2 grid for mobile quick glance */
   .stats-grid {
-    grid-template-columns: 1fr;
-    gap: 0.6rem;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
   }
 
   .stat-card {
-    padding: 0.85rem 1rem;
+    padding: 0.7rem 0.85rem !important;
   }
 
   .stat-info .stat-value {
-    font-size: 1.2rem;
+    font-size: 1.15rem !important;
+  }
+
+  .stat-info .stat-label {
+    font-size: 0.72rem !important;
   }
 
   .stat-icon {
-    width: 38px;
-    height: 38px;
-    font-size: 1.1rem;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 1rem !important;
   }
 
-  /* Stack everything: all 2-column grids become single */
+  /* Stack layouts vertically */
   .search-layout,
   .closing-layout,
   .vendor-mgmt-layout {
@@ -2321,7 +2369,25 @@ canvas.custom-chart {
   }
 
   .detail-kpi-card .kpi-num {
-    font-size: 1rem;
+    font-size: 1.25rem !important;
+  }
+
+  /* Scrap Metal Mobile Optimizations */
+  .scrap-kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.5rem !important;
+  }
+
+  .scrap-calc-insight-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  .scrap-calc-insight-grid > div:last-child {
+    border-left: none !important;
+    border-top: 1px solid var(--card-border) !important;
+    padding-left: 0 !important;
+    padding-top: 0.85rem !important;
   }
 
   /* Data toolbar: wrap and stack */
@@ -2371,7 +2437,7 @@ canvas.custom-chart {
     align-items: stretch;
   }
 
-  /* Table: smaller font */
+  /* Table: mobile touch scroll */
   table {
     font-size: 0.78rem;
   }
@@ -2380,9 +2446,9 @@ canvas.custom-chart {
     padding: 6px 8px;
   }
 
-  /* Table container smaller height for mobile */
   .table-container {
-    max-height: 400px;
+    max-height: 380px;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Footer */
@@ -2400,6 +2466,13 @@ canvas.custom-chart {
   .toast {
     min-width: auto;
     max-width: 100%;
+  }
+}
+
+/* Extra small mobile (<480px) */
+@media (max-width: 480px) {
+  .scrap-inputs-grid {
+    grid-template-columns: 1fr !important;
   }
 }
   </style>
@@ -2892,7 +2965,7 @@ canvas.custom-chart {
         </div>
 
         <!-- KPI Status Bar (Today's Prices) -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+        <div class="scrap-kpi-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
           <div class="detail-kpi-card" style="border-left: 4px solid #2563eb; background: var(--card-bg);">
             <div class="kpi-title" style="display: flex; justify-content: space-between;">
               <span>🪙 폐초경 (인서트 팁)</span>
@@ -2931,7 +3004,7 @@ canvas.custom-chart {
         </div>
 
         <!-- Profit Simulator & Market Insight Box -->
-        <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: var(--card-shadow); display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; align-items: stretch;">
+        <div class="scrap-calc-insight-grid" style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: var(--card-shadow); display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 1.5rem; align-items: stretch;">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <h3 style="font-size: 1rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 6px;">
@@ -2944,7 +3017,7 @@ canvas.custom-chart {
             </p>
 
             <!-- Inputs Grid -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+            <div class="scrap-inputs-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
               <!-- Carbide Tip Input -->
               <div style="background: var(--input-bg); border: 1px solid var(--slate-300); border-radius: 8px; padding: 8px 12px;">
                 <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px;">
