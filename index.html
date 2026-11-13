@@ -221,46 +221,152 @@ header {
   letter-spacing: 0;
 }
 
+/* ─── Left Hover-Expand Category Rail ─── */
+.left-hover-nav {
+  position: fixed;
+  left: 0;
+  top: 60px;
+  bottom: 0;
+  width: 60px;
+  background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.15);
+  z-index: 950;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+  transition: width 0.26s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.26s ease;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+[data-theme="dark"] .left-hover-nav {
+  background: linear-gradient(180deg, #080b14 0%, #111827 100%);
+  border-right-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Mouse hover expands category rail smoothly */
+.left-hover-nav:hover {
+  width: 235px;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.35);
+}
+
+/* Header indicator inside rail */
+.nav-expand-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px 12px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
+  color: var(--slate-400);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.nav-indicator-icon {
+  font-size: 1.15rem;
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+  color: #60a5fa;
+}
+
+.nav-indicator-text {
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.2s ease 0.05s;
+  pointer-events: none;
+}
+
+.left-hover-nav:hover .nav-indicator-text {
+  opacity: 1;
+}
+
+/* Navigation vertical items */
 .nav-tabs {
   display: flex;
-  gap: 4px;
-  height: 100%;
-  align-items: flex-end;
+  flex-direction: column;
+  gap: 6px;
+  padding: 0 6px;
+  list-style: none;
+  margin: 0;
 }
 
 .nav-tab {
-  padding: 0.6rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  height: 46px;
+  border-radius: 10px;
   background: transparent;
   border: none;
   color: var(--slate-300);
-  font-size: 0.9rem;
+  font-size: 0.92rem;
   font-weight: 600;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  border-radius: 6px 6px 0 0;
-  transition: all 0.2s ease;
-  height: 48px;
+  text-align: left;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  white-space: nowrap;
+  width: 100%;
 }
 
 .nav-tab:hover {
-  color: white;
-  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .nav-tab.active {
-  color: white;
-  background: #1e40af;
-  box-shadow: 0 -2px 0 0 #60a5fa inset;
+  color: #ffffff;
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
 }
 
 [data-theme="dark"] .nav-tab.active {
-  background: #1e3a5f;
+  background: linear-gradient(135deg, #1d4ed8, #2563eb);
 }
 
-.nav-tab .tab-text {
-  /* Helper class for responsive hiding; wraps the text part of each tab */
+.nav-tab-icon {
+  font-size: 1.25rem;
+  width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-tab-text {
+  opacity: 0;
+  white-space: nowrap;
+  transition: opacity 0.2s ease 0.05s;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.left-hover-nav:hover .nav-tab-text {
+  opacity: 1;
+}
+
+/* Desktop layout: leave 60px room on left so content is centered and never hidden */
+@media (min-width: 769px) {
+  main, .app-footer {
+    margin-left: 60px;
+  }
+}
+
+/* Mobile layout (<768px): hide left rail, use bottom nav */
+@media (max-width: 768px) {
+  .left-hover-nav {
+    display: none !important;
+  }
+  main, .app-footer {
+    margin-left: 0 !important;
+  }
 }
 
 .header-actions {
@@ -1687,7 +1793,7 @@ canvas.custom-chart {
     visibility: hidden;
   }
 
-  header, .closing-sidebar, .report-actions-bar, .nav-tabs {
+  header, .closing-sidebar, .report-actions-bar, .nav-tabs, .left-hover-nav {
     display: none !important;
   }
 
@@ -2634,30 +2740,9 @@ canvas.custom-chart {
   <!-- Top Header Navigation -->
   <header>
     <div class="brand">
-      <span>📦 소모품 구매 관리 대시보드</span>
+      <span>📦 (주)에스앤더블류 소모품 구매 관리 대시보드</span>
       <span class="brand-badge">PRO v2.0</span>
     </div>
-
-    <nav class="nav-tabs">
-      <button class="nav-tab active" data-tab="tab-search">
-        <span>📋</span> <span class="nav-tab-text">소모품 검색 &amp; 상세</span>
-      </button>
-      <button class="nav-tab" data-tab="tab-trends">
-        <span>📈</span> <span class="nav-tab-text">거래처별 매입추이</span>
-      </button>
-      <button class="nav-tab" data-tab="tab-closing">
-        <span>📅</span> <span class="nav-tab-text">월마감 &amp; 보고서</span>
-      </button>
-      <button class="nav-tab" data-tab="tab-scrap">
-        <span>💎</span> <span class="nav-tab-text">폐팁 시세 동향</span>
-      </button>
-      <button class="nav-tab" data-tab="tab-vendors">
-        <span>🏢</span> <span class="nav-tab-text">거래처 관리</span>
-      </button>
-      <button class="nav-tab" data-tab="tab-sync">
-        <span>🔄</span> <span class="nav-tab-text">데이터 동기화</span>
-      </button>
-    </nav>
 
     <div class="header-actions">
       <div class="data-status-pill">
@@ -2675,6 +2760,41 @@ canvas.custom-chart {
       </button>
     </div>
   </header>
+
+  <!-- Left Hover-Expand Category Rail (마우스 호버 시 카테고리 메뉴 확장) -->
+  <aside class="left-hover-nav" id="leftHoverNav" title="마우스를 올리면 카테고리 메뉴가 확장됩니다">
+    <div class="nav-expand-indicator">
+      <span class="nav-indicator-icon">☰</span>
+      <span class="nav-indicator-text">카테고리 메뉴</span>
+    </div>
+
+    <nav class="nav-tabs">
+      <button class="nav-tab active" data-tab="tab-search" title="소모품 검색 & 상세">
+        <span class="nav-tab-icon">📋</span>
+        <span class="nav-tab-text">소모품 검색 &amp; 상세</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-trends" title="거래처별 매입추이">
+        <span class="nav-tab-icon">📈</span>
+        <span class="nav-tab-text">거래처별 매입추이</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-closing" title="월마감 & 보고서">
+        <span class="nav-tab-icon">📅</span>
+        <span class="nav-tab-text">월마감 &amp; 보고서</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-scrap" title="폐팁 시세 동향">
+        <span class="nav-tab-icon">💎</span>
+        <span class="nav-tab-text">폐팁 시세 동향</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-vendors" title="거래처 관리">
+        <span class="nav-tab-icon">🏢</span>
+        <span class="nav-tab-text">거래처 관리</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-sync" title="데이터 동기화">
+        <span class="nav-tab-icon">🔄</span>
+        <span class="nav-tab-text">데이터 동기화</span>
+      </button>
+    </nav>
+  </aside>
 
   <!-- Main Content -->
   <main>
@@ -7658,7 +7778,7 @@ function exportScrapToCSV() {
 // 17. Mobile App UI Helpers
 // ==========================================
 function switchMobileTab(targetId) {
-  const targetTab = document.querySelector(`.nav-tab[data-tab="${targetId}"]`);
+  const targetTab = document.querySelector('.nav-tab[data-tab="' + targetId + '"]');
   if (targetTab) {
     targetTab.click();
     window.scrollTo({ top: 0, behavior: 'smooth' });
