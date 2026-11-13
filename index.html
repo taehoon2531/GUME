@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -2618,6 +2618,723 @@ canvas.custom-chart {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ===================================================================
+   VENTES MODERN SAAS DESIGN SYSTEM (Dribbble Ventes Theme)
+   =================================================================== */
+:root {
+  --ventes-purple: #5B42F3;
+  --ventes-purple-gradient: linear-gradient(180deg, #5B42F3 0%, #4D3AE2 100%);
+  --ventes-purple-dark: #3728B7;
+  --ventes-bg: #F4F6FC;
+  --ventes-card-bg: #FFFFFF;
+  --ventes-card-border: rgba(226, 232, 240, 0.75);
+  --ventes-card-shadow: 0 10px 30px rgba(82, 54, 255, 0.04);
+  --ventes-text-main: #0F172A;
+  --ventes-text-muted: #64748B;
+  --ventes-coral: #FF6B81;
+  --ventes-coral-soft: #FFE5E9;
+  --ventes-green: #10B981;
+  --ventes-green-soft: #E6FBF5;
+  --ventes-gold: #D97706;
+  --ventes-silver: #10B981;
+}
+
+[data-theme="dark"] {
+  --ventes-bg: #0C0F17;
+  --ventes-card-bg: #151A26;
+  --ventes-card-border: rgba(255, 255, 255, 0.08);
+  --ventes-card-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  --ventes-text-main: #F1F5F9;
+  --ventes-text-muted: #94A3B8;
+}
+
+/* Master Layout Grid */
+.ventes-app-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+  background-color: var(--ventes-bg);
+}
+
+/* Left Royal Purple Sidebar */
+.ventes-sidebar {
+  width: 250px;
+  background: var(--ventes-purple-gradient);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: 24px 16px;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  box-shadow: 4px 0 24px rgba(77, 58, 226, 0.15);
+  z-index: 1000;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-y: auto;
+}
+
+/* Sidebar Brand */
+.ventes-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px 24px 10px;
+}
+.brand-sun-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FFA000 0%, #FF6A00 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(255, 106, 0, 0.35);
+  flex-shrink: 0;
+}
+.brand-ventes-title {
+  font-size: 1.45rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: #FFFFFF;
+  line-height: 1.1;
+}
+.brand-ventes-sub {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #C7D2FE;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Sidebar Nav Items */
+.ventes-nav-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ventes-nav-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 12px 18px;
+  border: none;
+  background: transparent;
+  color: #E0E7FF;
+  font-size: 0.92rem;
+  font-weight: 600;
+  border-radius: 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+.ventes-nav-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #FFFFFF;
+}
+.ventes-nav-btn.active {
+  background: #FFFFFF !important;
+  color: var(--ventes-purple) !important;
+  font-weight: 800;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.12);
+}
+.ventes-nav-btn.active .nav-svg-icon {
+  stroke: var(--ventes-purple) !important;
+}
+.nav-svg-icon {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  fill: none;
+  flex-shrink: 0;
+  transition: stroke 0.2s ease;
+}
+
+/* Sidebar Promo Upgrade Card */
+.ventes-promo-card {
+  margin-top: auto;
+  background: #FFFFFF;
+  border-radius: 20px;
+  padding: 20px 14px;
+  text-align: center;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+.promo-rocket-img {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 10px;
+  display: block;
+}
+.promo-title-text {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1E293B;
+  margin-bottom: 2px;
+}
+.promo-sub-text {
+  font-size: 0.72rem;
+  color: #64748B;
+  margin-bottom: 12px;
+}
+.promo-upgrade-btn {
+  background: linear-gradient(135deg, #FF7A00 0%, #FF5252 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 25px;
+  padding: 10px 22px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(255, 82, 82, 0.4);
+  transition: transform 0.15s, box-shadow 0.15s;
+  width: 100%;
+}
+.promo-upgrade-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 82, 82, 0.5);
+}
+
+/* Right Main Wrap */
+.ventes-main-wrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--ventes-bg);
+  min-height: 100vh;
+}
+
+/* Ventes Top Bar */
+.ventes-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px 16px 32px;
+  gap: 16px;
+}
+.ventes-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ventes-hamburger-btn {
+  display: none;
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--ventes-text-main);
+  padding: 4px;
+}
+.ventes-page-title {
+  font-size: 1.7rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  color: var(--ventes-text-main);
+  margin: 0;
+}
+.ventes-topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ventes-search-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--ventes-card-bg);
+  border: 1px solid var(--ventes-card-border);
+  border-radius: 30px;
+  padding: 8px 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  width: 240px;
+}
+.ventes-search-pill input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.88rem;
+  color: var(--ventes-text-main);
+  width: 100%;
+}
+.user-profile-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 12px 5px 5px;
+  background: var(--ventes-card-bg);
+  border: 1px solid var(--ventes-card-border);
+  border-radius: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+.user-avatar-circle {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #5B42F3, #FF6B81);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.82rem;
+}
+.user-name-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ventes-text-main);
+}
+
+/* Main Content Area */
+.ventes-main-content {
+  flex: 1;
+  padding: 0 32px 32px 32px;
+}
+
+/* ===================================================================
+   TAB-DASHBOARD: OVERVIEW SCREEN (Ventes Modern Layout)
+   =================================================================== */
+
+/* Top Sales Representative Section */
+.ventes-section-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ventes-text-main);
+  margin: 0 0 14px 0;
+  letter-spacing: -0.3px;
+}
+.ventes-rep-card {
+  background: var(--ventes-card-bg);
+  border-radius: 20px;
+  box-shadow: var(--ventes-card-shadow);
+  border: 1px solid var(--ventes-card-border);
+  overflow: hidden;
+  padding: 8px 0;
+  margin-bottom: 24px;
+}
+.ventes-rep-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 28px;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+  transition: background 0.15s ease;
+}
+.ventes-rep-row:last-child {
+  border-bottom: none;
+}
+.ventes-rep-row:hover {
+  background: rgba(91, 66, 243, 0.02);
+}
+.rep-user-col {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 220px;
+}
+.rep-avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+.rep-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ventes-text-main);
+}
+.rep-sub {
+  font-size: 0.76rem;
+  color: var(--ventes-text-muted);
+}
+.rep-amount-col {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ventes-text-main);
+  font-family: var(--font-base);
+  min-width: 140px;
+}
+.rep-stat-col {
+  font-size: 0.88rem;
+  color: var(--ventes-text-muted);
+  font-weight: 500;
+  min-width: 130px;
+}
+.rep-tier-col {
+  min-width: 90px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-align: right;
+}
+.tier-gold {
+  color: #D97706;
+}
+.tier-silver {
+  color: #10B981;
+}
+.rep-action-col {
+  padding-left: 10px;
+}
+.rep-dots-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--ventes-text-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.15s;
+}
+.rep-dots-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Middle 4 KPI Cards */
+.ventes-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.ventes-kpi-card {
+  background: var(--ventes-card-bg);
+  border-radius: 20px;
+  padding: 22px 24px;
+  box-shadow: var(--ventes-card-shadow);
+  border: 1px solid var(--ventes-card-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.ventes-kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(82, 54, 255, 0.08);
+}
+.kpi-left-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.kpi-title-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--ventes-text-muted);
+  margin-bottom: 6px;
+}
+.kpi-big-num {
+  font-size: 1.85rem;
+  font-weight: 900;
+  color: var(--ventes-text-main);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  margin-bottom: 12px;
+}
+.kpi-footer-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.kpi-delta-pill {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.delta-green {
+  background: var(--ventes-green-soft);
+  color: var(--ventes-green);
+}
+.delta-red {
+  background: #FEE2E2;
+  color: #DC2626;
+}
+.kpi-action-link {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #5B42F3;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.kpi-action-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+.kpi-icon-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(91, 66, 243, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.kpi-svg-icon {
+  width: 22px;
+  height: 22px;
+  stroke: #5B42F3;
+  fill: none;
+  stroke-width: 2;
+}
+
+/* Bottom 2-Column Section */
+.ventes-bottom-grid {
+  display: grid;
+  grid-template-columns: 1.85fr 1fr;
+  gap: 20px;
+}
+
+/* Left Chart Card */
+.ventes-chart-card {
+  background: var(--ventes-card-bg);
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: var(--ventes-card-shadow);
+  border: 1px solid var(--ventes-card-border);
+  position: relative;
+}
+.chart-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.chart-card-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--ventes-text-main);
+  letter-spacing: -0.3px;
+}
+.chart-legend-wrap {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ventes-text-muted);
+}
+.legend-dot-coral {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #FF6B81;
+}
+.legend-dot-purple {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #5B42F3;
+}
+.ventes-canvas-wrap {
+  position: relative;
+  width: 100%;
+  height: 250px;
+}
+#ventesWaveChart {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Right Purple Target Card */
+.ventes-target-card {
+  background: linear-gradient(135deg, #5046E5 0%, #3730A3 100%);
+  border-radius: 24px;
+  padding: 26px 28px;
+  color: #FFFFFF;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(79, 70, 229, 0.35);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.target-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.target-title-text {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #C7D2FE;
+  margin-bottom: 8px;
+}
+.target-big-percent {
+  font-size: 2.8rem;
+  font-weight: 900;
+  line-height: 1;
+  color: #FFFFFF;
+  letter-spacing: -1px;
+}
+.target-sub-achieved {
+  font-size: 0.88rem;
+  color: #C7D2FE;
+  font-weight: 500;
+  margin-top: 4px;
+}
+.target-avatars-row {
+  display: flex;
+  align-items: center;
+}
+.target-avatar-img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #5046E5;
+  margin-left: -8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+.target-avatar-img:first-child {
+  margin-left: 0;
+}
+.target-avatar-more {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: -8px;
+  border: 2px solid #5046E5;
+}
+.target-accent-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 12px;
+}
+
+/* Target Bottom Box */
+.target-card-bottom {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  padding: 16px 20px;
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-top: 24px;
+  position: relative;
+}
+.target-box-info {
+  display: flex;
+  flex-direction: column;
+}
+.target-box-label {
+  font-size: 0.82rem;
+  color: #C7D2FE;
+  font-weight: 500;
+}
+.target-box-value {
+  font-size: 1.55rem;
+  font-weight: 900;
+  color: #FFFFFF;
+  margin: 4px 0;
+  letter-spacing: -0.5px;
+}
+.target-box-sub {
+  font-size: 0.76rem;
+  color: #E0E7FF;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.target-pill-gold {
+  background: rgba(245, 158, 11, 0.25);
+  color: #FDE047;
+  padding: 2px 7px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 0.74rem;
+}
+.target-sparkline-canvas {
+  width: 120px;
+  height: 42px;
+}
+
+/* ===================================================================
+   RESPONSIVE LAYOUT FOR TABLET & MOBILE
+   =================================================================== */
+@media (max-width: 1200px) {
+  .ventes-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .ventes-bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  .ventes-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translateX(-100%);
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.3);
+  }
+  .ventes-sidebar.open {
+    transform: translateX(0);
+  }
+  .ventes-hamburger-btn {
+    display: inline-block;
+  }
+  .ventes-topbar {
+    padding: 14px 16px;
+  }
+  .ventes-main-content {
+    padding: 0 16px 80px 16px;
+  }
+  .ventes-search-pill {
+    display: none;
+  }
+  .ventes-rep-row {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px 16px;
+  }
+  .rep-user-col {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .ventes-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+  .rep-stat-col {
+    display: none;
+  }
+}
   </style>
 </head>
 <body>
@@ -2631,94 +3348,357 @@ canvas.custom-chart {
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <!-- Top Header Navigation -->
-  <header>
-    <div class="brand">
-      <span>📦 소모품 구매 관리 대시보드</span>
-      <span class="brand-badge">PRO v2.0</span>
-    </div>
-
-    <nav class="nav-tabs">
-      <button class="nav-tab active" data-tab="tab-search">
-        <span>📋</span> <span class="nav-tab-text">소모품 검색 &amp; 상세</span>
-      </button>
-      <button class="nav-tab" data-tab="tab-trends">
-        <span>📈</span> <span class="nav-tab-text">거래처별 매입추이</span>
-      </button>
-      <button class="nav-tab" data-tab="tab-closing">
-        <span>📅</span> <span class="nav-tab-text">월마감 &amp; 보고서</span>
-      </button>
-      <button class="nav-tab" data-tab="tab-scrap">
-        <span>💎</span> <span class="nav-tab-text">폐팁 시세 동향</span>
-      </button>
-      <button class="nav-tab" data-tab="tab-vendors">
-        <span>🏢</span> <span class="nav-tab-text">거래처 관리</span>
-      </button>
-      <button class="nav-tab" data-tab="tab-sync">
-        <span>🔄</span> <span class="nav-tab-text">데이터 동기화</span>
-      </button>
-    </nav>
-
-    <div class="header-actions">
-      <div class="data-status-pill">
-        <span class="status-dot"></span>
-        <span id="headerTotalCount">45,922건 로드됨</span>
-      </div>
-      <button class="btn btn-sm btn-outline" id="darkModeBtn" onclick="toggleDarkMode()">
-        🌙 다크모드
-      </button>
-      <button class="btn btn-sm btn-outline" id="fullscreenBtn" onclick="toggleFullscreen()" title="전체화면 전환">
-        ⛶
-      </button>
-      <button class="btn btn-sm btn-outline" onclick="exportCurrentTableToCSV()">
-        📥 엑셀(CSV) 저장
-      </button>
-    </div>
-  </header>
-
-  <!-- Main Content -->
-  <main>
-
-    <!-- Top KPI Cards (Live across current active dataset) -->
-    <section class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-info">
-          <div class="stat-label">총 거래금액</div>
-          <div class="stat-value" id="kpiTotalAmount">0원</div>
-          <div class="stat-sub" id="kpiTotalAmountSub">전체 누적 매입액</div>
+  <!-- Main App Layout Shell with Ventes Purple Sidebar -->
+  <div class="ventes-app-container">
+    <!-- Left Royal Purple Ventes Sidebar -->
+    <aside class="ventes-sidebar" id="ventesSidebar">
+      <!-- Brand Area -->
+      <div class="ventes-brand">
+        <div class="brand-sun-icon">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
         </div>
-        <div class="stat-icon icon-blue">💰</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-info">
-          <div class="stat-label">총 거래수량</div>
-          <div class="stat-value" id="kpiTotalQty">0개</div>
-          <div class="stat-sub" id="kpiTotalQtySub">입고된 소모품 수량</div>
+        <div>
+          <div class="brand-ventes-title">VENTES</div>
+          <div class="brand-ventes-sub">SNW PURCHASING</div>
         </div>
-        <div class="stat-icon icon-emerald">📦</div>
       </div>
-      <div class="stat-card">
-        <div class="stat-info">
-          <div class="stat-label">가중 평균단가</div>
-          <div class="stat-value" id="kpiAvgPrice">0원</div>
-          <div class="stat-sub">총 금액 ÷ 총 수량</div>
-        </div>
-        <div class="stat-icon icon-amber">🏷️</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-info">
-          <div class="stat-label">조회 데이터 건수</div>
-          <div class="stat-value" id="kpiRowCount">0건</div>
-          <div class="stat-sub" id="kpiRowCountSub">현재 필터링된 결과</div>
-        </div>
-        <div class="stat-icon icon-purple">📋</div>
-      </div>
-    </section>
 
-    <!-- ========================================== -->
-    <!-- TAB 1: 소모품 검색 & 상세 분석 -->
-    <!-- ========================================== -->
-    <section id="tab-search" class="tab-content active">
+      <!-- Navigation List -->
+      <ul class="ventes-nav-list">
+        <li>
+          <button class="ventes-nav-btn active" data-tab="tab-dashboard" onclick="switchTabDirect('tab-dashboard')">
+            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+            </svg>
+            <span>Dashboard</span>
+          </button>
+        </li>
+        <li>
+          <button class="ventes-nav-btn" data-tab="tab-search" onclick="switchTabDirect('tab-search')">
+            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+            <span>Claims</span>
+          </button>
+        </li>
+        <li>
+          <button class="ventes-nav-btn" data-tab="tab-scrap" onclick="switchTabDirect('tab-scrap')">
+            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+              <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+              <polyline points="2 17 12 22 22 17"></polyline>
+              <polyline points="2 12 12 17 22 12"></polyline>
+            </svg>
+            <span>Biller Queue</span>
+          </button>
+        </li>
+        <li>
+          <button class="ventes-nav-btn" data-tab="tab-trends" onclick="switchTabDirect('tab-trends')">
+            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span>Subscription</span>
+          </button>
+        </li>
+        <li>
+          <button class="ventes-nav-btn" data-tab="tab-closing" onclick="switchTabDirect('tab-closing')">
+            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
+            </svg>
+            <span>Health</span>
+          </button>
+        </li>
+        <li>
+          <button class="ventes-nav-btn" data-tab="tab-vendors" onclick="switchTabDirect('tab-vendors')">
+            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span>Vendors</span>
+          </button>
+        </li>
+        <li>
+          <button class="ventes-nav-btn" data-tab="tab-sync" onclick="switchTabDirect('tab-sync')">
+            <svg class="nav-svg-icon" viewBox="0 0 24 24">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span>Data Sync</span>
+          </button>
+        </li>
+      </ul>
+
+      <!-- Promo Upgrade Card -->
+      <div class="ventes-promo-card">
+        <svg class="promo-rocket-img" viewBox="0 0 64 64" fill="none">
+          <ellipse cx="32" cy="52" rx="20" ry="6" fill="#E2E8F0"/>
+          <path d="M32 10C32 10 24 22 24 38C24 45 28 48 32 48C36 48 40 45 40 38C40 22 32 10 32 10Z" fill="#3B82F6"/>
+          <path d="M32 10C32 10 28 22 28 38C28 45 30 48 32 48Z" fill="#60A5FA"/>
+          <circle cx="32" cy="24" r="4" fill="#EFF6FF" stroke="#1D4ED8" stroke-width="1.5"/>
+          <path d="M24 38L18 44V40L24 35V38Z" fill="#EF4444"/>
+          <path d="M40 38L46 44V40L40 35V38Z" fill="#EF4444"/>
+          <path d="M30 48H34L32 54L30 48Z" fill="#F59E0B"/>
+        </svg>
+        <div class="promo-title-text">Want to upgrade</div>
+        <div class="promo-sub-text">클라우드 원클릭 동기화</div>
+        <button class="promo-upgrade-btn" onclick="triggerPromoSync()">Upgrade now</button>
+      </div>
+    </aside>
+
+    <!-- Right Main Wrap -->
+    <div class="ventes-main-wrap">
+      <!-- Ventes Top Header Bar -->
+      <header class="ventes-topbar">
+        <div class="ventes-topbar-left">
+          <button class="ventes-hamburger-btn" onclick="toggleVentesSidebar()" title="메뉴 열기">☰</button>
+          <h1 class="ventes-page-title" id="ventesPageTitle">OVERVIEW</h1>
+        </div>
+        <div class="ventes-topbar-right">
+          <div class="ventes-search-pill">
+            <span style="color: #94A3B8;">🔍</span>
+            <input type="text" placeholder="소모품 / 거래처 검색..." onkeydown="if(event.key==='Enter'){ searchFromVentesHeader(this.value); }">
+          </div>
+          <div class="data-status-pill" style="margin: 0;">
+            <span class="status-dot"></span>
+            <span id="headerTotalCount">45,922건 로드됨</span>
+          </div>
+          <button class="btn btn-sm btn-outline" id="darkModeBtn" onclick="toggleDarkMode()">
+            🌙 다크모드
+          </button>
+          <button class="btn btn-sm btn-outline" id="fullscreenBtn" onclick="toggleFullscreen()" title="전체화면 전환">
+            ⛶
+          </button>
+          <button class="btn btn-sm btn-outline" onclick="exportCurrentTableToCSV()">
+            📥 엑셀(CSV)
+          </button>
+          <div class="user-profile-badge">
+            <div class="user-avatar-circle">KT</div>
+            <span class="user-name-text">김태훈 주임</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Tabs Content -->
+      <main class="ventes-main-content">
+        <!-- TAB 0: Ventes Dashboard Overview Screen -->
+        <section id="tab-dashboard" class="tab-content active">
+          <!-- Top Sales Representative Section -->
+          <div class="ventes-section-title">Top Sales Representative</div>
+          <div class="ventes-rep-card">
+            <!-- Row 1: 하나테크 -->
+            <div class="ventes-rep-row">
+              <div class="rep-user-col">
+                <div class="rep-avatar" style="background: linear-gradient(135deg, #EC4899, #8B5CF6); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.1rem;">
+                  👩
+                </div>
+                <div>
+                  <div class="rep-name">Nicholas Patrick</div>
+                  <div class="rep-sub">하나테크 (초경 툴링·인서트)</div>
+                </div>
+              </div>
+              <div class="rep-amount-col">$ 2540.58</div>
+              <div class="rep-stat-col">150 Products</div>
+              <div class="rep-stat-col">105 Premium</div>
+              <div class="rep-tier-col tier-gold">+Gold</div>
+              <div class="rep-action-col">
+                <button class="rep-dots-btn" onclick="selectVendor('하나테크'); switchTabDirect('tab-search');" title="상세보기">⋮</button>
+              </div>
+            </div>
+
+            <!-- Row 2: 동성공구 -->
+            <div class="ventes-rep-row">
+              <div class="rep-user-col">
+                <div class="rep-avatar" style="background: linear-gradient(135deg, #06B6D4, #3B82F6); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.1rem;">
+                  👨
+                </div>
+                <div>
+                  <div class="rep-name">Cordell Edwards</div>
+                  <div class="rep-sub">동성공구 (초경 엔드밀·드릴)</div>
+                </div>
+              </div>
+              <div class="rep-amount-col">$ 1567.80</div>
+              <div class="rep-stat-col">95 Products</div>
+              <div class="rep-stat-col">60 Premium</div>
+              <div class="rep-tier-col tier-silver">+Silver</div>
+              <div class="rep-action-col">
+                <button class="rep-dots-btn" onclick="selectVendor('동성공구'); switchTabDirect('tab-search');" title="상세보기">⋮</button>
+              </div>
+            </div>
+
+            <!-- Row 3: 삼우정밀 -->
+            <div class="ventes-rep-row">
+              <div class="rep-user-col">
+                <div class="rep-avatar" style="background: linear-gradient(135deg, #6366F1, #4F46E5); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.1rem;">
+                  👨‍💼
+                </div>
+                <div>
+                  <div class="rep-name">Derrick Spencer</div>
+                  <div class="rep-sub">삼우정밀 (가공 치공구·지그)</div>
+                </div>
+              </div>
+              <div class="rep-amount-col">$ 1640.26</div>
+              <div class="rep-stat-col">120 Products</div>
+              <div class="rep-stat-col">75 Premium</div>
+              <div class="rep-tier-col tier-silver">+Silver</div>
+              <div class="rep-action-col">
+                <button class="rep-dots-btn" onclick="selectVendor('삼우정밀'); switchTabDirect('tab-search');" title="상세보기">⋮</button>
+              </div>
+            </div>
+
+            <!-- Row 4: 한국야금/한국샌드빅 -->
+            <div class="ventes-rep-row">
+              <div class="rep-user-col">
+                <div class="rep-avatar" style="background: linear-gradient(135deg, #F59E0B, #EF4444); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 1.1rem;">
+                  👩‍💼
+                </div>
+                <div>
+                  <div class="rep-name">Larissa Burton</div>
+                  <div class="rep-sub">한국샌드빅 (가공 인서트 팁)</div>
+                </div>
+              </div>
+              <div class="rep-amount-col">$ 2340.58</div>
+              <div class="rep-stat-col">120 Products</div>
+              <div class="rep-stat-col">99 Premium</div>
+              <div class="rep-tier-col tier-gold">+Gold</div>
+              <div class="rep-action-col">
+                <button class="rep-dots-btn" onclick="selectVendor('한국야금'); switchTabDirect('tab-search');" title="상세보기">⋮</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Middle 4 KPI Cards -->
+          <div class="ventes-kpi-grid">
+            <!-- Card 1 -->
+            <div class="ventes-kpi-card">
+              <div class="kpi-left-wrap">
+                <div class="kpi-title-label">Product sold</div>
+                <div class="kpi-big-num" id="ventesKpiSold">25.1k</div>
+                <div class="kpi-footer-wrap">
+                  <span class="kpi-delta-pill delta-green">↗ +15%</span>
+                  <a class="kpi-action-link" onclick="switchTabDirect('tab-search')">View Report</a>
+                </div>
+              </div>
+              <div class="kpi-icon-circle">
+                <svg class="kpi-svg-icon" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="ventes-kpi-card">
+              <div class="kpi-left-wrap">
+                <div class="kpi-title-label">Total Profit</div>
+                <div class="kpi-big-num" id="ventesKpiProfit">$2,435k</div>
+                <div class="kpi-footer-wrap">
+                  <span class="kpi-delta-pill delta-red">↘ -3.5%</span>
+                  <a class="kpi-action-link" onclick="switchTabDirect('tab-trends')">View Report</a>
+                </div>
+              </div>
+              <div class="kpi-icon-circle">
+                <svg class="kpi-svg-icon" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="ventes-kpi-card">
+              <div class="kpi-left-wrap">
+                <div class="kpi-title-label">Total No. of Claim</div>
+                <div class="kpi-big-num" id="ventesKpiClaim">3.5M</div>
+                <div class="kpi-footer-wrap">
+                  <span class="kpi-delta-pill delta-green">↗ +15%</span>
+                  <a class="kpi-action-link" onclick="switchTabDirect('tab-scrap')">View More</a>
+                </div>
+              </div>
+              <div class="kpi-icon-circle">
+                <svg class="kpi-svg-icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              </div>
+            </div>
+
+            <!-- Card 4 -->
+            <div class="ventes-kpi-card">
+              <div class="kpi-left-wrap">
+                <div class="kpi-title-label">New Costumer</div>
+                <div class="kpi-big-num" id="ventesKpiCustomer">43.5k</div>
+                <div class="kpi-footer-wrap">
+                  <span class="kpi-delta-pill delta-green">↗ +10%</span>
+                  <a class="kpi-action-link" onclick="switchTabDirect('tab-vendors')">View More</a>
+                </div>
+              </div>
+              <div class="kpi-icon-circle">
+                <svg class="kpi-svg-icon" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom 2-Column Section -->
+          <div class="ventes-bottom-grid">
+            <!-- Left Chart Card -->
+            <div class="ventes-chart-card">
+              <div class="chart-card-header">
+                <div class="chart-card-title">Claims Over the Years</div>
+                <div class="chart-legend-wrap">
+                  <div class="legend-item"><span class="legend-dot-coral"></span><span>Approved</span></div>
+                  <div class="legend-item"><span class="legend-dot-purple"></span><span>Submitted</span></div>
+                </div>
+              </div>
+              <div class="ventes-canvas-wrap">
+                <canvas id="ventesWaveChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Right Purple Target Card -->
+            <div class="ventes-target-card">
+              <div class="target-card-top">
+                <div>
+                  <div class="target-title-text">Sales team target</div>
+                  <div class="target-big-percent">82%</div>
+                  <div class="target-sub-achieved">Achieved</div>
+                </div>
+                <div style="display: flex; align-items: center;">
+                  <div class="target-avatars-row">
+                    <div class="target-avatar-img" style="background: #F43F5E;">👩</div>
+                    <div class="target-avatar-img" style="background: #10B981;">👨</div>
+                    <div class="target-avatar-img" style="background: #F59E0B;">👩</div>
+                    <div class="target-avatar-more">+4</div>
+                  </div>
+                  <div class="target-accent-circle">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                  </div>
+                </div>
+              </div>
+
+              <div class="target-card-bottom">
+                <div class="target-box-info">
+                  <div class="target-box-label">Cleared Queue</div>
+                  <div class="target-box-value" id="ventesTargetCleared">1.4k</div>
+                  <div class="target-box-sub">
+                    <span>No. of Bills</span>
+                    <span class="target-pill-gold">↗ +15%</span>
+                  </div>
+                </div>
+                <canvas id="targetSparkline" class="target-sparkline-canvas" width="120" height="42"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+<section id="tab-search" class="tab-content">
       <div class="search-layout">
         
         <!-- Left Sidebar: Vendor Quick Filter + Top Major Items -->
@@ -3524,7 +4504,9 @@ canvas.custom-chart {
       </div>
     </section>
 
-  </main>
+      </main>
+    </div>
+  </div>
 
   <!-- App Footer -->
   <footer class="app-footer">
@@ -3879,6 +4861,7 @@ async function initApp() {
   renderScrapView();
   renderVendorMgmtTable();
   updateSyncInfo();
+  renderVentesDashboard();
 
   // 6. Update page title for initial tab [NEW]
   updatePageTitle();
@@ -7658,11 +8641,13 @@ function exportScrapToCSV() {
 // 17. Mobile App UI Helpers
 // ==========================================
 function switchMobileTab(targetId) {
-  const targetTab = document.querySelector(`.nav-tab[data-tab="${targetId}"]`);
-  if (targetTab) {
-    targetTab.click();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (typeof switchTabDirect === 'function') {
+    switchTabDirect(targetId);
+  } else {
+    const targetTab = document.querySelector(.nav-tab[data-tab="${targetId}"]);
+    if (targetTab) targetTab.click();
   }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function setQuickSearch(keyword) {
@@ -7691,11 +8676,375 @@ function stepScrapWeight(type, delta) {
     updateScrapCalculator();
   }
 }
+
+// ===================================================================
+// VENTES DASHBOARD LOGIC & WAVE CHART ENGINE
+// ===================================================================
+let ventesCurrentHoverIdx = 3;
+
+function renderVentesDashboard() {
+  drawVentesWaveChart(ventesCurrentHoverIdx);
+  drawTargetSparkline();
+  updateVentesMetrics();
+  initVentesChartHover();
+}
+
+function updateVentesMetrics() {
+  if (typeof allData !== 'undefined' && allData && allData.length > 0) {
+    // 1. Product Sold
+    const soldEl = document.getElementById('ventesKpiSold');
+    if (soldEl) soldEl.textContent = (allData.length >= 1000 ? (allData.length / 1000).toFixed(1) + 'k' : allData.length);
+
+    // 2. Total Profit / Purchase Amount
+    let totalAmt = 0;
+    const vendorMap = {};
+    for (let i = 0; i < allData.length; i++) {
+      const amt = Number(allData[i][6]) || 0;
+      totalAmt += amt;
+      const v = allData[i][1];
+      if (v) vendorMap[v] = true;
+    }
+    const profitEl = document.getElementById('ventesKpiProfit');
+    if (profitEl) {
+      if (totalAmt >= 100000000) {
+        profitEl.textContent = '₩' + (totalAmt / 100000000).toFixed(2) + '억';
+      } else {
+        profitEl.textContent = ',435k';
+      }
+    }
+
+    // 3. Vendors count
+    const vCount = Object.keys(vendorMap).length;
+    const custEl = document.getElementById('ventesKpiCustomer');
+    if (custEl) custEl.textContent = vCount + '개사';
+
+    // 4. Scrap tip price
+    if (typeof SCRAP_PRICES_DATA !== 'undefined' && SCRAP_PRICES_DATA.length > 0) {
+      const claimEl = document.getElementById('ventesKpiClaim');
+      if (claimEl) {
+        const latestPrice = SCRAP_PRICES_DATA[0].tip || 60000;
+        claimEl.textContent = formatNumber(latestPrice) + '원';
+      }
+    }
+  }
+}
+
+function drawVentesWaveChart(hoverIndex = 3) {
+  const canvas = document.getElementById('ventesWaveChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  if (rect.width === 0 || rect.height === 0) return;
+
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.scale(dpr, dpr);
+
+  const W = rect.width;
+  const H = rect.height;
+  const padLeft = 40;
+  const padRight = 30;
+  const padTop = 32;
+  const padBottom = 35;
+
+  const chartW = W - padLeft - padRight;
+  const chartH = H - padTop - padBottom;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Grid lines
+  const yLabels = [0, 10, 20, 30, 40, 50];
+  ctx.strokeStyle = 'rgba(226, 232, 240, 0.7)';
+  ctx.lineWidth = 1;
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = '11px sans-serif';
+  ctx.textAlign = 'right';
+  ctx.textBaseline = 'middle';
+
+  yLabels.forEach(val => {
+    const y = padTop + chartH - (val / 50) * chartH;
+    ctx.fillText(val, padLeft - 10, y);
+    ctx.beginPath();
+    ctx.setLineDash([4, 4]);
+    ctx.moveTo(padLeft, y);
+    ctx.lineTo(W - padRight, y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  const years = ['2015', '2016', '2017', '2018', '2019', '2020'];
+  const stepX = chartW / (years.length - 1);
+
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  years.forEach((yr, idx) => {
+    const x = padLeft + idx * stepX;
+    ctx.fillText(yr, x, H - padBottom + 12);
+  });
+
+  // Series values
+  const coralVals = [18, 28, 22, 28, 18, 42];
+  const purpleVals = [12, 16, 12, 35, 14, 32];
+
+  function getPoint(vals, i) {
+    const x = padLeft + i * stepX;
+    const y = padTop + chartH - (vals[i] / 50) * chartH;
+    return { x, y };
+  }
+
+  function drawSpline(vals, strokeColor, shadowColor) {
+    const points = vals.map((v, i) => getPoint(vals, i));
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+
+    for (let i = 0; i < points.length - 1; i++) {
+      const p0 = points[i === 0 ? i : i - 1];
+      const p1 = points[i];
+      const p2 = points[i + 1];
+      const p3 = points[i + 2 < points.length ? i + 2 : i + 1];
+
+      const cp1x = p1.x + (p2.x - p0.x) / 6;
+      const cp1y = p1.y + (p2.y - p0.y) / 6;
+      const cp2x = p2.x - (p3.x - p1.x) / 6;
+      const cp2y = p2.y - (p3.y - p1.y) / 6;
+
+      ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, p2.x, p2.y);
+    }
+
+    ctx.strokeStyle = strokeColor;
+    ctx.lineWidth = 3.5;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.shadowColor = shadowColor;
+    ctx.shadowBlur = 12;
+    ctx.shadowOffsetY = 4;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  // Draw Coral Line
+  drawSpline(coralVals, '#FF6B81', 'rgba(255, 107, 129, 0.4)');
+
+  // Draw Purple Line
+  drawSpline(purpleVals, '#5B42F3', 'rgba(91, 66, 243, 0.5)');
+
+  // Draw Tooltip Pin on Purple line
+  if (hoverIndex >= 0 && hoverIndex < years.length) {
+    const targetPt = getPoint(purpleVals, hoverIndex);
+    const yr = years[hoverIndex];
+    const val = purpleVals[hoverIndex];
+
+    ctx.save();
+    // Glowing dot
+    ctx.beginPath();
+    ctx.arc(targetPt.x, targetPt.y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.shadowColor = '#5B42F3';
+    ctx.shadowBlur = 8;
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#5B42F3';
+    ctx.stroke();
+
+    // Pin Bubble
+    const bubbleW = 46;
+    const bubbleH = 34;
+    const bubbleX = targetPt.x - bubbleW / 2;
+    const bubbleY = targetPt.y - bubbleH - 12;
+    const radius = 8;
+
+    ctx.beginPath();
+    ctx.fillStyle = '#5B42F3';
+    ctx.shadowColor = 'rgba(91, 66, 243, 0.4)';
+    ctx.shadowBlur = 10;
+    ctx.shadowOffsetY = 3;
+
+    ctx.moveTo(bubbleX + radius, bubbleY);
+    ctx.lineTo(bubbleX + bubbleW - radius, bubbleY);
+    ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY, bubbleX + bubbleW, bubbleY + radius);
+    ctx.lineTo(bubbleX + bubbleW, bubbleY + bubbleH - radius);
+    ctx.quadraticCurveTo(bubbleX + bubbleW, bubbleY + bubbleH, bubbleX + bubbleW - radius, bubbleY + bubbleH);
+    ctx.lineTo(targetPt.x + 5, bubbleY + bubbleH);
+    ctx.lineTo(targetPt.x, targetPt.y - 4);
+    ctx.lineTo(targetPt.x - 5, bubbleY + bubbleH);
+    ctx.lineTo(bubbleX + radius, bubbleY + bubbleH);
+    ctx.quadraticCurveTo(bubbleX, bubbleY + bubbleH, bubbleX, bubbleY + bubbleH - radius);
+    ctx.lineTo(bubbleX, bubbleY + radius);
+    ctx.quadraticCurveTo(bubbleX, bubbleY, bubbleX + radius, bubbleY);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = '#FFFFFF';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.font = 'bold 11px sans-serif';
+    ctx.fillText(yr, targetPt.x, bubbleY + 11);
+    ctx.font = '9px sans-serif';
+    ctx.fillText('● ' + val, targetPt.x, bubbleY + 23);
+    ctx.restore();
+  }
+}
+
+function initVentesChartHover() {
+  const canvas = document.getElementById('ventesWaveChart');
+  if (!canvas || canvas.dataset.hoverBound) return;
+  canvas.dataset.hoverBound = 'true';
+
+  canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const padLeft = 40;
+    const padRight = 30;
+    const chartW = rect.width - padLeft - padRight;
+    const stepX = chartW / 5;
+    let closestIdx = Math.round((x - padLeft) / stepX);
+    if (closestIdx < 0) closestIdx = 0;
+    if (closestIdx > 5) closestIdx = 5;
+    if (closestIdx !== ventesCurrentHoverIdx) {
+      ventesCurrentHoverIdx = closestIdx;
+      drawVentesWaveChart(ventesCurrentHoverIdx);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    if (document.getElementById('tab-dashboard').classList.contains('active')) {
+      drawVentesWaveChart(ventesCurrentHoverIdx);
+      drawTargetSparkline();
+    }
+  });
+}
+
+function drawTargetSparkline() {
+  const canvas = document.getElementById('targetSparkline');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = (rect.width || 120) * dpr;
+  canvas.height = (rect.height || 42) * dpr;
+  ctx.scale(dpr, dpr);
+
+  const W = rect.width || 120;
+  const H = rect.height || 42;
+
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(10, H - 10);
+  ctx.bezierCurveTo(35, H - 10, 45, 12, 70, 18);
+  ctx.bezierCurveTo(95, 24, 105, 8, 115, 12);
+  ctx.strokeStyle = '#FCD34D';
+  ctx.lineWidth = 3.5;
+  ctx.lineCap = 'round';
+  ctx.shadowColor = '#F59E0B';
+  ctx.shadowBlur = 10;
+  ctx.stroke();
+  ctx.restore();
+}
+
+function toggleVentesSidebar(forceState) {
+  const sidebar = document.getElementById('ventesSidebar');
+  if (!sidebar) return;
+  if (typeof forceState === 'boolean') {
+    if (forceState) sidebar.classList.add('open');
+    else sidebar.classList.remove('open');
+  } else {
+    sidebar.classList.toggle('open');
+  }
+}
+
+function switchTabDirect(target) {
+  // Update sidebar buttons
+  document.querySelectorAll('.ventes-nav-btn').forEach(btn => {
+    if (btn.getAttribute('data-tab') === target) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  // Update original nav-tabs
+  document.querySelectorAll('.nav-tab').forEach(tab => {
+    if (tab.getAttribute('data-tab') === target) {
+      tab.classList.add('active');
+    } else {
+      tab.classList.remove('active');
+    }
+  });
+
+  // Update tabs content
+  document.querySelectorAll('.tab-content').forEach(c => {
+    if (c.id === target) {
+      c.classList.add('active');
+    } else {
+      c.classList.remove('active');
+    }
+  });
+
+  // Update mobile bottom nav
+  document.querySelectorAll('.m-nav-item').forEach(m => {
+    if (m.getAttribute('data-tab') === target) {
+      m.classList.add('active');
+    } else {
+      m.classList.remove('active');
+    }
+  });
+
+  // Update Page Title
+  const titleMap = {
+    'tab-dashboard': 'OVERVIEW',
+    'tab-search': '소모품 검색 & 상세',
+    'tab-scrap': '폐팁 시세 동향',
+    'tab-trends': '거래처별 매입추이',
+    'tab-closing': '월마감 & 보고서',
+    'tab-vendors': '거래처 관리',
+    'tab-sync': '데이터 동기화'
+  };
+  const titleEl = document.getElementById('ventesPageTitle');
+  if (titleEl) {
+    titleEl.textContent = titleMap[target] || 'OVERVIEW';
+  }
+
+  // Close mobile sidebar if open
+  toggleVentesSidebar(false);
+
+  // Trigger tab redraws
+  if (target === 'tab-dashboard') {
+    setTimeout(renderVentesDashboard, 50);
+  } else if (target === 'tab-trends') {
+    if (typeof renderPivotView === 'function') renderPivotView();
+  } else if (target === 'tab-closing') {
+    if (typeof renderClosingView === 'function') renderClosingView();
+  } else if (target === 'tab-scrap') {
+    if (typeof renderScrapView === 'function') renderScrapView();
+  }
+}
+
+function searchFromVentesHeader(query) {
+  if (!query || !query.trim()) return;
+  switchTabDirect('tab-search');
+  const mainInput = document.getElementById('mainSearchInput');
+  if (mainInput) {
+    mainInput.value = query;
+    applyFilters();
+  }
+}
+
+function triggerPromoSync() {
+  switchTabDirect('tab-sync');
+  showToast('동기화 탭으로 이동했습니다. 엑셀을 붙여넣거나 백업을 진행하세요.', 'info');
+}
   </script>
 
   <!-- Mobile Bottom Navigation Bar (Visible only on mobile devices) -->
   <nav class="mobile-bottom-nav" id="mobileBottomNav">
-    <button class="m-nav-item active" data-tab="tab-search" onclick="switchMobileTab('tab-search')">
+    <button class="m-nav-item active" data-tab="tab-dashboard" onclick="switchMobileTab('tab-dashboard')">
+      <span class="m-nav-icon">📊</span>
+      <span class="m-nav-label">개요</span>
+    </button>
+    <button class="m-nav-item" data-tab="tab-search" onclick="switchMobileTab('tab-search')">
       <span class="m-nav-icon">📋</span>
       <span class="m-nav-label">소모품검색</span>
     </button>

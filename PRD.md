@@ -9,7 +9,7 @@
 | **프로젝트명** | (주)에스앤더블류 소모품 구매 관리 및 폐스크랩 시세 분석 대시보드 |
 | **시스템 영문명** | SNW Supplies Procurement Management & Scrap Market Intelligence System |
 | **문서 버전** | v2.2 (Mobile & Cloudflare Deployment Edition) |
-| **작성 부서 / 작성자** | 구매부 / 김태훈 대리 (`taehoon2531`) |
+| **작성 부서 / 작성자** | 구매부 / 김태훈 주임 (`taehoon2531`) |
 | **최종 갱신일** | 2026년 11월 13일 |
 | **온라인 배포 주소** | `https://gume.koa9313.workers.dev` (Cloudflare Pages/Workers 연동) |
 | **원격 코드 저장소** | Private GitHub Repository (`https://github.com/taehoon2531/GUME`) |
