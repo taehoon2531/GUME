@@ -2724,6 +2724,81 @@ canvas.custom-chart {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ─── Wooden Pallet & Box Calculator Styles ─── */
+.pallet-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 1.25rem;
+}
+@media (max-width: 900px) {
+  .pallet-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.pallet-box-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 1.25rem;
+  box-shadow: var(--card-shadow);
+}
+.pallet-vendor-card {
+  border-radius: 8px;
+  padding: 1rem 1.1rem;
+  border: 1.5px solid var(--card-border);
+  background: var(--card-bg);
+  transition: all 0.2s ease;
+}
+.pallet-vendor-card.winner {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.04);
+}
+.pallet-preset-pill {
+  font-size: 0.78rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--slate-300);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.pallet-preset-pill:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-bg);
+}
+.pallet-addon-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-200);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+[data-theme="dark"] .pallet-addon-item {
+  background: var(--slate-800);
+  border-color: var(--slate-700);
+}
+.pallet-addon-item:hover {
+  background: var(--primary-bg);
+}
+@media (max-width: 600px) {
+  #palletStandardDimBlock > div:first-child {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .pallet-grid {
+    grid-template-columns: 1fr !important;
+  }
+  #palletVendorCardsGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
   </style>
 </head>
 <body>
@@ -2784,6 +2859,10 @@ canvas.custom-chart {
       <button class="nav-tab" data-tab="tab-scrap" title="폐팁 시세 동향">
         <span class="nav-tab-icon">💎</span>
         <span class="nav-tab-text">폐팁 시세 동향</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-pallet" title="나무 파렛트 단가 계산기">
+        <span class="nav-tab-icon">🪵</span>
+        <span class="nav-tab-text">나무 파렛트 계산기</span>
       </button>
       <button class="nav-tab" data-tab="tab-vendors" title="거래처 관리">
         <span class="nav-tab-icon">🏢</span>
@@ -3415,6 +3494,489 @@ canvas.custom-chart {
     </section>
 
     <!-- ========================================== -->
+    <!-- TAB: 나무 파렛트 & 수출박스 CBM 단가 계산기 (유성수출포장 · 천우수출포장) -->
+    <!-- ========================================== -->
+    <section id="tab-pallet" class="tab-content">
+      <div class="data-panel" style="padding: 1.5rem; max-width: 1300px; margin: 0 auto; width: 100%;">
+
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 1.25rem;">
+          <div>
+            <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
+              <span>🪵 나무 파렛트 &amp; 수출박스 단가 계산기</span>
+              <span class="brand-badge" style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a;">유성수출포장 · 천우수출포장 공식 연동</span>
+            </h2>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
+              가로·세로·높이(mm) 규격을 입력하면 <b>CBM 자동 환산(공식 여유 치수 +100/+100/+220mm 적용)</b> 및 공식 단가표를 매칭하여, <b>유성수출포장</b>과 <b>천우수출포장</b>의 공급가액·부가세·합계금액을 실시간으로 비교 산출합니다.
+            </p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <button class="btn btn-outline btn-sm" onclick="copyPalletQuoteText()" title="현재 산출된 견적서 요약 내용을 클립보드에 복사">
+              📋 견적서 텍스트 복사
+            </button>
+            <button class="btn btn-outline btn-sm" onclick="resetPalletCalculator()" title="규격 및 옵션 기본값으로 초기화">
+              🔄 초기화
+            </button>
+            <button class="btn btn-primary btn-sm" onclick="exportPalletRatesToCSV()" title="0.10~7.00 CBM 단가표 전체 엑셀(CSV) 다운로드">
+              📥 CBM 단가표 엑셀(CSV) 저장
+            </button>
+          </div>
+        </div>
+
+        <!-- Top Vendor Comparison Switcher Pills -->
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: var(--slate-50); border: 1px solid var(--card-border); padding: 10px 14px; border-radius: 8px; margin-bottom: 1.25rem;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary);">🏢 산출 모드:</span>
+            <div class="pallet-mode-pills" style="display: flex; gap: 6px;">
+              <button class="btn btn-sm btn-primary active" id="btnModeCompare" onclick="setPalletVendorMode('compare')" style="border-radius: 20px;">⚖️ 두 업체 실시간 동시 비교 (권장)</button>
+              <button class="btn btn-sm btn-outline" id="btnModeYuseong" onclick="setPalletVendorMode('yuseong')" style="border-radius: 20px;">🏢 유성수출포장 단독</button>
+              <button class="btn btn-sm btn-outline" id="btnModeCheonwoo" onclick="setPalletVendorMode('cheonwoo')" style="border-radius: 20px;">🏢 천우수출포장 단독</button>
+            </div>
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-muted);">
+            ※ CBM 산출식: <span style="font-family: monospace; font-weight: 600; color: var(--primary);">((가로+100)×(세로+100)×(높이+220))/10⁹</span> (최소 0.10 CBM)
+          </div>
+        </div>
+
+        <!-- Two Column Main Grid -->
+        <div class="pallet-grid">
+
+          <!-- Left Column: 입력 패널 -->
+          <div class="pallet-box-card">
+            <h3 style="font-size: 0.98rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between;">
+              <span>⚙️ 포장 품목 및 규격 입력</span>
+              <span id="palletCurrentPresetBadge" style="font-size: 0.75rem; font-weight: 600; padding: 2px 8px; border-radius: 12px; background: var(--primary-bg); color: var(--primary);">일반 밀폐박스 기준</span>
+            </h3>
+
+            <!-- 1. 포장 구분 (품목 유형) -->
+            <div style="margin-bottom: 1rem;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+                📦 포장 구분 (박스/파렛트 유형)
+              </label>
+              <select id="palletBoxType" class="form-control" style="width: 100%; font-weight: 600;" onchange="onPalletBoxTypeChange()">
+                <option value="domestic_box" selected>일반 밀폐박스 (일반밀폐, 중국박스) — 내수용 단가 적용</option>
+                <option value="export_box">수출용 박스 (MAN, 삼성, 건설사/플랜트) — 수출용 단가 적용</option>
+                <option value="open_box">판체박스 (개방형/오픈 박스) — 단가 60% 적용</option>
+                <option value="pallet_base">발판 (목재 파렛트 / 스키드) — CBM 파렛트 단가</option>
+                <option value="half_box">반체 2종 (고정 규격 전용)</option>
+                <option value="partition">칸막이 합판 (칸 수 기준)</option>
+                <option value="plywood_7t">중 합판 (7T 기준 가로×세로 산출식)</option>
+              </select>
+            </div>
+
+            <!-- Standard Dimensions Block (가로, 세로, 높이, 수량) -->
+            <div id="palletStandardDimBlock">
+              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 0.75rem;">
+                <div>
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">가로 (mm)</label>
+                  <input type="number" id="palletWidth" class="form-control" value="950" min="50" step="10" oninput="updatePalletCalculator()" placeholder="가로" style="text-align: right; font-weight: 700; font-family: monospace;">
+                </div>
+                <div>
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">세로 (mm)</label>
+                  <input type="number" id="palletLength" class="form-control" value="570" min="50" step="10" oninput="updatePalletCalculator()" placeholder="세로" style="text-align: right; font-weight: 700; font-family: monospace;">
+                </div>
+                <div>
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">높이 (mm)</label>
+                  <input type="number" id="palletHeight" class="form-control" value="560" min="50" step="10" oninput="updatePalletCalculator()" placeholder="높이" style="text-align: right; font-weight: 700; font-family: monospace;">
+                </div>
+                <div>
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">수량 (EA)</label>
+                  <input type="number" id="palletQty" class="form-control" value="1" min="1" step="1" oninput="updatePalletCalculator()" placeholder="수량" style="text-align: right; font-weight: 700; font-family: monospace;">
+                </div>
+              </div>
+
+              <!-- Margin allowance info & toggle -->
+              <div style="display: flex; align-items: center; justify-content: space-between; background: var(--slate-50); border: 1px dashed var(--card-border); padding: 6px 10px; border-radius: 6px; margin-bottom: 1rem;">
+                <div style="font-size: 0.76rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px;">
+                  <span>📐 공식 여유 치수:</span>
+                  <b>가로+100mm</b> | <b>세로+100mm</b> | <b>높이+220mm (하단 스키드 발판 포함)</b>
+                </div>
+                <button type="button" class="btn btn-xs btn-outline" onclick="toggleMarginCustom()" id="btnToggleMargin" style="font-size: 0.72rem; padding: 2px 6px;">여유치수 수정</button>
+              </div>
+
+              <!-- Custom Margin Inputs (Hidden by default) -->
+              <div id="palletCustomMarginRow" style="display: none; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 1rem; padding: 8px; background: var(--primary-bg); border-radius: 6px;">
+                <div>
+                  <label style="font-size: 0.72rem; color: var(--primary); font-weight: 600;">가로 여유 (+mm)</label>
+                  <input type="number" id="palletMarginW" class="form-control form-control-sm" value="100" oninput="updatePalletCalculator()">
+                </div>
+                <div>
+                  <label style="font-size: 0.72rem; color: var(--primary); font-weight: 600;">세로 여유 (+mm)</label>
+                  <input type="number" id="palletMarginL" class="form-control form-control-sm" value="100" oninput="updatePalletCalculator()">
+                </div>
+                <div>
+                  <label style="font-size: 0.72rem; color: var(--primary); font-weight: 600;">높이 여유 (+mm)</label>
+                  <input type="number" id="palletMarginH" class="form-control form-control-sm" value="220" oninput="updatePalletCalculator()">
+                </div>
+              </div>
+
+              <!-- Quick Presets -->
+              <div style="margin-bottom: 1rem;">
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+                  ⚡ 자주 쓰는 대표 규격 원클릭 선택:
+                </label>
+                <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                  <button type="button" class="pallet-preset-pill" onclick="applyPalletPreset(950, 570, 560, 'domestic_box', '일반 밀폐 예시 (0.55 CBM)')">
+                    📦 950×570×560 (밀폐 0.55 CBM)
+                  </button>
+                  <button type="button" class="pallet-preset-pill" onclick="applyPalletPreset(750, 550, 450, 'export_box', '수출용 박스 예시 (0.37 CBM)')">
+                    🚢 750×550×450 (수출용 0.37 CBM)
+                  </button>
+                  <button type="button" class="pallet-preset-pill" onclick="applyPalletPreset(1100, 1100, 150, 'pallet_base', '11형 표준 파렛트')">
+                    🪵 1100×1100×150 (표준 11형)
+                  </button>
+                  <button type="button" class="pallet-preset-pill" onclick="applyPalletPreset(1200, 1000, 150, 'pallet_base', '12형 수출 파렛트')">
+                    🪵 1200×1000×150 (수출 12형)
+                  </button>
+                  <button type="button" class="pallet-preset-pill" onclick="applyPalletPreset(500, 350, 330, 'half_box', '반체 규격 1 (28,000원)')">
+                    📏 500×350×330 (반체1)
+                  </button>
+                  <button type="button" class="pallet-preset-pill" onclick="applyPalletPreset(700, 520, 300, 'half_box', '반체 규격 2 (28,000원)')">
+                    📏 700×520×300 (반체2)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 반체2종 전용 드롭다운 블록 -->
+            <div id="palletHalfBoxBlock" style="display: none; margin-bottom: 1rem; background: var(--slate-50); border: 1px solid var(--card-border); padding: 10px; border-radius: 8px;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+                📏 반체 고정 규격 선택
+              </label>
+              <select id="palletHalfBoxSelect" class="form-control" onchange="updatePalletCalculator()">
+                <option value="500*350*330" selected>500 × 350 × 330 mm (기본 단가: 28,000원)</option>
+                <option value="700*520*300">700 × 520 × 300 mm (기본 단가: 28,000원)</option>
+                <option value="750*520*330">750 × 520 × 330 mm (유기명 판체박스: 30,000원)</option>
+              </select>
+            </div>
+
+            <!-- 칸막이 합판 전용 블록 -->
+            <div id="palletPartitionBlock" style="display: none; margin-bottom: 1rem; background: var(--slate-50); border: 1px solid var(--card-border); padding: 10px; border-radius: 8px;">
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+                🗂️ 칸막이 칸 수 구분 (합판 7T 및 공임비용 포함)
+              </label>
+              <select id="palletPartitionCountSelect" class="form-control" onchange="updatePalletCalculator()">
+                <option value="4" selected>4칸 이하 — 단가 4,000원</option>
+                <option value="8">8칸 이하 — 단가 9,000원</option>
+                <option value="12">12칸 이하 — 단가 24,000원</option>
+                <option value="18">18칸 이하 — 단가 29,000원</option>
+                <option value="36">36칸 이하 — 단가 39,000원</option>
+                <option value="50">50칸 이하 — 단가 49,000원</option>
+                <option value="999">50칸 초과 — 단가 90,000원</option>
+              </select>
+            </div>
+
+            <!-- 중 합판 (7T 기준) 전용 계산 블록 -->
+            <div id="palletPlywoodBlock" style="display: none; margin-bottom: 1rem; background: var(--slate-50); border: 1px solid var(--card-border); padding: 12px; border-radius: 8px;">
+              <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+                📐 중 합판 (7T 기준) 가로·세로 규격
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                <div>
+                  <label style="font-size: 0.74rem; color: var(--text-muted);">가로 치수 (mm)</label>
+                  <input type="number" id="palletPlywoodW" class="form-control" value="580" oninput="updatePalletCalculator()" placeholder="가로 mm">
+                </div>
+                <div>
+                  <label style="font-size: 0.74rem; color: var(--text-muted);">세로 치수 (mm)</label>
+                  <input type="number" id="palletPlywoodL" class="form-control" value="450" oninput="updatePalletCalculator()" placeholder="세로 mm">
+                </div>
+              </div>
+              <div style="font-size: 0.75rem; color: var(--text-muted); background: var(--card-bg); padding: 6px 8px; border-radius: 4px; border: 1px solid var(--card-border);">
+                💡 <b>산출 공식</b>: (가로m × 세로m × 10,000원 / 3) + 1,000원 (10원 단위 올림)<br>
+                예시: 580×450mm = 0.58 × 0.45 × 10000 / 3 + 1000 = 1,870원 → <b>1,900원</b>
+              </div>
+            </div>
+
+            <!-- Additional Options & Surcharges (특이사항 / 할증 체크박스) -->
+            <div>
+              <label style="display: block; font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 6px;">
+                ➕ 특이사항 및 할증 옵션 (복수 선택 가능)
+              </label>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <label class="pallet-addon-item">
+                  <input type="checkbox" id="opt_man_heavy" onchange="updatePalletCalculator()">
+                  <span>MAN 중량포장 (+4,000원)</span>
+                </label>
+                <label class="pallet-addon-item">
+                  <input type="checkbox" id="opt_cyl_core" onchange="updatePalletCalculator()">
+                  <span>원통코어 박스 (+15,000원)</span>
+                </label>
+                <label class="pallet-addon-item">
+                  <input type="checkbox" id="opt_fork_1" onchange="updatePalletCalculator()">
+                  <span>지게차 4M 가로 1면 (+5,000원)</span>
+                </label>
+                <label class="pallet-addon-item">
+                  <input type="checkbox" id="opt_fork_2" onchange="updatePalletCalculator()">
+                  <span>지게차 4M 가로세로 양면 (+10,000원)</span>
+                </label>
+                <label class="pallet-addon-item">
+                  <input type="checkbox" id="opt_cart_cbm" onchange="updatePalletCalculator()">
+                  <span>대차 포장 (CBM당 25,000원)</span>
+                </label>
+                <label class="pallet-addon-item">
+                  <input type="checkbox" id="opt_steel_pallet" onchange="updatePalletCalculator()">
+                  <span>철대 파렛트 (CBM당 22,000원)</span>
+                </label>
+                <label class="pallet-addon-item" style="grid-column: span 2;">
+                  <input type="checkbox" id="opt_custom_19" onchange="updatePalletCalculator()">
+                  <span>기타 특이 각재·팔레트 충전단가 19% 인상 적용</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Right Column: 단가 산출 및 비교 결과 패널 -->
+          <div>
+
+            <!-- CBM 환산 상세 카드 -->
+            <div class="pallet-box-card" style="margin-bottom: 1rem; border-left: 4px solid var(--primary);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary);">📦 산출 CBM (체적)</span>
+                <span id="palletCbmRoundingNote" style="font-size: 0.72rem; color: var(--text-muted); padding: 2px 6px; background: var(--slate-100); border-radius: 4px;">
+                  1.0 CBM 이하 (소수 2자리 반올림)
+                </span>
+              </div>
+              <div style="display: flex; align-items: baseline; gap: 8px;">
+                <span id="palletCalculatedCbm" style="font-size: 2.2rem; font-weight: 900; color: var(--primary); letter-spacing: -1px; font-family: monospace;">
+                  0.55
+                </span>
+                <span style="font-size: 1.1rem; font-weight: 700; color: var(--text-secondary);">CBM (m³)</span>
+              </div>
+              <div id="palletCbmFormulaDetail" style="font-size: 0.76rem; color: var(--text-muted); margin-top: 4px; font-family: monospace; background: var(--slate-50); padding: 5px 8px; border-radius: 4px; border: 1px solid var(--card-border);">
+                ((950+100)/1000) × ((570+100)/1000) × ((560+220)/1000) = 0.5487 m³ → 0.55 CBM
+              </div>
+            </div>
+
+            <!-- Comparison Recommendation Callout Badge -->
+            <div id="palletCompareWinnerBanner" style="padding: 12px 16px; border-radius: 8px; margin-bottom: 1rem; display: flex; align-items: center; justify-content: space-between; background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 1.5px solid #10b981; color: #065f46;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.6rem;">🏆</span>
+                <div>
+                  <div id="palletWinnerTitle" style="font-size: 0.95rem; font-weight: 800;">
+                    천우수출포장이 15,829원 더 저렴합니다!
+                  </div>
+                  <div id="palletWinnerDesc" style="font-size: 0.78rem; opacity: 0.9; margin-top: 2px;">
+                    유성 대비 약 19.3% 비용 절감 (수량 1개 기준)
+                  </div>
+                </div>
+              </div>
+              <button class="btn btn-sm btn-outline" onclick="copyPalletQuoteText()" style="background: white; border-color: #10b981; color: #065f46; font-weight: 700; white-space: nowrap;">
+                📋 견적 복사
+              </button>
+            </div>
+
+            <!-- Vendor Cards Grid (유성 vs 천우) -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem;" id="palletVendorCardsGrid">
+              
+              <!-- 1. 유성수출포장 카드 -->
+              <div class="pallet-vendor-card" id="cardVendorYuseong">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 0.85rem; font-weight: 800; color: #1e3a8a;">🏢 유성수출포장</span>
+                  <span class="badge" id="badgeYuseongWinner" style="font-size: 0.68rem; font-weight: 700; background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe;">기준</span>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; margin-bottom: 8px;">
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-muted);">기준 단가:</span>
+                    <b id="valYuseongBasePrice" style="font-family: monospace;">₩74,390</b>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-muted);">할증/옵션:</span>
+                    <span id="valYuseongSurcharge" style="font-family: monospace;">+₩0</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--card-border); padding-top: 4px;">
+                    <span style="color: var(--text-secondary); font-weight: 600;">공급가액:</span>
+                    <b id="valYuseongSupplyPrice" style="color: var(--primary); font-family: monospace;">₩74,390</b>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-muted);">부가세 (10%):</span>
+                    <span id="valYuseongVat" style="font-family: monospace;">₩7,439</span>
+                  </div>
+                </div>
+
+                <div style="border-top: 1.5px solid var(--card-border); padding-top: 6px; display: flex; justify-content: space-between; align-items: baseline;">
+                  <span style="font-size: 0.78rem; font-weight: 800; color: var(--text-primary);">총 합계:</span>
+                  <b id="valYuseongTotal" style="font-size: 1.25rem; font-weight: 900; color: #1e3a8a; font-family: monospace;">₩81,829</b>
+                </div>
+              </div>
+
+              <!-- 2. 천우수출포장 카드 -->
+              <div class="pallet-vendor-card winner" id="cardVendorCheonwoo">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-size: 0.85rem; font-weight: 800; color: #065f46;">🏢 천우수출포장</span>
+                  <span class="badge" id="badgeCheonwooWinner" style="font-size: 0.68rem; font-weight: 700; background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0;">🏆 최저가</span>
+                </div>
+                
+                <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; margin-bottom: 8px;">
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-muted);">기준 단가:</span>
+                    <b id="valCheonwooBasePrice" style="font-family: monospace;">₩60,000</b>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-muted);">할증/옵션:</span>
+                    <span id="valCheonwooSurcharge" style="font-family: monospace;">+₩0</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--card-border); padding-top: 4px;">
+                    <span style="color: var(--text-secondary); font-weight: 600;">공급가액:</span>
+                    <b id="valCheonwooSupplyPrice" style="color: #059669; font-family: monospace;">₩60,000</b>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: var(--text-muted);">부가세 (10%):</span>
+                    <span id="valCheonwooVat" style="font-family: monospace;">₩6,000</span>
+                  </div>
+                </div>
+
+                <div style="border-top: 1.5px solid var(--card-border); padding-top: 6px; display: flex; justify-content: space-between; align-items: baseline;">
+                  <span style="font-size: 0.78rem; font-weight: 800; color: var(--text-primary);">총 합계:</span>
+                  <b id="valCheonwooTotal" style="font-size: 1.25rem; font-weight: 900; color: #059669; font-family: monospace;">₩66,000</b>
+                </div>
+                <div id="cheonwooOverNotice" style="display: none; font-size: 0.72rem; color: #d97706; margin-top: 4px;">
+                  ※ 2.0 CBM 초과 규격: 별도 협의 단가 적용
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Quick Action Bar -->
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-primary" style="flex: 1; font-weight: 700; padding: 10px;" onclick="copyPalletQuoteText()">
+                📋 현재 견적 내역 복사하기
+              </button>
+              <button class="btn btn-outline" style="padding: 10px 14px;" onclick="viewCbmTableRow(lastCalculatedCbm)" title="단가표에서 현재 CBM 바로 찾기">
+                🔍 단가표 조회
+              </button>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Accordions: 단가표 및 기준 정보 뷰어 -->
+        <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 10px;">
+
+          <!-- Accordion 1: 0.10 ~ 7.00 CBM 단가표 전체보기 -->
+          <div class="pallet-box-card" style="padding: 0; overflow: hidden;">
+            <div style="padding: 12px 16px; background: var(--slate-50); border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="togglePalletAccordion('accCbmTable')">
+              <div style="font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span>📊 유성 · 천우 CBM 단가표 전체보기 (0.10 ~ 7.00 CBM)</span>
+                <span class="badge" style="font-size: 0.72rem; background: var(--primary-bg); color: var(--primary);">75개 구간</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="text" id="filterCbmTableInput" placeholder="CBM 검색 (예: 0.55)" class="form-control form-control-sm" style="width: 140px; font-size: 0.76rem;" onclick="event.stopPropagation()" oninput="filterPalletCbmTable()">
+                <span id="iconAccCbmTable" style="font-size: 0.9rem; color: var(--text-muted); transition: transform 0.2s;">▼</span>
+              </div>
+            </div>
+            <div id="accCbmTable" style="max-height: 420px; overflow-y: auto; padding: 0;">
+              <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                <thead style="position: sticky; top: 0; background: var(--slate-100); z-index: 2;">
+                  <tr>
+                    <th style="width: 80px; text-align: center;">CBM</th>
+                    <th style="text-align: right; color: #1e3a8a;">유성 내수용</th>
+                    <th style="text-align: right; color: #1e3a8a;">유성 수출용</th>
+                    <th style="text-align: right; color: #065f46;">천우 내수용</th>
+                    <th style="text-align: right; color: #065f46;">천우 수출용</th>
+                    <th style="text-align: center; width: 140px;">가격 비교 (내수 기준)</th>
+                  </tr>
+                </thead>
+                <tbody id="palletCbmTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Accordion 2: 7T 중합판 & 칸막이 합판 기준표 -->
+          <div class="pallet-box-card" style="padding: 0; overflow: hidden;">
+            <div style="padding: 12px 16px; background: var(--slate-50); border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="togglePalletAccordion('accPlywoodTable')">
+              <div style="font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span>📐 칸막이 합판 &amp; 7T 중합판 단가 산출 기준</span>
+              </div>
+              <span id="iconAccPlywoodTable" style="font-size: 0.9rem; color: var(--text-muted); transition: transform 0.2s;">▶</span>
+            </div>
+            <div id="accPlywoodTable" style="display: none; padding: 1.25rem;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+                <div>
+                  <h4 style="font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);">
+                    🗂️ 칸막이 합판 기준 단가표 (합판 7T 및 공임비용 포함)
+                  </h4>
+                  <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.78rem;">
+                    <thead>
+                      <tr>
+                        <th>구분</th>
+                        <th style="text-align: right;">단가 (원)</th>
+                        <th>비고</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>4칸 이하</td><td style="text-align: right; font-weight: 700;">4,000</td><td>합판 7T 비용포함</td></tr>
+                      <tr><td>8칸 이하</td><td style="text-align: right; font-weight: 700;">9,000</td><td>칸막이 공임비용 포함</td></tr>
+                      <tr><td>12칸 이하</td><td style="text-align: right; font-weight: 700;">24,000</td><td></td></tr>
+                      <tr><td>18칸 이하</td><td style="text-align: right; font-weight: 700;">29,000</td><td></td></tr>
+                      <tr><td>36칸 이하</td><td style="text-align: right; font-weight: 700;">39,000</td><td></td></tr>
+                      <tr><td>50칸 이하</td><td style="text-align: right; font-weight: 700;">49,000</td><td></td></tr>
+                      <tr><td>50칸 초과</td><td style="text-align: right; font-weight: 700;">90,000</td><td>특대형 칸막이</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div>
+                  <h4 style="font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);">
+                    📐 중 합판 (7T 기준) 공식 정보
+                  </h4>
+                  <div style="background: var(--slate-50); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px; font-size: 0.8rem; line-height: 1.6;">
+                    <div>• <b>합판 표준 치수</b>: 1220 × 2440 mm</div>
+                    <div>• <b>합판 표준 가격</b>: 7T 기준 10,000원</div>
+                    <div>• <b>일반 계산 단가 공식</b>: X원 + 1,000원</div>
+                    <div style="margin-top: 4px; padding: 6px 10px; background: var(--card-bg); border-radius: 6px; border: 1px solid var(--card-border); font-family: monospace;">
+                      <b>X = (가로(m) × 세로(m) × 10,000원) / 3</b><br>
+                      <b>단가 = 10원 단위 올림(X + 1,000원)</b>
+                    </div>
+                    <div style="margin-top: 8px; color: var(--primary);">
+                      <b>📌 공식 적용 예시</b>: 합판7T 580 × 450 mm<br>
+                      = (0.58 × 0.45 × 10,000) / 3 + 1,000 = 870 + 1,000 = 1,870원 → <b>1,900원</b>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Accordion 3: 특이사항 및 할증 적용 기준표 -->
+          <div class="pallet-box-card" style="padding: 0; overflow: hidden;">
+            <div style="padding: 12px 16px; background: var(--slate-50); border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="togglePalletAccordion('accSurchargeTable')">
+              <div style="font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span>📝 특이사항 및 할증 적용 기준 (유성수출포장 기준)</span>
+              </div>
+              <span id="iconAccSurchargeTable" style="font-size: 0.9rem; color: var(--text-muted); transition: transform 0.2s;">▶</span>
+            </div>
+            <div id="accSurchargeTable" style="display: none; padding: 1.25rem;">
+              <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                <thead>
+                  <tr>
+                    <th>구분 / 항목</th>
+                    <th>단가 / 할증 기준</th>
+                    <th>상세 설명</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>기타 각재 및 팔레트</td><td><b>종전 단가에서 19% 인상</b></td><td>특이 사양 일체의 것은 충전단가 19% 인상된 가격 적용</td></tr>
+                  <tr><td>MAN 수출박스 (중량포장)</td><td><b>+4,000원 추가</b></td><td>기존 단가에서 4천원 추가 (1500×1500 이상 4천원)</td></tr>
+                  <tr><td>원통코어 박스</td><td><b>+15,000원 추가</b></td><td>원통 코어 형태 지지 구조 제작비용</td></tr>
+                  <tr><td>특수형 판체박스</td><td><b>25,000원</b></td><td>700 × 520 × 300 mm 규격</td></tr>
+                  <tr><td>유기명 판체박스</td><td><b>30,000원</b></td><td>750 × 520 × 330 mm 규격</td></tr>
+                  <tr><td>지게차 4M 가로 1면</td><td><b>+5,000원 추가</b></td><td>CBM 단가 + 개당 5,000원 추가</td></tr>
+                  <tr><td>지게차 4M 가로·세로 양면</td><td><b>+10,000원 추가</b></td><td>CBM 단가 + 개당 10,000원 추가</td></tr>
+                  <tr><td>대차 포장</td><td><b>CBM당 25,000원</b></td><td>체적당 단가 적용</td></tr>
+                  <tr><td>철대 파렛트</td><td><b>CBM당 22,000원</b></td><td>체적당 단가 적용</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ========================================== -->
     <!-- TAB 4: 거래처 관리 -->
     <!-- ========================================== -->
     <section id="tab-vendors" class="tab-content">
@@ -3847,6 +4409,7 @@ canvas.custom-chart {
   <!-- Load pre-compiled data -->
   <script src="data.js"></script>
   <script src="scrap_data.js"></script>
+  <script src="pallet_data.js"></script>
 
   <!-- Main Application Script -->
   <script>
@@ -3997,6 +4560,7 @@ async function initApp() {
   renderPivotView();
   renderClosingView();
   renderScrapView();
+  initPalletCalculator();
   renderVendorMgmtTable();
   updateSyncInfo();
 
@@ -4058,6 +4622,8 @@ function initNavTabs() {
         renderClosingView();
       } else if (target === 'tab-scrap') {
         renderScrapView();
+      } else if (target === 'tab-pallet') {
+        renderPalletView();
       }
     });
   });
@@ -7811,6 +8377,507 @@ function stepScrapWeight(type, delta) {
     updateScrapCalculator();
   }
 }
+
+// ==========================================
+// 18. Wooden Pallet & Box Calculator (유성수출포장 · 천우수출포장 단가 계산기)
+// ==========================================
+let lastCalculatedCbm = 0.55;
+let currentPalletVendorMode = 'compare'; // 'compare' | 'yuseong' | 'cheonwoo'
+let isMarginCustomOpen = false;
+let lastPalletQuote = null;
+
+function initPalletCalculator() {
+  renderPalletCbmTable();
+  updatePalletCalculator();
+}
+
+function renderPalletView() {
+  updatePalletCalculator();
+}
+
+function setPalletVendorMode(mode) {
+  currentPalletVendorMode = mode;
+  const btnCompare = document.getElementById('btnModeCompare');
+  const btnYuseong = document.getElementById('btnModeYuseong');
+  const btnCheonwoo = document.getElementById('btnModeCheonwoo');
+  
+  if (btnCompare) btnCompare.className = (mode === 'compare') ? 'btn btn-sm btn-primary active' : 'btn btn-sm btn-outline';
+  if (btnYuseong) btnYuseong.className = (mode === 'yuseong') ? 'btn btn-sm btn-primary active' : 'btn btn-sm btn-outline';
+  if (btnCheonwoo) btnCheonwoo.className = (mode === 'cheonwoo') ? 'btn btn-sm btn-primary active' : 'btn btn-sm btn-outline';
+
+  const cardYuseong = document.getElementById('cardVendorYuseong');
+  const cardCheonwoo = document.getElementById('cardVendorCheonwoo');
+  const banner = document.getElementById('palletCompareWinnerBanner');
+
+  if (mode === 'compare') {
+    if (cardYuseong) cardYuseong.style.display = 'block';
+    if (cardCheonwoo) cardCheonwoo.style.display = 'block';
+    if (banner) banner.style.display = 'flex';
+  } else if (mode === 'yuseong') {
+    if (cardYuseong) cardYuseong.style.display = 'block';
+    if (cardCheonwoo) cardCheonwoo.style.display = 'none';
+    if (banner) banner.style.display = 'none';
+  } else if (mode === 'cheonwoo') {
+    if (cardYuseong) cardYuseong.style.display = 'none';
+    if (cardCheonwoo) cardCheonwoo.style.display = 'block';
+    if (banner) banner.style.display = 'none';
+  }
+}
+
+function onPalletBoxTypeChange() {
+  const boxType = (document.getElementById('palletBoxType') || {}).value || 'domestic_box';
+  const standardDimBlock = document.getElementById('palletStandardDimBlock');
+  const halfBoxBlock = document.getElementById('palletHalfBoxBlock');
+  const partitionBlock = document.getElementById('palletPartitionBlock');
+  const plywoodBlock = document.getElementById('palletPlywoodBlock');
+  const presetBadge = document.getElementById('palletCurrentPresetBadge');
+
+  if (standardDimBlock) standardDimBlock.style.display = ['partition', 'plywood_7t'].includes(boxType) ? 'none' : 'block';
+  if (halfBoxBlock) halfBoxBlock.style.display = (boxType === 'half_box') ? 'block' : 'none';
+  if (partitionBlock) partitionBlock.style.display = (boxType === 'partition') ? 'block' : 'none';
+  if (plywoodBlock) plywoodBlock.style.display = (boxType === 'plywood_7t') ? 'block' : 'none';
+
+  const labelMap = {
+    domestic_box: '일반 밀폐박스 기준',
+    export_box: '수출용 박스 기준',
+    open_box: '판체박스 (60% 적용)',
+    pallet_base: '발판 (파렛트) 기준',
+    half_box: '반체 2종 고정 규격',
+    partition: '칸막이 합판 (칸 수 기준)',
+    plywood_7t: '중 합판 7T 산출식'
+  };
+  if (presetBadge) presetBadge.textContent = labelMap[boxType] || '일반 밀폐박스 기준';
+
+  updatePalletCalculator();
+}
+
+function toggleMarginCustom() {
+  isMarginCustomOpen = !isMarginCustomOpen;
+  const row = document.getElementById('palletCustomMarginRow');
+  const btn = document.getElementById('btnToggleMargin');
+  if (row) row.style.display = isMarginCustomOpen ? 'grid' : 'none';
+  if (btn) btn.textContent = isMarginCustomOpen ? '닫기' : '여유치수 수정';
+}
+
+function applyPalletPreset(w, l, h, type, badgeText) {
+  const typeSelect = document.getElementById('palletBoxType');
+  if (typeSelect) typeSelect.value = type;
+  
+  const wEl = document.getElementById('palletWidth');
+  const lEl = document.getElementById('palletLength');
+  const hEl = document.getElementById('palletHeight');
+  if (wEl) wEl.value = w;
+  if (lEl) lEl.value = l;
+  if (hEl) hEl.value = h;
+
+  if (type === 'half_box') {
+    const halfSelect = document.getElementById('palletHalfBoxSelect');
+    const specKey = `${w}*${l}*${h}`;
+    if (halfSelect) halfSelect.value = specKey;
+  }
+
+  onPalletBoxTypeChange();
+  showToast(`${badgeText} 규격이 적용되었습니다.`, 'info');
+}
+
+function updatePalletCalculator() {
+  if (!window.PALLET_PRICES_DATA) return;
+
+  const boxType = (document.getElementById('palletBoxType') || {}).value || 'domestic_box';
+  const qty = Math.max(1, parseInt((document.getElementById('palletQty') || {}).value || '1', 10));
+
+  let w = parseFloat((document.getElementById('palletWidth') || {}).value || '950');
+  let l = parseFloat((document.getElementById('palletLength') || {}).value || '570');
+  let h = parseFloat((document.getElementById('palletHeight') || {}).value || '560');
+
+  let mW = parseFloat((document.getElementById('palletMarginW') || {}).value || '100');
+  let mL = parseFloat((document.getElementById('palletMarginL') || {}).value || '100');
+  let mH = parseFloat((document.getElementById('palletMarginH') || {}).value || '220');
+
+  // If half-box, override w, l, h from select
+  if (boxType === 'half_box') {
+    const halfVal = (document.getElementById('palletHalfBoxSelect') || {}).value || '500*350*330';
+    const parts = halfVal.split('*').map(Number);
+    if (parts.length === 3) {
+      w = parts[0]; l = parts[1]; h = parts[2];
+      const wEl = document.getElementById('palletWidth');
+      const lEl = document.getElementById('palletLength');
+      const hEl = document.getElementById('palletHeight');
+      if (wEl) wEl.value = w;
+      if (lEl) lEl.value = l;
+      if (hEl) hEl.value = h;
+    }
+  }
+
+  // Calculate CBM
+  let rawCbm = ((w + mW) / 1000) * ((l + mL) / 1000) * ((h + mH) / 1000);
+  if (isNaN(rawCbm) || rawCbm <= 0) rawCbm = 0.10;
+  let minCbm = Math.max(rawCbm, 0.10);
+  let cbm = (minCbm > 1.0) ? Number(minCbm.toFixed(1)) : Number(minCbm.toFixed(2));
+  lastCalculatedCbm = cbm;
+
+  // CBM Display
+  const cbmEl = document.getElementById('palletCalculatedCbm');
+  if (cbmEl) cbmEl.textContent = (cbm > 1.0) ? cbm.toFixed(1) : cbm.toFixed(2);
+
+  const formulaDetailEl = document.getElementById('palletCbmFormulaDetail');
+  if (formulaDetailEl) {
+    formulaDetailEl.textContent = `((${w}+${mW})/1000) × ((${l}+${mL})/1000) × ((${h}+${mH})/1000) = ${rawCbm.toFixed(4)} m³ → ${cbm} CBM`;
+  }
+  const noteEl = document.getElementById('palletCbmRoundingNote');
+  if (noteEl) {
+    noteEl.textContent = (cbm > 1.0) ? '1.0 CBM 초과 (소수 1자리 반올림)' : '1.0 CBM 이하 (소수 2자리 반올림)';
+  }
+
+  // Lookup rate from table
+  const rateRow = window.PALLET_PRICES_DATA.lookupRate(cbm);
+
+  let yuseongBase = 0;
+  let cheonwooBase = null;
+
+  if (boxType === 'domestic_box') {
+    yuseongBase = rateRow.yuseong_domestic;
+    cheonwooBase = rateRow.cheonwoo_domestic;
+  } else if (boxType === 'export_box') {
+    yuseongBase = rateRow.yuseong_export;
+    cheonwooBase = rateRow.cheonwoo_export;
+  } else if (boxType === 'open_box') {
+    yuseongBase = Math.floor(rateRow.yuseong_domestic * 0.6);
+    cheonwooBase = rateRow.cheonwoo_domestic ? Math.floor(rateRow.cheonwoo_domestic * 0.6) : null;
+  } else if (boxType === 'pallet_base') {
+    // 발판 (목재 파렛트)
+    yuseongBase = Math.floor(rateRow.yuseong_domestic * 0.65);
+    cheonwooBase = rateRow.cheonwoo_domestic ? Math.floor(rateRow.cheonwoo_domestic * 0.65) : null;
+  } else if (boxType === 'half_box') {
+    const halfKey = `${w}*${l}*${h}`;
+    const price = window.PALLET_PRICES_DATA.halfBoxPrices[halfKey] || 28000;
+    yuseongBase = price;
+    cheonwooBase = price;
+  } else if (boxType === 'partition') {
+    const pCount = parseInt((document.getElementById('palletPartitionCountSelect') || {}).value || '4', 10);
+    const item = window.PALLET_PRICES_DATA.partitionBoard.find(p => pCount <= p.maxCount) || {price: 4000};
+    yuseongBase = item.price;
+    cheonwooBase = item.price;
+  } else if (boxType === 'plywood_7t') {
+    const pW = parseFloat((document.getElementById('palletPlywoodW') || {}).value || '580');
+    const pL = parseFloat((document.getElementById('palletPlywoodL') || {}).value || '450');
+    const pPrice = window.PALLET_PRICES_DATA.plywood7T.calcPrice(pW, pL);
+    yuseongBase = pPrice;
+    cheonwooBase = pPrice;
+  }
+
+  // Surcharges
+  let flatSurcharge = 0;
+  let cbmSurcharge = 0;
+  const isManHeavy = (document.getElementById('opt_man_heavy') || {}).checked;
+  const isCylCore = (document.getElementById('opt_cyl_core') || {}).checked;
+  const isFork1 = (document.getElementById('opt_fork_1') || {}).checked;
+  const isFork2 = (document.getElementById('opt_fork_2') || {}).checked;
+  const isCartCbm = (document.getElementById('opt_cart_cbm') || {}).checked;
+  const isSteelPallet = (document.getElementById('opt_steel_pallet') || {}).checked;
+  const isCustom19 = (document.getElementById('opt_custom_19') || {}).checked;
+
+  if (isManHeavy) flatSurcharge += 4000;
+  if (isCylCore) flatSurcharge += 15000;
+  if (isFork1) flatSurcharge += 5000;
+  if (isFork2) flatSurcharge += 10000;
+  if (isCartCbm) cbmSurcharge += Math.round(cbm * 25000);
+  if (isSteelPallet) cbmSurcharge += Math.round(cbm * 22000);
+
+  const totalSurcharge = flatSurcharge + cbmSurcharge;
+
+  // Yuseong Calculations
+  let yuseongUnitPrice = (yuseongBase + totalSurcharge);
+  if (isCustom19) yuseongUnitPrice = Math.round(yuseongUnitPrice * 1.19);
+  const yuseongSupply = yuseongUnitPrice * qty;
+  const yuseongVat = Math.floor(yuseongSupply * 0.1);
+  const yuseongTotal = yuseongSupply + yuseongVat;
+
+  // Cheonwoo Calculations
+  let cheonwooTotal = null;
+  let cheonwooSupply = null;
+  let cheonwooVat = null;
+  let cheonwooUnitPrice = null;
+  if (cheonwooBase !== null) {
+    cheonwooUnitPrice = (cheonwooBase + totalSurcharge);
+    if (isCustom19) cheonwooUnitPrice = Math.round(cheonwooUnitPrice * 1.19);
+    cheonwooSupply = cheonwooUnitPrice * qty;
+    cheonwooVat = Math.floor(cheonwooSupply * 0.1);
+    cheonwooTotal = cheonwooSupply + cheonwooVat;
+  }
+
+  // Update Yuseong UI
+  const elYBase = document.getElementById('valYuseongBasePrice');
+  const elYSurcharge = document.getElementById('valYuseongSurcharge');
+  const elYSupply = document.getElementById('valYuseongSupplyPrice');
+  const elYVat = document.getElementById('valYuseongVat');
+  const elYTotal = document.getElementById('valYuseongTotal');
+
+  if (elYBase) elYBase.textContent = `₩${formatNumber(yuseongBase)}`;
+  if (elYSurcharge) elYSurcharge.textContent = (totalSurcharge > 0 || isCustom19) ? `+₩${formatNumber(yuseongUnitPrice - yuseongBase)}` : '+₩0';
+  if (elYSupply) elYSupply.textContent = `₩${formatNumber(yuseongSupply)}`;
+  if (elYVat) elYVat.textContent = `₩${formatNumber(yuseongVat)}`;
+  if (elYTotal) elYTotal.textContent = `₩${formatNumber(yuseongTotal)}`;
+
+  // Update Cheonwoo UI
+  const elCBase = document.getElementById('valCheonwooBasePrice');
+  const elCSurcharge = document.getElementById('valCheonwooSurcharge');
+  const elCSupply = document.getElementById('valCheonwooSupplyPrice');
+  const elCVat = document.getElementById('valCheonwooVat');
+  const elCTotal = document.getElementById('valCheonwooTotal');
+  const elCOverNotice = document.getElementById('cheonwooOverNotice');
+
+  if (cheonwooBase !== null) {
+    if (elCBase) elCBase.textContent = `₩${formatNumber(cheonwooBase)}`;
+    if (elCSurcharge) elCSurcharge.textContent = (totalSurcharge > 0 || isCustom19) ? `+₩${formatNumber(cheonwooUnitPrice - cheonwooBase)}` : '+₩0';
+    if (elCSupply) elCSupply.textContent = `₩${formatNumber(cheonwooSupply)}`;
+    if (elCVat) elCVat.textContent = `₩${formatNumber(cheonwooVat)}`;
+    if (elCTotal) elCTotal.textContent = `₩${formatNumber(cheonwooTotal)}`;
+    if (elCOverNotice) elCOverNotice.style.display = 'none';
+  } else {
+    if (elCBase) elCBase.textContent = '협의 요망';
+    if (elCSurcharge) elCSurcharge.textContent = '-';
+    if (elCSupply) elCSupply.textContent = '별도 견적';
+    if (elCVat) elCVat.textContent = '-';
+    if (elCTotal) elCTotal.textContent = '협의 필요';
+    if (elCOverNotice) elCOverNotice.style.display = 'block';
+  }
+
+  // Compare & Winner Banner
+  const winnerTitle = document.getElementById('palletWinnerTitle');
+  const winnerDesc = document.getElementById('palletWinnerDesc');
+  const cardY = document.getElementById('cardVendorYuseong');
+  const cardC = document.getElementById('cardVendorCheonwoo');
+  const badgeY = document.getElementById('badgeYuseongWinner');
+  const badgeC = document.getElementById('badgeCheonwooWinner');
+
+  let winnerText = '';
+  if (cheonwooTotal !== null) {
+    if (cheonwooTotal < yuseongTotal) {
+      const diff = yuseongTotal - cheonwooTotal;
+      const pct = ((diff / yuseongTotal) * 100).toFixed(1);
+      if (winnerTitle) winnerTitle.textContent = `천우수출포장이 ${formatNumber(diff)}원 더 저렴합니다!`;
+      if (winnerDesc) winnerDesc.textContent = `유성 대비 약 ${pct}% 비용 절감 (${qty}개 기준, 공급가액+VAT)`;
+      if (cardC) cardC.className = 'pallet-vendor-card winner';
+      if (cardY) cardY.className = 'pallet-vendor-card';
+      if (badgeC) { badgeC.textContent = '🏆 최저가'; badgeC.style.background = '#ecfdf5'; badgeC.style.color = '#065f46'; }
+      if (badgeY) { badgeY.textContent = '비교'; badgeY.style.background = '#f1f5f9'; badgeY.style.color = '#64748b'; }
+      winnerText = `천우수출포장이 ${formatNumber(diff)}원 더 저렴 (▼${pct}%)`;
+    } else if (yuseongTotal < cheonwooTotal) {
+      const diff = cheonwooTotal - yuseongTotal;
+      const pct = ((diff / cheonwooTotal) * 100).toFixed(1);
+      if (winnerTitle) winnerTitle.textContent = `유성수출포장이 ${formatNumber(diff)}원 더 저렴합니다!`;
+      if (winnerDesc) winnerDesc.textContent = `천우 대비 약 ${pct}% 비용 절감 (${qty}개 기준, 공급가액+VAT)`;
+      if (cardY) cardY.className = 'pallet-vendor-card winner';
+      if (cardC) cardC.className = 'pallet-vendor-card';
+      if (badgeY) { badgeY.textContent = '🏆 최저가'; badgeY.style.background = '#ecfdf5'; badgeY.style.color = '#065f46'; }
+      if (badgeC) { badgeC.textContent = '비교'; badgeC.style.background = '#f1f5f9'; badgeC.style.color = '#64748b'; }
+      winnerText = `유성수출포장이 ${formatNumber(diff)}원 더 저렴 (▼${pct}%)`;
+    } else {
+      if (winnerTitle) winnerTitle.textContent = '두 업체의 견적 금액이 동일합니다.';
+      if (winnerDesc) winnerDesc.textContent = `공급가액 및 부가세 합계 일치 (${qty}개 기준)`;
+      if (cardY) cardY.className = 'pallet-vendor-card';
+      if (cardC) cardC.className = 'pallet-vendor-card';
+      if (badgeY) { badgeY.textContent = '동일'; badgeY.style.background = '#f1f5f9'; badgeY.style.color = '#64748b'; }
+      if (badgeC) { badgeC.textContent = '동일'; badgeC.style.background = '#f1f5f9'; badgeC.style.color = '#64748b'; }
+      winnerText = '두 업체 동일 단가';
+    }
+  } else {
+    if (winnerTitle) winnerTitle.textContent = `유성수출포장 단독 적용 (${formatNumber(yuseongTotal)}원)`;
+    if (winnerDesc) winnerDesc.textContent = '천우는 2.0 CBM 초과 규격으로 별도 단가 협의가 필요합니다.';
+    if (cardY) cardY.className = 'pallet-vendor-card winner';
+    if (cardC) cardC.className = 'pallet-vendor-card';
+    if (badgeY) { badgeY.textContent = '단독 적용'; badgeY.style.background = '#dbeafe'; badgeY.style.color = '#1e40af'; }
+    if (badgeC) { badgeC.textContent = '협의 필요'; badgeC.style.background = '#fef3c7'; badgeC.style.color = '#92400e'; }
+    winnerText = '유성수출포장 단독 (천우 별도협의)';
+  }
+
+  // Save current quote for copying
+  const typeSelect = document.getElementById('palletBoxType');
+  const boxTypeName = (typeSelect && typeSelect.options && typeSelect.selectedIndex >= 0) ? typeSelect.options[typeSelect.selectedIndex].text : boxType;
+  lastPalletQuote = {
+    boxTypeName,
+    w, l, h,
+    cbm,
+    qty,
+    yuseongTotal,
+    yuseongSupply,
+    yuseongVat,
+    cheonwooTotal,
+    cheonwooSupply,
+    cheonwooVat,
+    winnerText,
+    options: [
+      isManHeavy ? 'MAN중량포장(+4천)' : null,
+      isCylCore ? '원통코어(+1.5만)' : null,
+      isFork1 ? '지게차4M가로1면(+5천)' : null,
+      isFork2 ? '지게차4M양면(+1만)' : null,
+      isCartCbm ? '대차포장(2.5만/CBM)' : null,
+      isSteelPallet ? '철대파렛트(2.2만/CBM)' : null,
+      isCustom19 ? '특이19%인상' : null
+    ].filter(Boolean).join(', ') || '없음'
+  };
+}
+
+function copyPalletQuoteText() {
+  if (!lastPalletQuote) {
+    updatePalletCalculator();
+  }
+  const q = lastPalletQuote;
+  const text = `[나무 파렛트 & 수출박스 견적 산출서]
+■ 품목 구분: ${q.boxTypeName}
+■ 적용 규격: ${q.w} × ${q.l} × ${q.h} mm (공식 여유치수 +100/+100/+220mm 적용)
+■ 산출 CBM: ${q.cbm} CBM
+■ 발주 수량: ${formatNumber(q.qty)} EA
+■ 선택 옵션: ${q.options}
+--------------------------------------------------
+[1] 유성수출포장 견적:
+  - 공급가액: ${formatNumber(q.yuseongSupply)}원
+  - 부가세: ${formatNumber(q.yuseongVat)}원
+  - 총 합계(VAT포함): ${formatNumber(q.yuseongTotal)}원
+
+[2] 천우수출포장 견적:
+  ${q.cheonwooTotal !== null ? `- 공급가액: ${formatNumber(q.cheonwooSupply)}원\n  - 부가세: ${formatNumber(q.cheonwooVat)}원\n  - 총 합계(VAT포함): ${formatNumber(q.cheonwooTotal)}원` : '- 2.0 CBM 초과 규격: 별도 협의 요망'}
+
+★ 단가 분석: ${q.winnerText}
+--------------------------------------------------
+(주)에스앤더블류 구매부 소모품 관리 시스템`;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast('견적 산출 내역이 클립보드에 복사되었습니다.', 'success');
+    }).catch(() => {
+      prompt('아래 내용을 복사하세요:', text);
+    });
+  } else {
+    prompt('아래 내용을 복사하세요:', text);
+  }
+}
+
+function resetPalletCalculator() {
+  const typeSelect = document.getElementById('palletBoxType');
+  if (typeSelect) typeSelect.value = 'domestic_box';
+
+  const wEl = document.getElementById('palletWidth');
+  const lEl = document.getElementById('palletLength');
+  const hEl = document.getElementById('palletHeight');
+  const qEl = document.getElementById('palletQty');
+  if (wEl) wEl.value = '950';
+  if (lEl) lEl.value = '570';
+  if (hEl) hEl.value = '560';
+  if (qEl) qEl.value = '1';
+
+  ['opt_man_heavy', 'opt_cyl_core', 'opt_fork_1', 'opt_fork_2', 'opt_cart_cbm', 'opt_steel_pallet', 'opt_custom_19'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.checked = false;
+  });
+
+  onPalletBoxTypeChange();
+  showToast('나무 파렛트 계산기가 초기화되었습니다.', 'info');
+}
+
+function renderPalletCbmTable() {
+  const tbody = document.getElementById('palletCbmTableBody');
+  if (!tbody || !window.PALLET_PRICES_DATA) return;
+
+  const rates = window.PALLET_PRICES_DATA.cbmRates;
+  let html = '';
+
+  rates.forEach(r => {
+    const cbmStr = (r.cbm > 1.0) ? r.cbm.toFixed(1) : r.cbm.toFixed(2);
+    let diffBadge = '-';
+    if (r.cheonwoo_domestic) {
+      const diff = r.yuseong_domestic - r.cheonwoo_domestic;
+      if (diff > 0) {
+        diffBadge = `<span style="color:#059669; font-weight:700;">천우 ▼${formatNumber(diff)}원 저렴</span>`;
+      } else if (diff < 0) {
+        diffBadge = `<span style="color:#2563eb; font-weight:700;">유성 ▼${formatNumber(Math.abs(diff))}원 저렴</span>`;
+      } else {
+        diffBadge = `<span style="color:var(--text-muted);">동일</span>`;
+      }
+    } else {
+      diffBadge = `<span style="color:#d97706; font-size:0.72rem;">천우 협의요망</span>`;
+    }
+
+    html += `
+      <tr id="cbm_row_${cbmStr.replace('.', '_')}" style="cursor: pointer;" onclick="applyPalletCbmDirect(${r.cbm})">
+        <td style="text-align: center; font-weight: 700; font-family: monospace;">${cbmStr}</td>
+        <td style="text-align: right; font-family: monospace;">${formatNumber(r.yuseong_domestic)}</td>
+        <td style="text-align: right; font-family: monospace;">${formatNumber(r.yuseong_export)}</td>
+        <td style="text-align: right; font-family: monospace;">${r.cheonwoo_domestic ? formatNumber(r.cheonwoo_domestic) : '-'}</td>
+        <td style="text-align: right; font-family: monospace;">${r.cheonwoo_export ? formatNumber(r.cheonwoo_export) : '-'}</td>
+        <td style="text-align: center; font-size: 0.76rem;">${diffBadge}</td>
+      </tr>
+    `;
+  });
+
+  tbody.innerHTML = html;
+}
+
+function filterPalletCbmTable() {
+  const query = (document.getElementById('filterCbmTableInput') || {}).value.trim();
+  const rows = document.querySelectorAll('#palletCbmTableBody tr');
+  rows.forEach(r => {
+    const cbmText = r.cells[0]?.textContent || '';
+    if (!query || cbmText.includes(query)) {
+      r.style.display = '';
+    } else {
+      r.style.display = 'none';
+    }
+  });
+}
+
+function viewCbmTableRow(targetCbm) {
+  const acc = document.getElementById('accCbmTable');
+  const icon = document.getElementById('iconAccCbmTable');
+  if (acc && acc.style.display === 'none') {
+    acc.style.display = 'block';
+    if (icon) icon.textContent = '▼';
+  }
+  const cbmStr = (targetCbm > 1.0) ? targetCbm.toFixed(1) : targetCbm.toFixed(2);
+  const rowId = `cbm_row_${cbmStr.replace('.', '_')}`;
+  const row = document.getElementById(rowId);
+  if (row) {
+    row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    row.style.background = '#fef3c7';
+    setTimeout(() => {
+      row.style.transition = 'background 1s';
+      row.style.background = '';
+    }, 2000);
+  }
+}
+
+function applyPalletCbmDirect(cbm) {
+  viewCbmTableRow(cbm);
+  showToast(`${cbm} CBM 기준 단가가 확인되었습니다.`, 'info');
+}
+
+function togglePalletAccordion(id) {
+  const acc = document.getElementById(id);
+  const iconId = 'icon' + id.charAt(0).toUpperCase() + id.slice(1);
+  const icon = document.getElementById(iconId);
+  if (!acc) return;
+
+  const isHidden = (acc.style.display === 'none');
+  acc.style.display = isHidden ? 'block' : 'none';
+  if (icon) icon.textContent = isHidden ? '▼' : '▶';
+}
+
+function exportPalletRatesToCSV() {
+  if (!window.PALLET_PRICES_DATA) return;
+  const rates = window.PALLET_PRICES_DATA.cbmRates;
+  const headers = ['CBM', '유성 내수용', '유성 수출용', '천우 내수용', '천우 수출용', '내수 단가 차이(유성-천우)'];
+  const rows = rates.map(r => [
+    (r.cbm > 1.0) ? r.cbm.toFixed(1) : r.cbm.toFixed(2),
+    r.yuseong_domestic,
+    r.yuseong_export,
+    r.cheonwoo_domestic || '',
+    r.cheonwoo_export || '',
+    r.cheonwoo_domestic ? (r.yuseong_domestic - r.cheonwoo_domestic) : '천우 협의'
+  ]);
+  exportToCSV(headers, rows, `나무파렛트_수출박스_CBM단가표_유성_천우_${new Date().toISOString().substring(0,10)}.csv`);
+  showToast('CBM 단가표 CSV 파일이 다운로드되었습니다.', 'success');
+}
   </script>
 
   <!-- Mobile Bottom Navigation Bar (Visible only on mobile devices) -->
@@ -7822,6 +8889,10 @@ function stepScrapWeight(type, delta) {
     <button class="m-nav-item" data-tab="tab-scrap" onclick="switchMobileTab('tab-scrap')">
       <span class="m-nav-icon">💎</span>
       <span class="m-nav-label">폐팁시세</span>
+    </button>
+    <button class="m-nav-item" data-tab="tab-pallet" onclick="switchMobileTab('tab-pallet')">
+      <span class="m-nav-icon">🪵</span>
+      <span class="m-nav-label">파렛트</span>
     </button>
     <button class="m-nav-item" data-tab="tab-trends" onclick="switchMobileTab('tab-trends')">
       <span class="m-nav-icon">📈</span>
