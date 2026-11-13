@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -4853,24 +4853,22 @@ async function initApp() {
   initModalCloseHandlers(); // [NEW]
   initRealtimeSearch(); // [NEW]
   
-  // 5. Initial Render
-  applyFilters();
-  renderVendorSidebar();
-  renderPivotView();
-  renderClosingView();
-  renderScrapView();
-  renderVendorMgmtTable();
-  updateSyncInfo();
+  // 5. Blazing Fast Initial Render (Dashboard first)
   renderVentesDashboard();
-
-  // 6. Update page title for initial tab [NEW]
   updatePageTitle();
-
-  // 7. Fade out loading overlay [NEW]
+  updateFooterInfo();
   fadeOutLoadingOverlay();
 
-  // 8. Update footer data info
-  updateFooterInfo();
+  // 6. Background deferred warm-up for secondary tabs (0ms lag on startup)
+  setTimeout(() => {
+    applyFilters();
+    renderVendorSidebar();
+    renderScrapView();
+    renderPivotView();
+    renderClosingView();
+    renderVendorMgmtTable();
+    updateSyncInfo();
+  }, 50);
 }
 
 function updateFooterInfo() {
@@ -4880,14 +4878,16 @@ function updateFooterInfo() {
   if (footerUpdate) footerUpdate.textContent = new Date().toLocaleDateString('ko-KR');
 }
 
-// [NEW] Loading overlay fade out
+// [NEW] Loading overlay fade out with instant pointer-events unlock
 function fadeOutLoadingOverlay() {
   const overlay = document.getElementById('loadingOverlay');
   if (overlay) {
     overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+    overlay.classList.add('hidden');
     setTimeout(() => {
       overlay.style.display = 'none';
-    }, 300);
+    }, 200);
   }
 }
 
@@ -8644,7 +8644,7 @@ function switchMobileTab(targetId) {
   if (typeof switchTabDirect === 'function') {
     switchTabDirect(targetId);
   } else {
-    const targetTab = document.querySelector(.nav-tab[data-tab="${targetId}"]);
+    const targetTab = document.querySelector('.nav-tab[data-tab="' + targetId + '"]');
     if (targetTab) targetTab.click();
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -9012,13 +9012,17 @@ function switchTabDirect(target) {
 
   // Trigger tab redraws
   if (target === 'tab-dashboard') {
-    setTimeout(renderVentesDashboard, 50);
+    setTimeout(renderVentesDashboard, 30);
+  } else if (target === 'tab-search') {
+    if (typeof applyFilters === 'function') applyFilters();
   } else if (target === 'tab-trends') {
     if (typeof renderPivotView === 'function') renderPivotView();
   } else if (target === 'tab-closing') {
     if (typeof renderClosingView === 'function') renderClosingView();
   } else if (target === 'tab-scrap') {
     if (typeof renderScrapView === 'function') renderScrapView();
+  } else if (target === 'tab-vendors') {
+    if (typeof renderVendorMgmtTable === 'function') renderVendorMgmtTable();
   }
 }
 
