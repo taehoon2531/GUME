@@ -2238,14 +2238,24 @@ canvas.custom-chart {
   }
 }
 
-/* ─── Mobile: ≤768px ─── */
+/* ─── Desktop Defaults for Mobile-Only Elements ─── */
+.mobile-bottom-nav { display: none !important; }
+.mobile-quick-chips { display: none; }
+.m-card-meta { display: none; }
+.m-label { display: none; }
+.m-card-arrow { display: none; }
+
+/* ─── Mobile: ≤768px (App-like Intuitive UX) ─── */
 @media (max-width: 768px) {
+  body {
+    padding-bottom: 64px !important; /* space for fixed bottom nav bar */
+  }
+
   header {
-    height: auto !important;
-    flex-wrap: wrap !important;
-    padding: 0.5rem 0.75rem 0 !important;
-    gap: 6px 10px !important;
+    height: 50px !important;
+    padding: 0 0.85rem !important;
     align-items: center !important;
+    justify-content: space-between !important;
   }
 
   .brand {
@@ -2261,7 +2271,7 @@ canvas.custom-chart {
   }
 
   .header-actions {
-    gap: 5px;
+    gap: 6px;
     margin-left: auto;
   }
 
@@ -2270,54 +2280,66 @@ canvas.custom-chart {
     font-size: 0.72rem;
   }
 
-  /* Keep dark mode and fullscreen visible, hide CSV export from compact header */
-  .header-actions button[onclick="exportCurrentTableToCSV()"] {
-    display: none;
-  }
-
+  /* Hide desktop header nav tabs and CSV export button on mobile */
+  .nav-tabs,
+  .header-actions button[onclick="exportCurrentTableToCSV()"],
   .data-status-pill {
-    display: none;
+    display: none !important;
   }
 
-  /* Nav tabs: App-style horizontal swipeable bar */
-  .nav-tabs {
-    order: 3;
-    width: 100% !important;
-    overflow-x: auto !important;
-    overflow-y: hidden !important;
-    white-space: nowrap !important;
-    -webkit-overflow-scrolling: touch !important;
-    scrollbar-width: none;
+  /* Fixed Bottom Navigation Bar (Thumb Friendly) */
+  .mobile-bottom-nav {
     display: flex !important;
-    gap: 4px !important;
-    padding: 2px 0 4px 0 !important;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 56px;
+    background: var(--card-bg);
+    border-top: 1px solid var(--card-border);
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+    z-index: 9999;
+    padding-bottom: env(safe-area-inset-bottom, 2px);
+    justify-content: space-around;
+    align-items: center;
   }
 
-  .nav-tabs::-webkit-scrollbar {
-    display: none;
+  .m-nav-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 4px 0;
+    color: var(--slate-400);
+    cursor: pointer;
+    gap: 2px;
+    font-family: inherit;
+    transition: all 0.15s ease;
   }
 
-  .nav-tab {
-    flex-shrink: 0 !important;
-    padding: 0.4rem 0.75rem !important;
-    height: 36px !important;
-    font-size: 0.8rem !important;
-    display: inline-flex !important;
-    align-items: center !important;
-    gap: 5px !important;
-    border-radius: 6px !important;
+  .m-nav-item .m-nav-icon {
+    font-size: 1.25rem;
+    line-height: 1;
   }
 
-  .nav-tab .tab-text,
-  .nav-tab .nav-tab-text {
-    display: inline !important;
-    font-size: 0.76rem !important;
-    font-weight: 600 !important;
+  .m-nav-item .m-nav-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+  }
+
+  .m-nav-item.active {
+    color: var(--primary);
+  }
+
+  .m-nav-item.active .m-nav-icon {
+    transform: scale(1.15);
   }
 
   main {
-    padding: 0.6rem 0.6rem 2rem 0.6rem;
+    padding: 0.6rem 0.6rem 1.5rem 0.6rem;
     gap: 0.75rem;
   }
 
@@ -2328,11 +2350,13 @@ canvas.custom-chart {
   }
 
   .stat-card {
-    padding: 0.7rem 0.85rem !important;
+    padding: 0.75rem 0.85rem !important;
+    border-radius: 10px;
   }
 
   .stat-info .stat-value {
     font-size: 1.15rem !important;
+    font-weight: 800;
   }
 
   .stat-info .stat-label {
@@ -2343,6 +2367,134 @@ canvas.custom-chart {
     width: 32px !important;
     height: 32px !important;
     font-size: 1rem !important;
+  }
+
+  /* Mobile Quick Chips */
+  .mobile-quick-chips {
+    display: flex !important;
+    gap: 6px;
+    overflow-x: auto;
+    padding: 2px 2px 8px 2px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .mobile-quick-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .chip-btn {
+    flex-shrink: 0;
+    padding: 5px 11px;
+    border-radius: 18px;
+    border: 1px solid var(--slate-300);
+    background: var(--card-bg);
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .chip-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+    box-shadow: 0 1px 3px rgba(37,99,235,0.3);
+  }
+
+  .m-step-btn {
+    padding: 2px 8px !important;
+    font-size: 0.7rem !important;
+    border-radius: 4px !important;
+    border: 1px solid var(--slate-300) !important;
+    background: var(--card-bg) !important;
+  }
+
+  /* Transform Supplies Table into Sleek Mobile Cards */
+  #mainTable, #mainTable tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+
+  #mainTable thead {
+    display: none !important;
+  }
+
+  #mainTable tbody tr {
+    display: block !important;
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 10px !important;
+    padding: 11px 13px !important;
+    margin-bottom: 9px !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04) !important;
+    cursor: pointer !important;
+    position: relative !important;
+  }
+
+  #mainTable tbody tr:active {
+    background: var(--slate-100) !important;
+    transform: scale(0.99);
+  }
+
+  #mainTable tbody tr td {
+    border: none !important;
+    padding: 0 !important;
+    text-align: left !important;
+  }
+
+  .col-date, .col-vendor, .col-unit-price, .col-remarks {
+    display: none !important;
+  }
+
+  .m-card-title {
+    font-size: 0.98rem !important;
+    color: var(--text-primary) !important;
+    font-weight: 700 !important;
+  }
+
+  .m-card-meta {
+    display: flex !important;
+    gap: 8px !important;
+    font-size: 0.74rem !important;
+    color: var(--text-secondary) !important;
+    margin-top: 4px !important;
+  }
+
+  .col-qty {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-top: 8px !important;
+    padding-top: 7px !important;
+    border-top: 1px dashed var(--slate-200) !important;
+    font-size: 0.78rem !important;
+    color: var(--text-secondary) !important;
+  }
+
+  .col-amount {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 4px !important;
+    margin-top: -21px !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    color: #1e40af !important;
+  }
+
+  .m-card-arrow {
+    display: inline-block !important;
+    font-size: 1.15rem !important;
+    color: var(--slate-400) !important;
+    margin-left: 2px !important;
+  }
+
+  .m-label {
+    display: inline !important;
+    font-size: 0.72rem !important;
+    color: var(--text-muted) !important;
   }
 
   /* Stack layouts vertically */
@@ -2437,17 +2589,8 @@ canvas.custom-chart {
     align-items: stretch;
   }
 
-  /* Table: mobile touch scroll */
-  table {
-    font-size: 0.78rem;
-  }
-
-  th, td {
-    padding: 6px 8px;
-  }
-
   .table-container {
-    max-height: 380px;
+    max-height: 480px;
     -webkit-overflow-scrolling: touch;
   }
 
@@ -2641,6 +2784,19 @@ canvas.custom-chart {
             <span>적용된 필터:</span>
             <div id="filterTagsContainer" style="display: flex; gap: 6px;"></div>
             <button class="btn btn-sm btn-outline" style="margin-left: auto;" onclick="resetAllFilters()">모든 필터 초기화</button>
+          </div>
+
+          <!-- Mobile Quick Search Chips (Fast Thumb Filtering) -->
+          <div class="mobile-quick-chips">
+            <button class="chip-btn active" data-chip="all" onclick="setQuickSearch('')">전체</button>
+            <button class="chip-btn" data-chip="인서트" onclick="setQuickSearch('인서트')">🪙 인서트</button>
+            <button class="chip-btn" data-chip="엔드밀" onclick="setQuickSearch('엔드밀')">🔪 엔드밀</button>
+            <button class="chip-btn" data-chip="드릴" onclick="setQuickSearch('드릴')">🔩 드릴</button>
+            <button class="chip-btn" data-chip="팁" onclick="setQuickSearch('팁')">팁</button>
+            <button class="chip-btn" data-chip="테이프" onclick="setQuickSearch('테이프')">테이프</button>
+            <button class="chip-btn" data-chip="오일" onclick="setQuickSearch('오일')">오일</button>
+            <button class="chip-btn" data-chip="장갑" onclick="setQuickSearch('장갑')">장갑</button>
+            <button class="chip-btn" data-chip="가스" onclick="setQuickSearch('가스')">가스</button>
           </div>
 
           <!-- Table -->
@@ -3031,6 +3187,11 @@ canvas.custom-chart {
                   </div>
                   <div id="scrapCalcTipSubtotal" style="font-size: 0.95rem; font-weight: 800; color: #1e40af;">3,000,000원</div>
                 </div>
+                <div style="display: flex; gap: 4px; margin-top: 6px;">
+                  <button type="button" class="chip-btn m-step-btn" onclick="stepScrapWeight('tip', -10)">-10</button>
+                  <button type="button" class="chip-btn m-step-btn" onclick="stepScrapWeight('tip', 10)">+10</button>
+                  <button type="button" class="chip-btn m-step-btn" onclick="stepScrapWeight('tip', 50)">+50kg</button>
+                </div>
               </div>
 
               <!-- HSS Input -->
@@ -3045,6 +3206,11 @@ canvas.custom-chart {
                     <span style="font-size: 0.8rem; color: var(--text-secondary);">kg</span>
                   </div>
                   <div id="scrapCalcHssSubtotal" style="font-size: 0.95rem; font-weight: 800; color: #7c3aed;">550,000원</div>
+                </div>
+                <div style="display: flex; gap: 4px; margin-top: 6px;">
+                  <button type="button" class="chip-btn m-step-btn" onclick="stepScrapWeight('hss', -10)">-10</button>
+                  <button type="button" class="chip-btn m-step-btn" onclick="stepScrapWeight('hss', 10)">+10</button>
+                  <button type="button" class="chip-btn m-step-btn" onclick="stepScrapWeight('hss', 50)">+50kg</button>
                 </div>
               </div>
             </div>
@@ -3753,6 +3919,15 @@ function initNavTabs() {
       const target = tab.getAttribute('data-tab');
       document.getElementById(target).classList.add('active');
 
+      // Sync mobile bottom nav items
+      document.querySelectorAll('.m-nav-item').forEach(m => {
+        if (m.getAttribute('data-tab') === target) {
+          m.classList.add('active');
+        } else {
+          m.classList.remove('active');
+        }
+      });
+
       // [NEW] Update dynamic page title
       updatePageTitle();
 
@@ -4174,16 +4349,25 @@ function renderTable() {
     const tr = document.createElement('tr');
     
     tr.innerHTML = `
-      <td>${row[0]}</td>
-      <td style="font-weight: 600;">${row[1]}</td>
+      <td class="col-date">${row[0]}</td>
+      <td class="col-vendor" style="font-weight: 600;">${escapeHtml(row[1])}</td>
       <td class="item-spec-cell">
-        <strong>${row[2]}</strong>
-        ${row[3] ? `<span class="spec-badge"> ■ ${row[3]}</span>` : ''}
+        <div class="m-card-top">
+          <strong class="m-card-title">${escapeHtml(row[2])}</strong>
+          ${row[3] ? `<span class="spec-badge"> ■ ${escapeHtml(row[3])}</span>` : ''}
+        </div>
+        <div class="m-card-meta">
+          <span>🏢 ${escapeHtml(row[1])}</span>
+          <span>📅 ${row[0]}</span>
+        </div>
       </td>
-      <td class="text-right">${formatNumber(row[4])}</td>
-      <td class="text-right">${formatNumber(row[5])}</td>
-      <td class="text-right" style="font-weight: 700; color: #1e3a8a;">${formatCurrency(row[6])}</td>
-      <td style="color: var(--slate-600);">${row[7] || ''}</td>
+      <td class="col-qty text-right"><span class="m-label">수량: </span>${formatNumber(row[4])}개</td>
+      <td class="col-unit-price text-right"><span class="m-label">단가: </span>${formatNumber(row[5])}원</td>
+      <td class="col-amount text-right" style="font-weight: 700; color: #1e3a8a;">
+        <span class="m-card-amt">${formatCurrency(row[6])}</span>
+        <span class="m-card-arrow">›</span>
+      </td>
+      <td class="col-remarks" style="color: var(--slate-600);">${escapeHtml(row[7] || '')}</td>
     `;
 
     tr.onclick = () => {
@@ -7469,6 +7653,68 @@ function exportScrapToCSV() {
   exportToCSV(headers, rows, `올메탈_폐초경_폐팁_시세이력_${new Date().toISOString().substring(0,10)}.csv`);
   showToast('올메탈 폐초경 시세 이력 CSV 파일이 다운로드되었습니다.', 'success');
 }
+
+// ==========================================
+// 17. Mobile App UI Helpers
+// ==========================================
+function switchMobileTab(targetId) {
+  const targetTab = document.querySelector(`.nav-tab[data-tab="${targetId}"]`);
+  if (targetTab) {
+    targetTab.click();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+function setQuickSearch(keyword) {
+  const input = document.getElementById('mainSearchInput');
+  if (input) {
+    input.value = keyword;
+    triggerSearch();
+  }
+  document.querySelectorAll('.chip-btn').forEach(btn => {
+    const chipVal = btn.getAttribute('data-chip');
+    if ((keyword === '' && chipVal === 'all') || chipVal === keyword) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+}
+
+function stepScrapWeight(type, delta) {
+  const inputId = type === 'tip' ? 'scrapCalcWeightTip' : 'scrapCalcWeightHss';
+  const el = document.getElementById(inputId);
+  if (el) {
+    let val = (parseFloat(el.value) || 0) + delta;
+    if (val < 0) val = 0;
+    el.value = val;
+    updateScrapCalculator();
+  }
+}
   </script>
+
+  <!-- Mobile Bottom Navigation Bar (Visible only on mobile devices) -->
+  <nav class="mobile-bottom-nav" id="mobileBottomNav">
+    <button class="m-nav-item active" data-tab="tab-search" onclick="switchMobileTab('tab-search')">
+      <span class="m-nav-icon">📋</span>
+      <span class="m-nav-label">소모품검색</span>
+    </button>
+    <button class="m-nav-item" data-tab="tab-scrap" onclick="switchMobileTab('tab-scrap')">
+      <span class="m-nav-icon">💎</span>
+      <span class="m-nav-label">폐팁시세</span>
+    </button>
+    <button class="m-nav-item" data-tab="tab-trends" onclick="switchMobileTab('tab-trends')">
+      <span class="m-nav-icon">📈</span>
+      <span class="m-nav-label">매입추이</span>
+    </button>
+    <button class="m-nav-item" data-tab="tab-closing" onclick="switchMobileTab('tab-closing')">
+      <span class="m-nav-icon">📅</span>
+      <span class="m-nav-label">월마감</span>
+    </button>
+    <button class="m-nav-item" data-tab="tab-vendors" onclick="switchMobileTab('tab-vendors')">
+      <span class="m-nav-icon">🏢</span>
+      <span class="m-nav-label">거래처</span>
+    </button>
+  </nav>
 </body>
 </html>
