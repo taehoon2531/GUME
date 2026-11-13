@@ -1,4 +1,4 @@
-﻿# 올메탈(AllMetal) 폐초경 및 폐팁 시세 자동 업데이트 스크립트
+# 올메탈(AllMetal) 폐초경 및 폐팁 시세 자동 업데이트 스크립트
 # 작성일: 2026-11-13
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
