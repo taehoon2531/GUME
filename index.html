@@ -4511,8 +4511,19 @@ async function clearMasterDataDB() {
 }
 
 window.addEventListener('DOMContentLoaded', async () => {
-  await initApp();
+  try {
+    await initApp();
+  } catch (err) {
+    console.error('Fatal initialization error:', err);
+  } finally {
+    fadeOutLoadingOverlay();
+  }
 });
+
+// Failsafe timer: 어떤 예외나 지연이 발생하더라도 1.2초 내 분석 오버레이 자동 해제
+setTimeout(() => {
+  fadeOutLoadingOverlay();
+}, 1200);
 
 async function initApp() {
   // 1. Try to load updated master dataset from IndexedDB first
@@ -4540,38 +4551,38 @@ async function initApp() {
   }
 
   // 2. Load Stored Vendor Contacts
-  loadStoredVendors();
+  try { loadStoredVendors(); } catch (e) { console.error('loadStoredVendors error:', e); }
 
   // 3. Load dark mode preference [NEW]
-  loadDarkModePreference();
+  try { loadDarkModePreference(); } catch (e) { console.error('loadDarkModePreference error:', e); }
 
   // 4. Initialize Filters & Views
-  initDateFilters();
-  initNavTabs();
-  initDragDrop();
-  initPasteListener();
-  initKeyboardShortcuts(); // [NEW]
-  initModalCloseHandlers(); // [NEW]
-  initRealtimeSearch(); // [NEW]
+  try { initDateFilters(); } catch (e) { console.error('initDateFilters error:', e); }
+  try { initNavTabs(); } catch (e) { console.error('initNavTabs error:', e); }
+  try { initDragDrop(); } catch (e) { console.error('initDragDrop error:', e); }
+  try { initPasteListener(); } catch (e) { console.error('initPasteListener error:', e); }
+  try { initKeyboardShortcuts(); } catch (e) { console.error('initKeyboardShortcuts error:', e); }
+  try { initModalCloseHandlers(); } catch (e) { console.error('initModalCloseHandlers error:', e); }
+  try { initRealtimeSearch(); } catch (e) { console.error('initRealtimeSearch error:', e); }
   
   // 5. Initial Render
-  applyFilters();
-  renderVendorSidebar();
-  renderPivotView();
-  renderClosingView();
-  renderScrapView();
-  initPalletCalculator();
-  renderVendorMgmtTable();
-  updateSyncInfo();
+  try { applyFilters(); } catch (e) { console.error('applyFilters error:', e); }
+  try { renderVendorSidebar(); } catch (e) { console.error('renderVendorSidebar error:', e); }
+  try { renderPivotView(); } catch (e) { console.error('renderPivotView error:', e); }
+  try { renderClosingView(); } catch (e) { console.error('renderClosingView error:', e); }
+  try { renderScrapView(); } catch (e) { console.error('renderScrapView error:', e); }
+  try { initPalletCalculator(); } catch (e) { console.error('initPalletCalculator error:', e); }
+  try { renderVendorMgmtTable(); } catch (e) { console.error('renderVendorMgmtTable error:', e); }
+  try { updateSyncInfo(); } catch (e) { console.error('updateSyncInfo error:', e); }
 
   // 6. Update page title for initial tab [NEW]
-  updatePageTitle();
+  try { updatePageTitle(); } catch (e) {}
 
   // 7. Fade out loading overlay [NEW]
   fadeOutLoadingOverlay();
 
   // 8. Update footer data info
-  updateFooterInfo();
+  try { updateFooterInfo(); } catch (e) {}
 }
 
 function updateFooterInfo() {
@@ -8387,12 +8398,20 @@ let isMarginCustomOpen = false;
 let lastPalletQuote = null;
 
 function initPalletCalculator() {
-  renderPalletCbmTable();
-  updatePalletCalculator();
+  try {
+    renderPalletCbmTable();
+    updatePalletCalculator();
+  } catch (err) {
+    console.error('initPalletCalculator error:', err);
+  }
 }
 
 function renderPalletView() {
-  updatePalletCalculator();
+  try {
+    updatePalletCalculator();
+  } catch (err) {
+    console.error('renderPalletView error:', err);
+  }
 }
 
 function setPalletVendorMode(mode) {
@@ -8482,86 +8501,94 @@ function applyPalletPreset(w, l, h, type, badgeText) {
 
 function updatePalletCalculator() {
   if (!window.PALLET_PRICES_DATA) return;
+  try {
+    const boxType = (document.getElementById('palletBoxType') || {}).value || 'domestic_box';
+    const qty = Math.max(1, parseInt((document.getElementById('palletQty') || {}).value || '1', 10));
 
-  const boxType = (document.getElementById('palletBoxType') || {}).value || 'domestic_box';
-  const qty = Math.max(1, parseInt((document.getElementById('palletQty') || {}).value || '1', 10));
+    let w = parseFloat((document.getElementById('palletWidth') || {}).value || '950');
+    let l = parseFloat((document.getElementById('palletLength') || {}).value || '570');
+    let h = parseFloat((document.getElementById('palletHeight') || {}).value || '560');
 
-  let w = parseFloat((document.getElementById('palletWidth') || {}).value || '950');
-  let l = parseFloat((document.getElementById('palletLength') || {}).value || '570');
-  let h = parseFloat((document.getElementById('palletHeight') || {}).value || '560');
+    let mW = parseFloat((document.getElementById('palletMarginW') || {}).value || '100');
+    let mL = parseFloat((document.getElementById('palletMarginL') || {}).value || '100');
+    let mH = parseFloat((document.getElementById('palletMarginH') || {}).value || '220');
 
-  let mW = parseFloat((document.getElementById('palletMarginW') || {}).value || '100');
-  let mL = parseFloat((document.getElementById('palletMarginL') || {}).value || '100');
-  let mH = parseFloat((document.getElementById('palletMarginH') || {}).value || '220');
-
-  // If half-box, override w, l, h from select
-  if (boxType === 'half_box') {
-    const halfVal = (document.getElementById('palletHalfBoxSelect') || {}).value || '500*350*330';
-    const parts = halfVal.split('*').map(Number);
-    if (parts.length === 3) {
-      w = parts[0]; l = parts[1]; h = parts[2];
-      const wEl = document.getElementById('palletWidth');
-      const lEl = document.getElementById('palletLength');
-      const hEl = document.getElementById('palletHeight');
-      if (wEl) wEl.value = w;
-      if (lEl) lEl.value = l;
-      if (hEl) hEl.value = h;
+    // If half-box, override w, l, h from select
+    if (boxType === 'half_box') {
+      const halfVal = (document.getElementById('palletHalfBoxSelect') || {}).value || '500*350*330';
+      const parts = halfVal.split('*').map(Number);
+      if (parts.length === 3) {
+        w = parts[0]; l = parts[1]; h = parts[2];
+        const wEl = document.getElementById('palletWidth');
+        const lEl = document.getElementById('palletLength');
+        const hEl = document.getElementById('palletHeight');
+        if (wEl) wEl.value = w;
+        if (lEl) lEl.value = l;
+        if (hEl) hEl.value = h;
+      }
     }
-  }
 
-  // Calculate CBM
-  let rawCbm = ((w + mW) / 1000) * ((l + mL) / 1000) * ((h + mH) / 1000);
-  if (isNaN(rawCbm) || rawCbm <= 0) rawCbm = 0.10;
-  let minCbm = Math.max(rawCbm, 0.10);
-  let cbm = (minCbm > 1.0) ? Number(minCbm.toFixed(1)) : Number(minCbm.toFixed(2));
-  lastCalculatedCbm = cbm;
+    // Calculate CBM
+    let rawCbm = ((w + mW) / 1000) * ((l + mL) / 1000) * ((h + mH) / 1000);
+    if (isNaN(rawCbm) || rawCbm <= 0) rawCbm = 0.10;
+    let minCbm = Math.max(rawCbm, 0.10);
+    let cbm = (minCbm > 1.0) ? Number(minCbm.toFixed(1)) : Number(minCbm.toFixed(2));
+    lastCalculatedCbm = cbm;
 
-  // CBM Display
-  const cbmEl = document.getElementById('palletCalculatedCbm');
-  if (cbmEl) cbmEl.textContent = (cbm > 1.0) ? cbm.toFixed(1) : cbm.toFixed(2);
+    // CBM Display
+    const cbmEl = document.getElementById('palletCalculatedCbm');
+    if (cbmEl) cbmEl.textContent = (cbm > 1.0) ? cbm.toFixed(1) : cbm.toFixed(2);
 
-  const formulaDetailEl = document.getElementById('palletCbmFormulaDetail');
-  if (formulaDetailEl) {
-    formulaDetailEl.textContent = `((${w}+${mW})/1000) × ((${l}+${mL})/1000) × ((${h}+${mH})/1000) = ${rawCbm.toFixed(4)} m³ → ${cbm} CBM`;
-  }
-  const noteEl = document.getElementById('palletCbmRoundingNote');
-  if (noteEl) {
-    noteEl.textContent = (cbm > 1.0) ? '1.0 CBM 초과 (소수 1자리 반올림)' : '1.0 CBM 이하 (소수 2자리 반올림)';
-  }
+    const formulaDetailEl = document.getElementById('palletCbmFormulaDetail');
+    if (formulaDetailEl) {
+      formulaDetailEl.textContent = `((${w}+${mW})/1000) × ((${l}+${mL})/1000) × ((${h}+${mH})/1000) = ${rawCbm.toFixed(4)} m³ → ${cbm} CBM`;
+    }
+    const noteEl = document.getElementById('palletCbmRoundingNote');
+    if (noteEl) {
+      noteEl.textContent = (cbm > 1.0) ? '1.0 CBM 초과 (소수 1자리 반올림)' : '1.0 CBM 이하 (소수 2자리 반올림)';
+    }
 
-  // Lookup rate from table
-  const rateRow = window.PALLET_PRICES_DATA.lookupRate(cbm);
+    // Lookup rate from table
+    const rateRow = (window.PALLET_PRICES_DATA && typeof window.PALLET_PRICES_DATA.lookupRate === 'function')
+      ? window.PALLET_PRICES_DATA.lookupRate(cbm)
+      : { yuseong_domestic: 28530, yuseong_export: 31390, cheonwoo_domestic: 30000, cheonwoo_export: 35000 };
 
-  let yuseongBase = 0;
-  let cheonwooBase = null;
+    let yuseongBase = 0;
+    let cheonwooBase = null;
 
-  if (boxType === 'domestic_box') {
-    yuseongBase = rateRow.yuseong_domestic;
-    cheonwooBase = rateRow.cheonwoo_domestic;
-  } else if (boxType === 'export_box') {
-    yuseongBase = rateRow.yuseong_export;
-    cheonwooBase = rateRow.cheonwoo_export;
-  } else if (boxType === 'open_box') {
-    yuseongBase = Math.floor(rateRow.yuseong_domestic * 0.6);
-    cheonwooBase = rateRow.cheonwoo_domestic ? Math.floor(rateRow.cheonwoo_domestic * 0.6) : null;
-  } else if (boxType === 'pallet_base') {
-    // 발판 (목재 파렛트)
-    yuseongBase = Math.floor(rateRow.yuseong_domestic * 0.65);
-    cheonwooBase = rateRow.cheonwoo_domestic ? Math.floor(rateRow.cheonwoo_domestic * 0.65) : null;
-  } else if (boxType === 'half_box') {
-    const halfKey = `${w}*${l}*${h}`;
-    const price = window.PALLET_PRICES_DATA.halfBoxPrices[halfKey] || 28000;
-    yuseongBase = price;
-    cheonwooBase = price;
-  } else if (boxType === 'partition') {
-    const pCount = parseInt((document.getElementById('palletPartitionCountSelect') || {}).value || '4', 10);
-    const item = window.PALLET_PRICES_DATA.partitionBoard.find(p => pCount <= p.maxCount) || {price: 4000};
-    yuseongBase = item.price;
-    cheonwooBase = item.price;
-  } else if (boxType === 'plywood_7t') {
-    const pW = parseFloat((document.getElementById('palletPlywoodW') || {}).value || '580');
-    const pL = parseFloat((document.getElementById('palletPlywoodL') || {}).value || '450');
-    const pPrice = window.PALLET_PRICES_DATA.plywood7T.calcPrice(pW, pL);
+    if (boxType === 'domestic_box') {
+      yuseongBase = rateRow.yuseong_domestic;
+      cheonwooBase = rateRow.cheonwoo_domestic;
+    } else if (boxType === 'export_box') {
+      yuseongBase = rateRow.yuseong_export;
+      cheonwooBase = rateRow.cheonwoo_export;
+    } else if (boxType === 'open_box') {
+      yuseongBase = Math.floor(rateRow.yuseong_domestic * 0.6);
+      cheonwooBase = rateRow.cheonwoo_domestic ? Math.floor(rateRow.cheonwoo_domestic * 0.6) : null;
+    } else if (boxType === 'pallet_base') {
+      // 발판 (목재 파렛트)
+      yuseongBase = Math.floor(rateRow.yuseong_domestic * 0.65);
+      cheonwooBase = rateRow.cheonwoo_domestic ? Math.floor(rateRow.cheonwoo_domestic * 0.65) : null;
+    } else if (boxType === 'half_box') {
+      const halfKey = `${w}*${l}*${h}`;
+      const price = (window.PALLET_PRICES_DATA && window.PALLET_PRICES_DATA.halfBoxPrices && window.PALLET_PRICES_DATA.halfBoxPrices[halfKey]) || 28000;
+      yuseongBase = price;
+      cheonwooBase = price;
+    } else if (boxType === 'partition') {
+      const pCount = parseInt((document.getElementById('palletPartitionCountSelect') || {}).value || '4', 10);
+      const partitions = (window.PALLET_PRICES_DATA && window.PALLET_PRICES_DATA.partitionBoard) || [];
+      const item = partitions.find(p => pCount <= p.maxCount) || {price: 4000};
+      yuseongBase = item.price;
+      cheonwooBase = item.price;
+    } else if (boxType === 'plywood_7t') {
+      const pW = parseFloat((document.getElementById('palletPlywoodW') || {}).value || '580');
+      const pL = parseFloat((document.getElementById('palletPlywoodL') || {}).value || '450');
+      const pPrice = (window.PALLET_PRICES_DATA && window.PALLET_PRICES_DATA.plywood7T && typeof window.PALLET_PRICES_DATA.plywood7T.calcPrice === 'function')
+        ? window.PALLET_PRICES_DATA.plywood7T.calcPrice(pW, pL)
+        : 1900;
+      yuseongBase = pPrice;
+      cheonwooBase = pPrice;
+    }
     yuseongBase = pPrice;
     cheonwooBase = pPrice;
   }
@@ -8717,6 +8744,9 @@ function updatePalletCalculator() {
       isCustom19 ? '특이19%인상' : null
     ].filter(Boolean).join(', ') || '없음'
   };
+  } catch (err) {
+    console.error('updatePalletCalculator error:', err);
+  }
 }
 
 function copyPalletQuoteText() {
