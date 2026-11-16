@@ -1,5 +1,5 @@
 # 올메탈(AllMetal) 폐초경 및 폐팁 시세 자동 업데이트 스크립트
-# 작성일: 2026-11-13
+# 작성일: 2026-11-16
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
@@ -15,11 +15,11 @@ Write-Host "==========================================================" -Foregro
 
 # 1. 기존 데이터 로드
 $existingData = @()
-$maxId = 173
+$maxId = 175
 
 if (Test-Path $jsonPath) {
     try {
-        $raw = Get-Content $jsonPath -Raw -Encoding UTF8
+        $raw = [System.IO.File]::ReadAllText($jsonPath, [System.Text.Encoding]::UTF8)
         $existingData = $raw | ConvertFrom-Json
         if ($existingData.Count -gt 0) {
             $maxId = ($existingData | Measure-Object -Property id -Maximum).Maximum
@@ -45,13 +45,13 @@ while ($consecutiveFails -lt 4 -and $checkId -le ($maxId + 40)) {
     $url = "https://allmetal.co.kr/bbs/board.php?bo_table=price&wr_id=$checkId"
     try {
         $html = $wc.DownloadString($url)
-        if ($html -match '작성일\s*([0-9]{2}-[0-9]{2}-[0-9]{2})') {
+        if ($html -match '작성일.*?([0-9]{2}-[0-9]{2}-[0-9]{2})') {
             $date = "20" + $matches[1]
             $title = ""
-            if ($html -match '<h1 id="bo_v_title">[\s\S]*?<span class="bo_v_tit">([^<]+)</span>') {
-                $title = $matches[1].Trim()
+            if ($html -match '<h[12] id="bo_v_title">[\s\S]*?<span class="bo_v_tit">([\s\S]*?)</span>') {
+                $title = ($matches[1] -replace '<[^>]+>', '').Trim()
             } elseif ($html -match '<title>([^<]+)</title>') {
-                $title = $matches[1].Trim()
+                $title = ($matches[1] -replace '\s*>\s*오늘의 시세.*$', '').Trim()
             }
 
             $endmill = 0
@@ -114,7 +114,7 @@ if ($newEntries.Count -gt 0) {
     [System.IO.File]::WriteAllText($jsonPath, $jsonContent, [System.Text.Encoding]::UTF8)
 
     # scrap_data.js 갱신
-    $jsContent = "// Scrap Metal Price History from allmetal.co.kr`nwindow.SCRAP_PRICES_DATA = " + $jsonContent + ";`n"
+    $jsContent = "// Scrap Metal Price History from allmetal.co.kr`r`nwindow.SCRAP_PRICES_DATA = " + $jsonContent + ";`r`n"
     [System.IO.File]::WriteAllText($jsPath, $jsContent, [System.Text.Encoding]::UTF8)
 
     Write-Host "[완료] scrap_prices.json 및 scrap_data.js 가 최신 시세로 업데이트되었습니다." -ForegroundColor Cyan

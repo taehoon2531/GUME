@@ -251,5 +251,44 @@ window.PALLET_PRICES_DATA = {
       }
     }
     return closest;
+  },
+
+  // 7. 천우수출포장 각재 가공 공식 견적 기준 데이터 (2026-11 신규 연동)
+  timberProcessing: {
+    vendor: "천우수출포장",
+    contact: {
+      tel: "051-973-5614",
+      fax: "051-973-5615",
+      mobile: "010-3584-5614",
+      email: "cw5614@naver.com"
+    },
+    cbmRates: {
+      rawTimber: 2000,        // 각재 원본 cbm당 (사이당) 2,000원
+      cutTimber: 2200         // 각재 절단 cbm당 (사이당) 2,200원
+    },
+    processingFees: {
+      holePerUnit: 200,       // 홀가공 1구당 200원
+      crossCutSurcharge: 500, // 50*50 / 40*40 가로재단 개당 500원
+      lShapeProcessing: 1200  // 각재 ㄴ 가공 개당 1,200원 (80*40*1200 기준)
+    },
+    items: [
+      { id: 1, name: "각재", spec: "40*30*570", qty: 100, unitPrice: 500, amount: 50000, note: "절단 각재" },
+      { id: 2, name: "7홀가공 (7*200)", spec: "40*30*570 등", qty: 100, unitPrice: 1400, amount: 140000, note: "홀 7개 × 200원" },
+      { id: 3, name: "각재", spec: "80*50*570", qty: 100, unitPrice: 1500, amount: 150000, note: "절단 각재" },
+      { id: 4, name: "7홀가공 (7*200)", spec: "80*50*570 등", qty: 100, unitPrice: 1400, amount: 140000, note: "홀 7개 × 200원" },
+      { id: 5, name: "각재", spec: "80*50*790", qty: 100, unitPrice: 2100, amount: 210000, note: "절단 각재" },
+      { id: 6, name: "8홀가공 (8*200)", spec: "80*50*790 등", qty: 100, unitPrice: 1600, amount: 160000, note: "홀 8개 × 200원" },
+      { id: 7, name: "각재 원본", spec: "80*40*4000", qty: 10, unitPrice: 7700, amount: 77000, note: "4M 원본 각재" },
+      { id: 8, name: "각재", spec: "80*40*1200", qty: 100, unitPrice: 2500, amount: 250000, note: "절단 각재" },
+      { id: 9, name: "각재 ㄴ 가공", spec: "80*40*1200", qty: 100, unitPrice: 1200, amount: 120000, note: "홈파기/턱가공" },
+      { id: 10, name: "각재", spec: "40*40*800", qty: 100, unitPrice: 800, amount: 80000, note: "절단 각재" },
+      { id: 11, name: "가로재단", spec: "40*40 / 50*50", qty: 100, unitPrice: 500, amount: 50000, note: "가로재단 추가비" }
+    ],
+    calcTimberPrice: function(w, t, l, isRaw) {
+      if (!w || !t || !l) return 0;
+      var sai = (w * t * l) / 3306624;
+      var rate = isRaw ? 2000 : 2200;
+      return Math.round(sai * rate / 100) * 100;
+    }
   }
 };
