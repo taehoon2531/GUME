@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -2075,11 +2075,24 @@ canvas.custom-chart {
   -webkit-backdrop-filter: blur(6px);
   opacity: 1;
   transition: opacity 0.3s ease;
+  /* CSS 안전 자동 해제: 만에 하나 어떤 예외가 발생하더라도 0.5초 후 무조건 화면 해제 */
+  animation: failsafeOverlayDismiss 0.3s ease 0.5s forwards;
+}
+
+@keyframes failsafeOverlayDismiss {
+  to {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    display: none;
+  }
 }
 
 #loadingOverlay.hidden {
-  opacity: 0;
-  pointer-events: none;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  display: none !important;
 }
 
 [data-theme="dark"] #loadingOverlay {
@@ -2808,6 +2821,24 @@ canvas.custom-chart {
     <div class="loading-spinner"></div>
     <div class="loading-text">소모품 데이터(45,000+건)를 분석 중입니다...</div>
   </div>
+  <script>
+    // [1단계 최상단 안전장치] 대용량 JS 로딩 지연 또는 어떤 스크립트 예외가 발생하더라도 0.3초 후 강제 해제
+    (function() {
+      var _failsafeTimer = setTimeout(function() {
+        var ov = document.getElementById('loadingOverlay');
+        if (ov) {
+          ov.style.transition = 'opacity 0.2s ease';
+          ov.style.opacity = '0';
+          ov.style.pointerEvents = 'none';
+          ov.classList.add('hidden');
+          setTimeout(function() {
+            ov.style.display = 'none';
+          }, 150);
+        }
+      }, 300);
+      window.__cancelFailsafeTimer = function() { clearTimeout(_failsafeTimer); };
+    })();
+  </script>
 
   <!-- Toast Notification Container -->
   <div id="toastContainer" class="toast-container"></div>
@@ -4448,18 +4479,38 @@ function openSuppliesDB() {
       resolve(null);
       return;
     }
-    const req = indexedDB.open(MASTER_DB_NAME, MASTER_DB_VERSION);
-    req.onupgradeneeded = (e) => {
-      const db = e.target.result;
-      if (!db.objectStoreNames.contains(MASTER_STORE_NAME)) {
-        db.createObjectStore(MASTER_STORE_NAME);
-      }
-    };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => {
-      console.warn('IndexedDB unavailable, operating in memory:', req.error);
+    // 200ms 초과 시 메모리 모드로 즉시 전환하여 대시보드 멈춤 방지
+    const timer = setTimeout(() => {
+      console.warn('IndexedDB open timeout (200ms) - falling back to memory');
       resolve(null);
-    };
+    }, 200);
+
+    try {
+      const req = indexedDB.open(MASTER_DB_NAME, MASTER_DB_VERSION);
+      req.onblocked = () => {
+        clearTimeout(timer);
+        console.warn('IndexedDB blocked');
+        resolve(null);
+      };
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(MASTER_STORE_NAME)) {
+          db.createObjectStore(MASTER_STORE_NAME);
+        }
+      };
+      req.onsuccess = () => {
+        clearTimeout(timer);
+        resolve(req.result);
+      };
+      req.onerror = () => {
+        clearTimeout(timer);
+        console.warn('IndexedDB unavailable, operating in memory:', req.error);
+        resolve(null);
+      };
+    } catch (err) {
+      clearTimeout(timer);
+      resolve(null);
+    }
   });
 }
 
@@ -4467,11 +4518,17 @@ async function saveMasterDataToDB(data) {
   try {
     const db = await openSuppliesDB();
     if (!db) return false;
-    const tx = db.transaction(MASTER_STORE_NAME, 'readwrite');
-    tx.objectStore(MASTER_STORE_NAME).put(data, 'current_data');
     return new Promise((resolve) => {
-      tx.oncomplete = () => resolve(true);
-      tx.onerror = () => resolve(false);
+      const timer = setTimeout(() => resolve(false), 500);
+      try {
+        const tx = db.transaction(MASTER_STORE_NAME, 'readwrite');
+        tx.objectStore(MASTER_STORE_NAME).put(data, 'current_data');
+        tx.oncomplete = () => { clearTimeout(timer); resolve(true); };
+        tx.onerror = () => { clearTimeout(timer); resolve(false); };
+      } catch (e) {
+        clearTimeout(timer);
+        resolve(false);
+      }
     });
   } catch (e) {
     console.error('IndexedDB save failed:', e);
@@ -4483,11 +4540,20 @@ async function loadMasterDataFromDB() {
   try {
     const db = await openSuppliesDB();
     if (!db) return null;
-    const tx = db.transaction(MASTER_STORE_NAME, 'readonly');
-    const req = tx.objectStore(MASTER_STORE_NAME).get('current_data');
     return new Promise((resolve) => {
-      req.onsuccess = () => resolve(req.result || null);
-      req.onerror = () => resolve(null);
+      const timer = setTimeout(() => {
+        console.warn('loadMasterDataFromDB timeout (200ms) - using file data');
+        resolve(null);
+      }, 200);
+      try {
+        const tx = db.transaction(MASTER_STORE_NAME, 'readonly');
+        const req = tx.objectStore(MASTER_STORE_NAME).get('current_data');
+        req.onsuccess = () => { clearTimeout(timer); resolve(req.result || null); };
+        req.onerror = () => { clearTimeout(timer); resolve(null); };
+      } catch (e) {
+        clearTimeout(timer);
+        resolve(null);
+      }
     });
   } catch (e) {
     console.error('IndexedDB load failed:', e);
@@ -4499,31 +4565,41 @@ async function clearMasterDataDB() {
   try {
     const db = await openSuppliesDB();
     if (!db) return false;
-    const tx = db.transaction(MASTER_STORE_NAME, 'readwrite');
-    tx.objectStore(MASTER_STORE_NAME).delete('current_data');
     return new Promise((resolve) => {
-      tx.oncomplete = () => resolve(true);
-      tx.onerror = () => resolve(false);
+      const timer = setTimeout(() => resolve(false), 300);
+      try {
+        const tx = db.transaction(MASTER_STORE_NAME, 'readwrite');
+        tx.objectStore(MASTER_STORE_NAME).delete('current_data');
+        tx.oncomplete = () => { clearTimeout(timer); resolve(true); };
+        tx.onerror = () => { clearTimeout(timer); resolve(false); };
+      } catch (e) {
+        clearTimeout(timer);
+        resolve(false);
+      }
     });
   } catch (e) {
     return false;
   }
 }
 
-window.addEventListener('DOMContentLoaded', async () => {
-  try {
-    await initApp();
-  } catch (err) {
+function triggerAppInit() {
+  initApp().catch(err => {
     console.error('Fatal initialization error:', err);
-  } finally {
+  }).finally(() => {
     fadeOutLoadingOverlay();
-  }
-});
+  });
+}
 
-// Failsafe timer: 어떤 예외나 지연이 발생하더라도 1.2초 내 분석 오버레이 자동 해제
+if (document.readyState === 'loading') {
+  window.addEventListener('DOMContentLoaded', triggerAppInit);
+} else {
+  triggerAppInit();
+}
+
+// Failsafe timer: 어떤 예외나 지연이 발생하더라도 250ms 내 분석 오버레이 즉시 강제 해제
 setTimeout(() => {
   fadeOutLoadingOverlay();
-}, 1200);
+}, 250);
 
 async function initApp() {
   // 1. Try to load updated master dataset from IndexedDB first
@@ -4565,24 +4641,24 @@ async function initApp() {
   try { initModalCloseHandlers(); } catch (e) { console.error('initModalCloseHandlers error:', e); }
   try { initRealtimeSearch(); } catch (e) { console.error('initRealtimeSearch error:', e); }
   
-  // 5. Initial Render
+  // 5. Initial Render (첫 화면 초고속 즉시 표출)
   try { applyFilters(); } catch (e) { console.error('applyFilters error:', e); }
   try { renderVendorSidebar(); } catch (e) { console.error('renderVendorSidebar error:', e); }
-  try { renderPivotView(); } catch (e) { console.error('renderPivotView error:', e); }
-  try { renderClosingView(); } catch (e) { console.error('renderClosingView error:', e); }
-  try { renderScrapView(); } catch (e) { console.error('renderScrapView error:', e); }
-  try { initPalletCalculator(); } catch (e) { console.error('initPalletCalculator error:', e); }
-  try { renderVendorMgmtTable(); } catch (e) { console.error('renderVendorMgmtTable error:', e); }
-  try { updateSyncInfo(); } catch (e) { console.error('updateSyncInfo error:', e); }
-
-  // 6. Update page title for initial tab [NEW]
   try { updatePageTitle(); } catch (e) {}
 
-  // 7. Fade out loading overlay [NEW]
+  // 6. [핵심] 오버레이 즉시 완전히 해제 (0.05초 만에 화면 오픈!)
   fadeOutLoadingOverlay();
 
-  // 8. Update footer data info
-  try { updateFooterInfo(); } catch (e) {}
+  // 7. 백그라운드 지연 로딩 (메인 스레드 멈춤 없이 보이지 않는 탭들 비동기 준비)
+  setTimeout(() => {
+    try { renderPivotView(); } catch (e) { console.error('renderPivotView error:', e); }
+    try { renderClosingView(); } catch (e) { console.error('renderClosingView error:', e); }
+    try { renderScrapView(); } catch (e) { console.error('renderScrapView error:', e); }
+    try { initPalletCalculator(); } catch (e) { console.error('initPalletCalculator error:', e); }
+    try { renderVendorMgmtTable(); } catch (e) { console.error('renderVendorMgmtTable error:', e); }
+    try { updateSyncInfo(); } catch (e) { console.error('updateSyncInfo error:', e); }
+    try { updateFooterInfo(); } catch (e) {}
+  }, 30);
 }
 
 function updateFooterInfo() {
@@ -4594,12 +4670,18 @@ function updateFooterInfo() {
 
 // [NEW] Loading overlay fade out
 function fadeOutLoadingOverlay() {
+  if (typeof window.__cancelFailsafeTimer === 'function') {
+    try { window.__cancelFailsafeTimer(); } catch (e) {}
+  }
   const overlay = document.getElementById('loadingOverlay');
   if (overlay) {
+    overlay.style.transition = 'opacity 0.15s ease';
     overlay.style.opacity = '0';
+    overlay.style.pointerEvents = 'none';
+    overlay.classList.add('hidden');
     setTimeout(() => {
       overlay.style.display = 'none';
-    }, 300);
+    }, 150);
   }
 }
 
@@ -8589,9 +8671,6 @@ function updatePalletCalculator() {
       yuseongBase = pPrice;
       cheonwooBase = pPrice;
     }
-    yuseongBase = pPrice;
-    cheonwooBase = pPrice;
-  }
 
   // Surcharges
   let flatSurcharge = 0;
