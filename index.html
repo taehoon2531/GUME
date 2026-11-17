@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -2851,6 +2851,11 @@ canvas.custom-chart {
     </div>
 
     <div class="header-actions">
+      <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+        <span class="badge" style="background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; font-size:0.73rem; font-weight:700; padding:3px 8px; border-radius:12px;">📋 소모품 최종: 2026-11-13</span>
+        <span class="badge" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-size:0.73rem; font-weight:700; padding:3px 8px; border-radius:12px;">🧱 부자재 최종: 2026-11-10</span>
+        <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:0.73rem; font-weight:700; padding:3px 8px; border-radius:12px;">🏭 원자재 최종: 2026-11-13</span>
+      </div>
       <div class="data-status-pill">
         <span class="status-dot"></span>
         <span id="headerTotalCount">45,922건 로드됨</span>
@@ -2878,6 +2883,14 @@ canvas.custom-chart {
       <button class="nav-tab active" data-tab="tab-search" title="소모품 검색 & 상세">
         <span class="nav-tab-icon">📋</span>
         <span class="nav-tab-text">소모품 검색 &amp; 상세</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-sub" title="부자재 검색 & 상세">
+        <span class="nav-tab-icon">🧱</span>
+        <span class="nav-tab-text">부자재 검색 &amp; 상세</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-raw" title="원자재 검색 & 상세">
+        <span class="nav-tab-icon">🏭</span>
+        <span class="nav-tab-text">원자재 검색 &amp; 상세</span>
       </button>
       <button class="nav-tab" data-tab="tab-trends" title="거래처별 매입추이">
         <span class="nav-tab-icon">📈</span>
@@ -2910,7 +2923,19 @@ canvas.custom-chart {
   <main>
 
     <!-- Top KPI Cards (Live across current active dataset) -->
-    <section class="stats-grid">
+        <section class="stats-grid">
+      <!-- 3대 카테고리 실시간 지표 퀵 토글 스위처 -->
+      <div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 2px; padding: 8px 14px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; box-shadow: var(--card-shadow);">
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary);">📊 실시간 지표 기준:</span>
+          <div style="display: inline-flex; gap: 6px;">
+            <button class="btn btn-sm" id="btnCatConsumable" onclick="switchCategory('consumables')" style="font-size:0.78rem; font-weight:700; padding:4px 12px; border-radius:6px; background:#1e40af; color:#fff; border:1px solid #1e3a8a;">📋 소모품 (45,922건)</button>
+            <button class="btn btn-sm btn-outline" id="btnCatSub" onclick="switchCategory('submaterials')" style="font-size:0.78rem; font-weight:700; padding:4px 12px; border-radius:6px;">🧱 부자재 (44,185건)</button>
+            <button class="btn btn-sm btn-outline" id="btnCatRaw" onclick="switchCategory('rawmaterials')" style="font-size:0.78rem; font-weight:700; padding:4px 12px; border-radius:6px;">🏭 원자재 (33,115건)</button>
+          </div>
+        </div>
+        <span id="categoryActiveIndicator" style="font-size: 0.8rem; color: #1e40af; font-weight: 700;">현재: 📋 소모품 구매 데이터 (45,922건) 분석 중</span>
+      </div>
       <div class="stat-card">
         <div class="stat-info">
           <div class="stat-label">총 거래금액</div>
@@ -3078,7 +3103,242 @@ canvas.custom-chart {
       </div>
     </section>
 
+        <!-- ========================================== -->
+    <!-- TAB 1-2: 부자재 검색 & 상세 분석 -->
     <!-- ========================================== -->
+    <section id="tab-sub" class="tab-content">
+      <div class="search-layout">
+        
+        <!-- Left Sidebar: Sub-materials Vendor Quick Filter + Top Major Items -->
+        <aside class="sidebar-panel">
+          <div class="sidebar-header">
+            <h3>🏢 부자재 거래처 (<span id="subSidebarVendorCount">0</span>)</h3>
+            <button class="btn btn-sm btn-outline" onclick="selectSubVendor('')">전체</button>
+          </div>
+          <div class="sidebar-search-box">
+            <input type="text" id="subVendorSidebarSearch" placeholder="부자재 거래처 검색..." oninput="filterSubVendorSidebarList()">
+          </div>
+          <ul class="vendor-list" id="subSidebarVendorList">
+            <!-- Dynamic Sub Vendor Items -->
+          </ul>
+
+          <div class="major-items-section" id="subMajorItemsSection" style="display: none;">
+            <div class="major-items-header">
+              <span>🌟 주요 부자재 (금액순 TOP 10)</span>
+              <span id="subMajorVendorName" style="color: #d97706; font-weight:700;"></span>
+            </div>
+            <ul class="major-items-list" id="subMajorItemsList">
+              <!-- Dynamic Major Items -->
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Main Data Table Panel -->
+        <div class="data-panel">
+          <!-- 4-Field Search Card -->
+          <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: var(--card-shadow);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 0.95rem; font-weight: 800; color: #b45309; display: flex; align-items: center; gap: 6px;">
+                <span>🧱 부자재 4열 멀티 검색</span>
+                <span class="badge" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-size:0.75rem;">ERP 44,185건</span>
+                <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:0.72rem;">마지막 입고: 2026-11-10</span>
+              </div>
+              <button class="btn btn-sm btn-outline" onclick="resetSubFilters()">🔄 필터 초기화</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 10px;">
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">🏢 업체명(공급사)</label>
+                <input type="text" id="subSearchVendor" list="subVendorDatalist" placeholder="업체명 선택/입력..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applySubFilters()">
+                <datalist id="subVendorDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📦 품명(품목명)</label>
+                <input type="text" id="subSearchItem" list="subItemDatalist" placeholder="품명 검색 (환봉, 볼트, 너트...)" class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applySubFilters()">
+                <datalist id="subItemDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">🪨 재질(Steel Grade)</label>
+                <input type="text" id="subSearchMaterial" list="subMaterialDatalist" placeholder="재질 검색 (S45C, SCM440...)" class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applySubFilters()">
+                <datalist id="subMaterialDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📐 규격(Dimension)</label>
+                <input type="text" id="subSearchSpec" list="subSpecDatalist" placeholder="규격 검색 (M8X10, 150...)" class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applySubFilters()">
+                <datalist id="subSpecDatalist"></datalist>
+              </div>
+            </div>
+
+            <!-- Date Range & Quick Chips -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--slate-200); padding-top: 10px;">
+              <div class="search-chips" id="subSearchChips" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="chip active" data-subchip="" onclick="filterSubChip('')">전체</button>
+                <button class="chip" data-subchip="환봉" onclick="filterSubChip('환봉')">⚪ 환봉/절단</button>
+                <button class="chip" data-subchip="볼트" onclick="filterSubChip('볼트')">🔩 볼트</button>
+                <button class="chip" data-subchip="너트" onclick="filterSubChip('너트')">🛑 너트</button>
+                <button class="chip" data-subchip="와셔" onclick="filterSubChip('와셔')">🔘 와셔</button>
+                <button class="chip" data-subchip="플레이트" onclick="filterSubChip('플레이트')">🔲 플레이트</button>
+                <button class="chip" data-subchip="단조" onclick="filterSubChip('단조')">⚙️ 단조품</button>
+                <button class="chip" data-subchip="디스크" onclick="filterSubChip('디스크')">💿 디스크</button>
+                <button class="chip" data-subchip="핀" onclick="filterSubChip('핀')">📌 핀/기타</button>
+              </div>
+              <div class="date-filter-group">
+                <span>입고기간:</span>
+                <input type="date" id="subFilterStartDate" onchange="applySubFilters()">
+                <span>~</span>
+                <input type="date" id="subFilterEndDate" onchange="applySubFilters()">
+                <button class="btn btn-sm btn-outline" onclick="resetSubDateFilter()">전체</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="table-container">
+            <div class="table-info-bar">
+              <span id="subTableInfoText">0건 중 0 - 0 표시</span>
+              <button class="btn btn-sm btn-outline" onclick="exportSubToCSV()">📥 부자재 엑셀(CSV) 저장</button>
+            </div>
+            <table class="data-table" id="subMaterialsTable">
+              <thead>
+                <tr>
+                  <th onclick="sortSubData(0)" style="width: 95px; text-align: center;">입고일자 <span class="sort-icon" id="subSort0">▼</span></th>
+                  <th onclick="sortSubData(1)" style="width: 140px;">업체명 <span class="sort-icon" id="subSort1">↕</span></th>
+                  <th onclick="sortSubData(2)" style="min-width: 150px;">품명 <span class="sort-icon" id="subSort2">↕</span></th>
+                  <th onclick="sortSubData(8)" style="width: 120px;">재질 <span class="sort-icon" id="subSort8">↕</span></th>
+                  <th onclick="sortSubData(3)" style="min-width: 130px;">규격 <span class="sort-icon" id="subSort3">↕</span></th>
+                  <th onclick="sortSubData(4)" style="width: 75px; text-align: right;">수량 <span class="sort-icon" id="subSort4">↕</span></th>
+                  <th onclick="sortSubData(5)" style="width: 110px; text-align: right;">단가 <span class="sort-icon" id="subSort5">↕</span></th>
+                  <th onclick="sortSubData(6)" style="width: 125px; text-align: right;">공급가액 <span class="sort-icon" id="subSort6">↕</span></th>
+                  <th onclick="sortSubData(7)" style="min-width: 120px;">비고 <span class="sort-icon" id="subSort7">↕</span></th>
+                </tr>
+              </thead>
+              <tbody id="subTableBody">
+                <!-- Dynamic Sub Rows -->
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" id="subPagination"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB 1-3: 원자재 검색 & 상세 분석 -->
+    <!-- ========================================== -->
+    <section id="tab-raw" class="tab-content">
+      <div class="search-layout">
+        
+        <!-- Left Sidebar: Raw materials Vendor Quick Filter + Top Major Items -->
+        <aside class="sidebar-panel">
+          <div class="sidebar-header">
+            <h3>🏭 원자재 거래처 (<span id="rawSidebarVendorCount">0</span>)</h3>
+            <button class="btn btn-sm btn-outline" onclick="selectRawVendor('')">전체</button>
+          </div>
+          <div class="sidebar-search-box">
+            <input type="text" id="rawVendorSidebarSearch" placeholder="원자재 거래처 검색..." oninput="filterRawVendorSidebarList()">
+          </div>
+          <ul class="vendor-list" id="rawSidebarVendorList">
+            <!-- Dynamic Raw Vendor Items -->
+          </ul>
+
+          <div class="major-items-section" id="rawMajorItemsSection" style="display: none;">
+            <div class="major-items-header">
+              <span>🌟 주요 원자재 (금액순 TOP 10)</span>
+              <span id="rawMajorVendorName" style="color: #059669; font-weight:700;"></span>
+            </div>
+            <ul class="major-items-list" id="rawMajorItemsList">
+              <!-- Dynamic Major Items -->
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Main Data Table Panel -->
+        <div class="data-panel">
+          <!-- 4-Field Search Card -->
+          <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: var(--card-shadow);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 0.95rem; font-weight: 800; color: #047857; display: flex; align-items: center; gap: 6px;">
+                <span>🏭 원자재 4열 멀티 검색</span>
+                <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:0.75rem;">ERP 33,115건 (2,448억)</span>
+                <span class="badge" style="background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; font-size:0.72rem;">마지막 입고: 2026-11-13</span>
+              </div>
+              <button class="btn btn-sm btn-outline" onclick="resetRawFilters()">🔄 필터 초기화</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 10px;">
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">🏢 공급사 (세한스틸, 삼양특수강...)</label>
+                <input type="text" id="rawSearchVendor" list="rawVendorDatalist" placeholder="원자재 업체명 선택/입력..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
+                <datalist id="rawVendorDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📦 품명/형상 (ROUND BAR, PLATE...)</label>
+                <input type="text" id="rawSearchItem" list="rawItemDatalist" placeholder="원자재 품종 검색..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
+                <datalist id="rawItemDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">🪨 강종/재질 (SCM440, S45C, SUS...)</label>
+                <input type="text" id="rawSearchMaterial" list="rawMaterialDatalist" placeholder="강종/재질 검색..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
+                <datalist id="rawMaterialDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📐 규격/외경 (Ø, 두께, 치수...)</label>
+                <input type="text" id="rawSearchSpec" list="rawSpecDatalist" placeholder="원자재 규격 검색..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
+                <datalist id="rawSpecDatalist"></datalist>
+              </div>
+            </div>
+
+            <!-- Date Range & Quick Chips -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--slate-200); padding-top: 10px;">
+              <div class="search-chips" id="rawSearchChips" style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="chip active" data-rawchip="" onclick="filterRawChip('')">전체</button>
+                <button class="chip" data-rawchip="ROUND" onclick="filterRawChip('ROUND')">⚪ ROUND BAR</button>
+                <button class="chip" data-rawchip="HEX" onclick="filterRawChip('HEX')">🛑 HEX BAR</button>
+                <button class="chip" data-rawchip="PLATE" onclick="filterRawChip('PLATE')">🔲 PLATE</button>
+                <button class="chip" data-rawchip="FLAT" onclick="filterRawChip('FLAT')">🔩 FLAT BAR</button>
+                <button class="chip" data-rawchip="TUBE" onclick="filterRawChip('TUBE')">⚙️ TUBE/PIPE</button>
+                <button class="chip" data-rawchip="기타" onclick="filterRawChip('기타')">📌 기타</button>
+              </div>
+              <div class="date-filter-group">
+                <span>입고기간:</span>
+                <input type="date" id="rawFilterStartDate" onchange="applyRawFilters()">
+                <span>~</span>
+                <input type="date" id="rawFilterEndDate" onchange="applyRawFilters()">
+                <button class="btn btn-sm btn-outline" onclick="resetRawDateFilter()">전체</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="table-container">
+            <div class="table-info-bar">
+              <span id="rawTableInfoText">0건 중 0 - 0 표시</span>
+              <button class="btn btn-sm btn-outline" onclick="exportRawToCSV()">📥 원자재 엑셀(CSV) 저장</button>
+            </div>
+            <table class="data-table" id="rawMaterialsTable">
+              <thead>
+                <tr>
+                  <th onclick="sortRawData(0)" style="width: 95px; text-align: center;">입고일자 <span class="sort-icon" id="rawSort0">▼</span></th>
+                  <th onclick="sortRawData(1)" style="width: 140px;">업체명 <span class="sort-icon" id="rawSort1">↕</span></th>
+                  <th onclick="sortRawData(2)" style="min-width: 150px;">품명 <span class="sort-icon" id="rawSort2">↕</span></th>
+                  <th onclick="sortRawData(8)" style="width: 130px;">재질/강종 <span class="sort-icon" id="rawSort8">↕</span></th>
+                  <th onclick="sortRawData(3)" style="min-width: 130px;">규격 <span class="sort-icon" id="rawSort3">↕</span></th>
+                  <th onclick="sortRawData(4)" style="width: 80px; text-align: right;">수량(KG) <span class="sort-icon" id="rawSort4">↕</span></th>
+                  <th onclick="sortRawData(5)" style="width: 110px; text-align: right;">단가 <span class="sort-icon" id="rawSort5">↕</span></th>
+                  <th onclick="sortRawData(6)" style="width: 130px; text-align: right;">공급가액 <span class="sort-icon" id="rawSort6">↕</span></th>
+                  <th onclick="sortRawData(7)" style="min-width: 130px;">비고(단위/사양) <span class="sort-icon" id="rawSort7">↕</span></th>
+                </tr>
+              </thead>
+              <tbody id="rawTableBody">
+                <!-- Dynamic Raw Rows -->
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" id="rawPagination"></div>
+        </div>
+      </div>
+    </section>
+<!-- ========================================== -->
     <!-- TAB 2: 거래처별 매입추이 피벗 분석 -->
     <!-- ========================================== -->
     <section id="tab-trends" class="tab-content">
@@ -4439,6 +4699,8 @@ canvas.custom-chart {
 
   <!-- Load pre-compiled data -->
   <script src="data.js"></script>
+  <script src="sub_data.js"></script>
+  <script src="raw_data.js"></script>
   <script src="scrap_data.js"></script>
   <script src="pallet_data.js"></script>
 
@@ -4709,7 +4971,17 @@ function initNavTabs() {
       updatePageTitle();
 
       // Trigger redraws if needed
-      if (target === 'tab-trends') {
+      if (target === 'tab-search') {
+        syncCategorySwitcher('consumables');
+      } else if (target === 'tab-sub') {
+        syncCategorySwitcher('submaterials');
+        if (subData.length === 0) initSubMaterials();
+        else renderSubTable();
+      } else if (target === 'tab-raw') {
+        syncCategorySwitcher('rawmaterials');
+        if (rawData.length === 0) initRawMaterials();
+        else renderRawTable();
+      } else if (target === 'tab-trends') {
         renderPivotView();
       } else if (target === 'tab-closing') {
         renderClosingView();
@@ -7511,7 +7783,13 @@ function processImportFile(file) {
 
 function updateSyncInfo() {
   const rowCountEl = document.getElementById('syncTotalRows');
-  if (rowCountEl) rowCountEl.textContent = formatNumber(allData.length) + '건';
+  if (rowCountEl) {
+    const totalAll = (allData.length || 0) + (subData.length || 0) + (rawData.length || 0);
+    rowCountEl.innerHTML = ${formatNumber(totalAll)}건 <div style="font-size:0.75rem; color:var(--text-muted); font-weight:normal; margin-top:4px;">소모품 건 / 부자재 건 / 원자재 건</div>;
+  }
+  const headerTotal = (allData.length || 0) + (subData.length || 0) + (rawData.length || 0);
+  const headerEl = document.getElementById('headerTotalCount');
+  if (headerEl) headerEl.textContent = 통합 건 로드됨;
   
   let minD = '9999-99-99';
   let maxD = '0000-00-00';
@@ -8436,6 +8714,841 @@ function exportScrapToCSV() {
 // ==========================================
 // 17. Mobile App UI Helpers
 // ==========================================
+// ============================================================================
+// 🧱 BUJAE (부자재) & 🏭 WONJAE (원자재) INTEGRATED MODULE LOGIC
+// ============================================================================
+
+// 1. Category Switcher State & Handlers
+let currentActiveCategory = 'consumables'; // 'consumables' | 'submaterials' | 'rawmaterials'
+
+function syncCategorySwitcher(cat) {
+  currentActiveCategory = cat;
+  const btnConsumable = document.getElementById('btnCatConsumable');
+  const btnSub = document.getElementById('btnCatSub');
+  const btnRaw = document.getElementById('btnCatRaw');
+  const indicator = document.getElementById('categoryActiveIndicator');
+
+  if (btnConsumable) {
+    btnConsumable.className = (cat === 'consumables') ? 'btn btn-sm' : 'btn btn-sm btn-outline';
+    btnConsumable.style.background = (cat === 'consumables') ? '#1e40af' : '';
+    btnConsumable.style.color = (cat === 'consumables') ? '#fff' : '';
+    btnConsumable.style.border = (cat === 'consumables') ? '1px solid #1e3a8a' : '';
+  }
+  if (btnSub) {
+    btnSub.className = (cat === 'submaterials') ? 'btn btn-sm' : 'btn btn-sm btn-outline';
+    btnSub.style.background = (cat === 'submaterials') ? '#d97706' : '';
+    btnSub.style.color = (cat === 'submaterials') ? '#fff' : '';
+    btnSub.style.border = (cat === 'submaterials') ? '1px solid #b45309' : '';
+  }
+  if (btnRaw) {
+    btnRaw.className = (cat === 'rawmaterials') ? 'btn btn-sm' : 'btn btn-sm btn-outline';
+    btnRaw.style.background = (cat === 'rawmaterials') ? '#059669' : '';
+    btnRaw.style.color = (cat === 'rawmaterials') ? '#fff' : '';
+    btnRaw.style.border = (cat === 'rawmaterials') ? '1px solid #047857' : '';
+  }
+
+  // Calculate & Refresh KPI Cards
+  let totalAmt = 0;
+  let totalQty = 0;
+  let rowCount = 0;
+  let avgPrice = 0;
+
+  if (cat === 'consumables') {
+    if (indicator) indicator.innerHTML = '현재: <span style="color:#1e40af; font-weight:700;">📋 소모품 구매 데이터 (45,922건) 분석 중</span>';
+    const src = (allData && allData.length > 0) ? allData : (window.INITIAL_SUPPLIES_DATA || []);
+    for (let i = 0; i < src.length; i++) {
+      totalAmt += (src[i][6] || 0);
+      totalQty += (src[i][4] || 0);
+    }
+    rowCount = src.length;
+    avgPrice = rowCount > 0 ? Math.round(totalAmt / (totalQty || 1)) : 0;
+
+    const elAmt = document.getElementById('kpiTotalAmount'); if (elAmt) elAmt.textContent = formatCurrency(totalAmt);
+    const elAmtSub = document.getElementById('kpiTotalAmountSub'); if (elAmtSub) elAmtSub.textContent = '전체 누적 매입액 (소모품)';
+    const elQty = document.getElementById('kpiTotalQty'); if (elQty) elQty.textContent = formatNumber(totalQty) + '개';
+    const elQtySub = document.getElementById('kpiTotalQtySub'); if (elQtySub) elQtySub.textContent = '입고된 소모품 수량';
+    const elAvg = document.getElementById('kpiAvgPrice'); if (elAvg) elAvg.textContent = formatCurrency(avgPrice);
+    const elAvgSub = document.getElementById('kpiAvgPriceSub'); if (elAvgSub) elAvgSub.textContent = '소모품 평균 단가';
+    const elCnt = document.getElementById('kpiRowCount'); if (elCnt) elCnt.textContent = formatNumber(rowCount) + '건';
+    const elCntSub = document.getElementById('kpiRowCountSub'); if (elCntSub) elCntSub.textContent = '전체 입고 거래 건수';
+  } else if (cat === 'submaterials') {
+    if (indicator) indicator.innerHTML = '현재: <span style="color:#d97706; font-weight:700;">🧱 부자재 ERP 데이터 (44,185건) 분석 중</span>';
+    const src = (subData && subData.length > 0) ? subData : (window.INITIAL_SUB_MATERIALS_DATA || []);
+    for (let i = 0; i < src.length; i++) {
+      totalAmt += (src[i][6] || 0);
+      totalQty += (src[i][4] || 0);
+    }
+    rowCount = src.length;
+    avgPrice = rowCount > 0 ? Math.round(totalAmt / (totalQty || 1)) : 0;
+
+    const elAmt = document.getElementById('kpiTotalAmount'); if (elAmt) elAmt.textContent = formatCurrency(totalAmt);
+    const elAmtSub = document.getElementById('kpiTotalAmountSub'); if (elAmtSub) elAmtSub.textContent = '전체 누적 매입액 (부자재)';
+    const elQty = document.getElementById('kpiTotalQty'); if (elQty) elQty.textContent = formatNumber(totalQty) + '개';
+    const elQtySub = document.getElementById('kpiTotalQtySub'); if (elQtySub) elQtySub.textContent = '입고된 부자재 수량';
+    const elAvg = document.getElementById('kpiAvgPrice'); if (elAvg) elAvg.textContent = formatCurrency(avgPrice);
+    const elAvgSub = document.getElementById('kpiAvgPriceSub'); if (elAvgSub) elAvgSub.textContent = '부자재 평균 단가';
+    const elCnt = document.getElementById('kpiRowCount'); if (elCnt) elCnt.textContent = formatNumber(rowCount) + '건';
+    const elCntSub = document.getElementById('kpiRowCountSub'); if (elCntSub) elCntSub.textContent = '전체 부자재 입고 건수';
+  } else if (cat === 'rawmaterials') {
+    if (indicator) indicator.innerHTML = '현재: <span style="color:#059669; font-weight:700;">🏭 원자재 ERP 데이터 (33,115건, 약 2,448억) 분석 중</span>';
+    const src = (rawData && rawData.length > 0) ? rawData : (window.INITIAL_RAW_MATERIALS_DATA || []);
+    for (let i = 0; i < src.length; i++) {
+      totalAmt += (src[i][6] || 0);
+      totalQty += (src[i][4] || 0);
+    }
+    rowCount = src.length;
+    avgPrice = rowCount > 0 ? Math.round(totalAmt / (totalQty || 1)) : 0;
+
+    const elAmt = document.getElementById('kpiTotalAmount'); if (elAmt) elAmt.textContent = formatCurrency(totalAmt);
+    const elAmtSub = document.getElementById('kpiTotalAmountSub'); if (elAmtSub) elAmtSub.textContent = '전체 누적 매입액 (원자재)';
+    const elQty = document.getElementById('kpiTotalQty'); if (elQty) elQty.textContent = formatNumber(totalQty) + ' KG';
+    const elQtySub = document.getElementById('kpiTotalQtySub'); if (elQtySub) elQtySub.textContent = '입고된 원자재 중량';
+    const elAvg = document.getElementById('kpiAvgPrice'); if (elAvg) elAvg.textContent = formatCurrency(avgPrice) + ' /kg';
+    const elAvgSub = document.getElementById('kpiAvgPriceSub'); if (elAvgSub) elAvgSub.textContent = 'kg당 평균 단가';
+    const elCnt = document.getElementById('kpiRowCount'); if (elCnt) elCnt.textContent = formatNumber(rowCount) + '건';
+    const elCntSub = document.getElementById('kpiRowCountSub'); if (elCntSub) elCntSub.textContent = '전체 원자재 입고 건수';
+  }
+}
+
+function switchCategory(cat) {
+  syncCategorySwitcher(cat);
+  if (cat === 'consumables') {
+    const nav = document.querySelector('.nav-tab[data-tab="tab-search"]');
+    if (nav && !nav.classList.contains('active')) nav.click();
+  } else if (cat === 'submaterials') {
+    const nav = document.querySelector('.nav-tab[data-tab="tab-sub"]');
+    if (nav && !nav.classList.contains('active')) nav.click();
+  } else if (cat === 'rawmaterials') {
+    const nav = document.querySelector('.nav-tab[data-tab="tab-raw"]');
+    if (nav && !nav.classList.contains('active')) nav.click();
+  }
+}
+
+// ============================================================================
+// 🧱 SUB-MATERIALS (부자재 - 44,185건) STATE & LOGIC
+// ============================================================================
+let subData = [];
+let filteredSubData = [];
+let selectedSubVendor = '';
+let subCurrentPage = 1;
+let subPageSize = 100;
+let subSortCol = 0; // 0: date, 1: vendor, 2: item, 3: spec, 4: qty, 5: price, 6: amount, 7: remark, 8: material
+let subSortAsc = false;
+let subActiveChip = '';
+let subDatalistsPopulated = false;
+
+function initSubMaterials() {
+  if (window.INITIAL_SUB_MATERIALS_DATA && Array.isArray(window.INITIAL_SUB_MATERIALS_DATA)) {
+    subData = window.INITIAL_SUB_MATERIALS_DATA;
+  } else {
+    subData = [];
+  }
+  populateSubDatalists();
+  applySubFilters();
+  renderSubVendorSidebar();
+}
+
+function populateSubDatalists() {
+  if (subDatalistsPopulated || !subData || subData.length === 0) return;
+  subDatalistsPopulated = true;
+
+  const vendorSet = new Set();
+  const itemSet = new Set();
+  const matSet = new Set();
+  const specSet = new Set();
+
+  for (let i = 0; i < subData.length; i++) {
+    const r = subData[i];
+    if (r[1]) vendorSet.add(r[1]);
+    if (r[2]) itemSet.add(r[2]);
+    if (r[8]) matSet.add(r[8]);
+    if (r[3]) specSet.add(r[3]);
+  }
+
+  const vList = document.getElementById('subVendorDatalist');
+  if (vList) {
+    vList.innerHTML = Array.from(vendorSet).sort().map(v => `<option value="${escapeHtml(v)}">`).join('');
+  }
+  const iList = document.getElementById('subItemDatalist');
+  if (iList) {
+    iList.innerHTML = Array.from(itemSet).sort().slice(0, 500).map(item => `<option value="${escapeHtml(item)}">`).join('');
+  }
+  const mList = document.getElementById('subMaterialDatalist');
+  if (mList) {
+    mList.innerHTML = Array.from(matSet).sort().map(m => `<option value="${escapeHtml(m)}">`).join('');
+  }
+  const sList = document.getElementById('subSpecDatalist');
+  if (sList) {
+    sList.innerHTML = Array.from(specSet).sort().slice(0, 500).map(sp => `<option value="${escapeHtml(sp)}">`).join('');
+  }
+}
+
+function filterSubChip(chip) {
+  subActiveChip = chip;
+  document.querySelectorAll('#subSearchChips .chip').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-subchip') === chip);
+  });
+  subCurrentPage = 1;
+  applySubFilters();
+}
+
+function resetSubDateFilter() {
+  const s = document.getElementById('subFilterStartDate'); if (s) s.value = '';
+  const e = document.getElementById('subFilterEndDate'); if (e) e.value = '';
+  subCurrentPage = 1;
+  applySubFilters();
+}
+
+function resetSubFilters() {
+  selectedSubVendor = '';
+  subActiveChip = '';
+  document.querySelectorAll('#subSearchChips .chip').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-subchip') === '');
+  });
+  const v = document.getElementById('subSearchVendor'); if (v) v.value = '';
+  const item = document.getElementById('subSearchItem'); if (item) item.value = '';
+  const mat = document.getElementById('subSearchMaterial'); if (mat) mat.value = '';
+  const sp = document.getElementById('subSearchSpec'); if (sp) sp.value = '';
+  const s = document.getElementById('subFilterStartDate'); if (s) s.value = '';
+  const e = document.getElementById('subFilterEndDate'); if (e) e.value = '';
+  subCurrentPage = 1;
+  applySubFilters();
+  renderSubVendorSidebar();
+}
+
+function applySubFilters() {
+  const vInput = (document.getElementById('subSearchVendor') ? document.getElementById('subSearchVendor').value.trim().toLowerCase() : '');
+  const itemInput = (document.getElementById('subSearchItem') ? document.getElementById('subSearchItem').value.trim().toLowerCase() : '');
+  const matInput = (document.getElementById('subSearchMaterial') ? document.getElementById('subSearchMaterial').value.trim().toLowerCase() : '');
+  const specInput = (document.getElementById('subSearchSpec') ? document.getElementById('subSearchSpec').value.trim().toLowerCase() : '');
+  const startDate = (document.getElementById('subFilterStartDate') ? document.getElementById('subFilterStartDate').value : '');
+  const endDate = (document.getElementById('subFilterEndDate') ? document.getElementById('subFilterEndDate').value : '');
+
+  filteredSubData = [];
+  const src = subData;
+
+  for (let i = 0; i < src.length; i++) {
+    const row = src[i];
+    const d = row[0];
+    const v = row[1];
+    const item = row[2];
+    const sp = row[3] || '';
+    const rem = row[7] || '';
+    const mat = row[8] || '';
+
+    if (selectedSubVendor && v !== selectedSubVendor) continue;
+    if (vInput && !v.toLowerCase().includes(vInput)) continue;
+    if (itemInput && !item.toLowerCase().includes(itemInput)) continue;
+    if (matInput && !mat.toLowerCase().includes(matInput)) continue;
+    if (specInput && !sp.toLowerCase().includes(specInput)) continue;
+
+    if (startDate && d < startDate) continue;
+    if (endDate && d > endDate) continue;
+
+    if (subActiveChip) {
+      if (subActiveChip === '환봉') {
+        if (!item.includes('환봉') && !sp.includes('ROUND') && !rem.includes('ROUND')) continue;
+      } else if (subActiveChip === '볼트') {
+        if (!item.includes('볼트') && !item.includes('BOLT')) continue;
+      } else if (subActiveChip === '너트') {
+        if (!item.includes('너트') && !item.includes('NUT')) continue;
+      } else if (subActiveChip === '와셔') {
+        if (!item.includes('와셔') && !item.includes('WASHER')) continue;
+      } else if (subActiveChip === '플레이트') {
+        if (!item.includes('플레이트') && !item.includes('PLATE')) continue;
+      } else if (subActiveChip === '단조') {
+        if (!item.includes('단조') && !item.includes('단조품')) continue;
+      } else if (subActiveChip === '디스크') {
+        if (!item.includes('디스크') && !item.includes('DISC')) continue;
+      } else if (subActiveChip === '핀') {
+        if (!item.includes('핀') && !item.includes('PIN')) continue;
+      }
+    }
+
+    filteredSubData.push(row);
+  }
+
+  sortSubDataArray();
+  renderSubTable();
+}
+
+function sortSubData(colIndex) {
+  if (subSortCol === colIndex) {
+    subSortAsc = !subSortAsc;
+  } else {
+    subSortCol = colIndex;
+    subSortAsc = (colIndex === 0) ? false : true;
+  }
+
+  for (let c = 0; c <= 8; c++) {
+    const el = document.getElementById('subSort' + c);
+    if (el) {
+      if (c === subSortCol) {
+        el.textContent = subSortAsc ? '▲' : '▼';
+        el.className = 'sort-icon active';
+      } else {
+        el.textContent = '↕';
+        el.className = 'sort-icon';
+      }
+    }
+  }
+
+  sortSubDataArray();
+  renderSubTable();
+}
+
+function sortSubDataArray() {
+  const col = subSortCol;
+  const asc = subSortAsc;
+
+  filteredSubData.sort((a, b) => {
+    let va = a[col];
+    let vb = b[col];
+
+    if (col === 4 || col === 5 || col === 6) {
+      va = Number(va) || 0;
+      vb = Number(vb) || 0;
+      return asc ? (va - vb) : (vb - va);
+    }
+
+    va = (va !== null && va !== undefined) ? String(va) : '';
+    vb = (vb !== null && vb !== undefined) ? String(vb) : '';
+    return asc ? va.localeCompare(vb) : vb.localeCompare(va);
+  });
+}
+
+function renderSubTable() {
+  const tbody = document.getElementById('subTableBody');
+  if (!tbody) return;
+
+  const total = filteredSubData.length;
+  const startIndex = (subCurrentPage - 1) * subPageSize;
+  const endIndex = Math.min(startIndex + subPageSize, total);
+
+  const infoText = document.getElementById('subTableInfoText');
+  if (infoText) {
+    infoText.textContent = `${formatNumber(total)}건 중 ${total > 0 ? formatNumber(startIndex + 1) : 0} - ${formatNumber(endIndex)} 표시`;
+  }
+
+  if (total === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" class="text-center" style="padding: 3rem 1rem; color: var(--text-muted);">
+      <div style="font-size: 2rem; margin-bottom: 8px; opacity: 0.5;">🔍</div>
+      <div style="font-size: 0.95rem; font-weight: 600;">조건에 일치하는 부자재 데이터가 없습니다.</div>
+      <button class="btn btn-sm btn-outline" style="margin-top: 10px;" onclick="resetSubFilters()">🔄 필터 초기화</button>
+    </td></tr>`;
+    renderSubPagination();
+    return;
+  }
+
+  const rowsHtml = [];
+  for (let i = startIndex; i < endIndex; i++) {
+    const row = filteredSubData[i];
+    const matBadge = row[8] ? `<span class="badge" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-size:0.75rem; font-weight:700;">${escapeHtml(row[8])}</span>` : '<span style="color:#aaa;">-</span>';
+    
+    rowsHtml.push(`
+      <tr>
+        <td class="col-date" style="text-align: center; font-size:0.8rem;">${row[0]}</td>
+        <td class="col-vendor" style="font-weight: 600;">${escapeHtml(row[1])}</td>
+        <td style="font-weight: 700; color: var(--text-primary);">${escapeHtml(row[2])}</td>
+        <td style="text-align: center;">${matBadge}</td>
+        <td style="font-size: 0.82rem; color: var(--text-secondary);">${row[3] ? escapeHtml(row[3]) : '<span style="color:#aaa;">-</span>'}</td>
+        <td style="text-align: right; font-weight: 600;">${formatNumber(row[4])}</td>
+        <td style="text-align: right; color: var(--text-secondary);">${formatCurrency(row[5])}</td>
+        <td style="text-align: right; font-weight: 700; color: #b45309;">${formatCurrency(row[6])}</td>
+        <td style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(row[7] || '')}</td>
+      </tr>
+    `);
+  }
+  tbody.innerHTML = rowsHtml.join('');
+  renderSubPagination();
+}
+
+function renderSubPagination() {
+  const container = document.getElementById('subPagination');
+  if (!container) return;
+
+  const totalPages = Math.ceil(filteredSubData.length / subPageSize);
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+
+  let html = `<button class="page-btn" ${subCurrentPage === 1 ? 'disabled' : ''} onclick="changeSubPage(${subCurrentPage - 1})">이전</button>`;
+  
+  const startP = Math.max(1, subCurrentPage - 2);
+  const endP = Math.min(totalPages, subCurrentPage + 2);
+
+  if (startP > 1) {
+    html += `<button class="page-btn" onclick="changeSubPage(1)">1</button>`;
+    if (startP > 2) html += `<span class="page-ellipsis">…</span>`;
+  }
+
+  for (let p = startP; p <= endP; p++) {
+    html += `<button class="page-btn ${p === subCurrentPage ? 'active' : ''}" onclick="changeSubPage(${p})">${p}</button>`;
+  }
+
+  if (endP < totalPages) {
+    if (endP < totalPages - 1) html += `<span class="page-ellipsis">…</span>`;
+    html += `<button class="page-btn" onclick="changeSubPage(${totalPages})">${totalPages}</button>`;
+  }
+
+  html += `<button class="page-btn" ${subCurrentPage === totalPages ? 'disabled' : ''} onclick="changeSubPage(${subCurrentPage + 1})">다음</button>`;
+  container.innerHTML = html;
+}
+
+function changeSubPage(page) {
+  const totalPages = Math.ceil(filteredSubData.length / subPageSize);
+  if (page < 1 || page > totalPages) return;
+  subCurrentPage = page;
+  renderSubTable();
+  const tableEl = document.getElementById('subMaterialsTable');
+  if (tableEl) tableEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selectSubVendor(vendor) {
+  selectedSubVendor = vendor;
+  const vInput = document.getElementById('subSearchVendor');
+  if (vInput) vInput.value = vendor;
+  subCurrentPage = 1;
+  applySubFilters();
+  renderSubVendorSidebar();
+}
+
+function renderSubVendorSidebar() {
+  const vAmounts = {};
+  const vCounts = {};
+  for (let i = 0; i < subData.length; i++) {
+    const v = subData[i][1];
+    vAmounts[v] = (vAmounts[v] || 0) + (subData[i][6] || 0);
+    vCounts[v] = (vCounts[v] || 0) + 1;
+  }
+
+  const vendors = Object.keys(vAmounts).sort((a, b) => vAmounts[b] - vAmounts[a]);
+  const countEl = document.getElementById('subSidebarVendorCount');
+  if (countEl) countEl.textContent = vendors.length;
+
+  const listEl = document.getElementById('subSidebarVendorList');
+  if (!listEl) return;
+
+  let html = `<li class="vendor-item ${selectedSubVendor === '' ? 'active' : ''}" onclick="selectSubVendor('')">
+    <span>(전체 업체)</span>
+    <span class="vendor-badge">${formatNumber(subData.length)}건</span>
+  </li>`;
+
+  vendors.forEach(v => {
+    html += `<li class="vendor-item ${selectedSubVendor === v ? 'active' : ''}" onclick="selectSubVendor('${escapeHtml(v)}')">
+      <span>${escapeHtml(v)}</span>
+      <span class="vendor-badge">${formatCompactCurrency(vAmounts[v])}</span>
+    </li>`;
+  });
+  listEl.innerHTML = html;
+
+  // Render Major Items if vendor selected
+  const majorSec = document.getElementById('subMajorItemsSection');
+  const majorName = document.getElementById('subMajorVendorName');
+  const majorList = document.getElementById('subMajorItemsList');
+
+  if (selectedSubVendor && majorSec && majorName && majorList) {
+    majorSec.style.display = 'block';
+    majorName.textContent = selectedSubVendor;
+
+    const itemAmts = {};
+    for (let i = 0; i < subData.length; i++) {
+      if (subData[i][1] === selectedSubVendor) {
+        const itemKey = subData[i][2] + (subData[i][3] ? ' (' + subData[i][3] + ')' : '');
+        itemAmts[itemKey] = (itemAmts[itemKey] || 0) + (subData[i][6] || 0);
+      }
+    }
+    const topItems = Object.keys(itemAmts).sort((a, b) => itemAmts[b] - itemAmts[a]).slice(0, 10);
+    majorList.innerHTML = topItems.map((item, idx) => `
+      <li class="major-item">
+        <span class="major-rank">${idx + 1}</span>
+        <span class="major-name" title="${escapeHtml(item)}">${escapeHtml(item)}</span>
+        <span class="major-amount">${formatCompactCurrency(itemAmts[item])}</span>
+      </li>
+    `).join('');
+  } else if (majorSec) {
+    majorSec.style.display = 'none';
+  }
+}
+
+function filterSubVendorSidebarList() {
+  const query = (document.getElementById('subVendorSidebarSearch') ? document.getElementById('subVendorSidebarSearch').value.trim().toLowerCase() : '');
+  document.querySelectorAll('#subSidebarVendorList li').forEach((li, idx) => {
+    if (idx === 0) return; // skip '전체'
+    const txt = li.textContent.toLowerCase();
+    li.style.display = txt.includes(query) ? '' : 'none';
+  });
+}
+
+function exportSubToCSV() {
+  const headers = ['입고일자', '업체명', '품명', '재질', '규격', '수량', '단가', '공급가액', '비고'];
+  const rows = filteredSubData.map(r => [r[0], r[1], r[2], r[8] || '', r[3] || '', r[4], r[5], r[6], r[7] || '']);
+  exportToCSV(headers, rows, `부자재_검색결과_${new Date().toISOString().substring(0,10)}.csv`);
+  showToast('부자재 검색 결과 CSV 파일이 다운로드되었습니다.', 'success');
+}
+
+// ============================================================================
+// 🏭 RAW MATERIALS (원자재 - 33,115건) STATE & LOGIC
+// ============================================================================
+let rawData = [];
+let filteredRawData = [];
+let selectedRawVendor = '';
+let rawCurrentPage = 1;
+let rawPageSize = 100;
+let rawSortCol = 0;
+let rawSortAsc = false;
+let rawActiveChip = '';
+let rawDatalistsPopulated = false;
+
+function initRawMaterials() {
+  if (window.INITIAL_RAW_MATERIALS_DATA && Array.isArray(window.INITIAL_RAW_MATERIALS_DATA)) {
+    rawData = window.INITIAL_RAW_MATERIALS_DATA;
+  } else {
+    rawData = [];
+  }
+  populateRawDatalists();
+  applyRawFilters();
+  renderRawVendorSidebar();
+}
+
+function populateRawDatalists() {
+  if (rawDatalistsPopulated || !rawData || rawData.length === 0) return;
+  rawDatalistsPopulated = true;
+
+  const vendorSet = new Set();
+  const itemSet = new Set();
+  const matSet = new Set();
+  const specSet = new Set();
+
+  for (let i = 0; i < rawData.length; i++) {
+    const r = rawData[i];
+    if (r[1]) vendorSet.add(r[1]);
+    if (r[2]) itemSet.add(r[2]);
+    if (r[8]) matSet.add(r[8]);
+    if (r[3]) specSet.add(r[3]);
+  }
+
+  const vList = document.getElementById('rawVendorDatalist');
+  if (vList) {
+    vList.innerHTML = Array.from(vendorSet).sort().map(v => `<option value="${escapeHtml(v)}">`).join('');
+  }
+  const iList = document.getElementById('rawItemDatalist');
+  if (iList) {
+    iList.innerHTML = Array.from(itemSet).sort().slice(0, 500).map(item => `<option value="${escapeHtml(item)}">`).join('');
+  }
+  const mList = document.getElementById('rawMaterialDatalist');
+  if (mList) {
+    mList.innerHTML = Array.from(matSet).sort().map(m => `<option value="${escapeHtml(m)}">`).join('');
+  }
+  const sList = document.getElementById('rawSpecDatalist');
+  if (sList) {
+    sList.innerHTML = Array.from(specSet).sort().slice(0, 500).map(sp => `<option value="${escapeHtml(sp)}">`).join('');
+  }
+}
+
+function filterRawChip(chip) {
+  rawActiveChip = chip;
+  document.querySelectorAll('#rawSearchChips .chip').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-rawchip') === chip);
+  });
+  rawCurrentPage = 1;
+  applyRawFilters();
+}
+
+function resetRawDateFilter() {
+  const s = document.getElementById('rawFilterStartDate'); if (s) s.value = '';
+  const e = document.getElementById('rawFilterEndDate'); if (e) e.value = '';
+  rawCurrentPage = 1;
+  applyRawFilters();
+}
+
+function resetRawFilters() {
+  selectedRawVendor = '';
+  rawActiveChip = '';
+  document.querySelectorAll('#rawSearchChips .chip').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-rawchip') === '');
+  });
+  const v = document.getElementById('rawSearchVendor'); if (v) v.value = '';
+  const item = document.getElementById('rawSearchItem'); if (item) item.value = '';
+  const mat = document.getElementById('rawSearchMaterial'); if (mat) mat.value = '';
+  const sp = document.getElementById('rawSearchSpec'); if (sp) sp.value = '';
+  const s = document.getElementById('rawFilterStartDate'); if (s) s.value = '';
+  const e = document.getElementById('rawFilterEndDate'); if (e) e.value = '';
+  rawCurrentPage = 1;
+  applyRawFilters();
+  renderRawVendorSidebar();
+}
+
+function applyRawFilters() {
+  const vInput = (document.getElementById('rawSearchVendor') ? document.getElementById('rawSearchVendor').value.trim().toLowerCase() : '');
+  const itemInput = (document.getElementById('rawSearchItem') ? document.getElementById('rawSearchItem').value.trim().toLowerCase() : '');
+  const matInput = (document.getElementById('rawSearchMaterial') ? document.getElementById('rawSearchMaterial').value.trim().toLowerCase() : '');
+  const specInput = (document.getElementById('rawSearchSpec') ? document.getElementById('rawSearchSpec').value.trim().toLowerCase() : '');
+  const startDate = (document.getElementById('rawFilterStartDate') ? document.getElementById('rawFilterStartDate').value : '');
+  const endDate = (document.getElementById('rawFilterEndDate') ? document.getElementById('rawFilterEndDate').value : '');
+
+  filteredRawData = [];
+  const src = rawData;
+
+  for (let i = 0; i < src.length; i++) {
+    const row = src[i];
+    const d = row[0];
+    const v = row[1];
+    const item = row[2];
+    const sp = row[3] || '';
+    const rem = row[7] || '';
+    const mat = row[8] || '';
+
+    if (selectedRawVendor && v !== selectedRawVendor) continue;
+    if (vInput && !v.toLowerCase().includes(vInput)) continue;
+    if (itemInput && !item.toLowerCase().includes(itemInput)) continue;
+    if (matInput && !mat.toLowerCase().includes(matInput)) continue;
+    if (specInput && !sp.toLowerCase().includes(specInput)) continue;
+
+    if (startDate && d < startDate) continue;
+    if (endDate && d > endDate) continue;
+
+    if (rawActiveChip) {
+      if (rawActiveChip === 'ROUND') {
+        if (!item.includes('ROUND') && !sp.includes('ROUND') && !rem.includes('ROUND')) continue;
+      } else if (rawActiveChip === 'HEX') {
+        if (!item.includes('HEX') && !sp.includes('HEX')) continue;
+      } else if (rawActiveChip === 'PLATE') {
+        if (!item.includes('PLATE') && !sp.includes('PLATE')) continue;
+      } else if (rawActiveChip === 'FLAT') {
+        if (!item.includes('FLAT') && !sp.includes('FLAT')) continue;
+      } else if (rawActiveChip === 'TUBE') {
+        if (!item.includes('TUBE') && !item.includes('PIPE') && !sp.includes('TUBE')) continue;
+      } else if (rawActiveChip === '기타') {
+        if (item.includes('ROUND') || item.includes('HEX') || item.includes('PLATE') || item.includes('FLAT') || item.includes('TUBE')) continue;
+      }
+    }
+
+    filteredRawData.push(row);
+  }
+
+  sortRawDataArray();
+  renderRawTable();
+}
+
+function sortRawData(colIndex) {
+  if (rawSortCol === colIndex) {
+    rawSortAsc = !rawSortAsc;
+  } else {
+    rawSortCol = colIndex;
+    rawSortAsc = (colIndex === 0) ? false : true;
+  }
+
+  for (let c = 0; c <= 8; c++) {
+    const el = document.getElementById('rawSort' + c);
+    if (el) {
+      if (c === rawSortCol) {
+        el.textContent = rawSortAsc ? '▲' : '▼';
+        el.className = 'sort-icon active';
+      } else {
+        el.textContent = '↕';
+        el.className = 'sort-icon';
+      }
+    }
+  }
+
+  sortRawDataArray();
+  renderRawTable();
+}
+
+function sortRawDataArray() {
+  const col = rawSortCol;
+  const asc = rawSortAsc;
+
+  filteredRawData.sort((a, b) => {
+    let va = a[col];
+    let vb = b[col];
+
+    if (col === 4 || col === 5 || col === 6) {
+      va = Number(va) || 0;
+      vb = Number(vb) || 0;
+      return asc ? (va - vb) : (vb - va);
+    }
+
+    va = (va !== null && va !== undefined) ? String(va) : '';
+    vb = (vb !== null && vb !== undefined) ? String(vb) : '';
+    return asc ? va.localeCompare(vb) : vb.localeCompare(va);
+  });
+}
+
+function renderRawTable() {
+  const tbody = document.getElementById('rawTableBody');
+  if (!tbody) return;
+
+  const total = filteredRawData.length;
+  const startIndex = (rawCurrentPage - 1) * rawPageSize;
+  const endIndex = Math.min(startIndex + rawPageSize, total);
+
+  const infoText = document.getElementById('rawTableInfoText');
+  if (infoText) {
+    infoText.textContent = `${formatNumber(total)}건 중 ${total > 0 ? formatNumber(startIndex + 1) : 0} - ${formatNumber(endIndex)} 표시`;
+  }
+
+  if (total === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" class="text-center" style="padding: 3rem 1rem; color: var(--text-muted);">
+      <div style="font-size: 2rem; margin-bottom: 8px; opacity: 0.5;">🔍</div>
+      <div style="font-size: 0.95rem; font-weight: 600;">조건에 일치하는 원자재 데이터가 없습니다.</div>
+      <button class="btn btn-sm btn-outline" style="margin-top: 10px;" onclick="resetRawFilters()">🔄 필터 초기화</button>
+    </td></tr>`;
+    renderRawPagination();
+    return;
+  }
+
+  const rowsHtml = [];
+  for (let i = startIndex; i < endIndex; i++) {
+    const row = filteredRawData[i];
+    const matBadge = row[8] ? `<span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:0.75rem; font-weight:700;">${escapeHtml(row[8])}</span>` : '<span style="color:#aaa;">-</span>';
+    
+    rowsHtml.push(`
+      <tr>
+        <td class="col-date" style="text-align: center; font-size:0.8rem;">${row[0]}</td>
+        <td class="col-vendor" style="font-weight: 600;">${escapeHtml(row[1])}</td>
+        <td style="font-weight: 700; color: var(--text-primary);">${escapeHtml(row[2])}</td>
+        <td style="text-align: center;">${matBadge}</td>
+        <td style="font-size: 0.82rem; color: var(--text-secondary);">${row[3] ? escapeHtml(row[3]) : '<span style="color:#aaa;">-</span>'}</td>
+        <td style="text-align: right; font-weight: 600;">${formatNumber(row[4])}</td>
+        <td style="text-align: right; color: var(--text-secondary);">${formatCurrency(row[5])}</td>
+        <td style="text-align: right; font-weight: 700; color: #059669;">${formatCurrency(row[6])}</td>
+        <td style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(row[7] || '')}</td>
+      </tr>
+    `);
+  }
+  tbody.innerHTML = rowsHtml.join('');
+  renderRawPagination();
+}
+
+function renderRawPagination() {
+  const container = document.getElementById('rawPagination');
+  if (!container) return;
+
+  const totalPages = Math.ceil(filteredRawData.length / rawPageSize);
+  if (totalPages <= 1) {
+    container.innerHTML = '';
+    return;
+  }
+
+  let html = `<button class="page-btn" ${rawCurrentPage === 1 ? 'disabled' : ''} onclick="changeRawPage(${rawCurrentPage - 1})">이전</button>`;
+  
+  const startP = Math.max(1, rawCurrentPage - 2);
+  const endP = Math.min(totalPages, rawCurrentPage + 2);
+
+  if (startP > 1) {
+    html += `<button class="page-btn" onclick="changeRawPage(1)">1</button>`;
+    if (startP > 2) html += `<span class="page-ellipsis">…</span>`;
+  }
+
+  for (let p = startP; p <= endP; p++) {
+    html += `<button class="page-btn ${p === rawCurrentPage ? 'active' : ''}" onclick="changeRawPage(${p})">${p}</button>`;
+  }
+
+  if (endP < totalPages) {
+    if (endP < totalPages - 1) html += `<span class="page-ellipsis">…</span>`;
+    html += `<button class="page-btn" onclick="changeRawPage(${totalPages})">${totalPages}</button>`;
+  }
+
+  html += `<button class="page-btn" ${rawCurrentPage === totalPages ? 'disabled' : ''} onclick="changeRawPage(${rawCurrentPage + 1})">다음</button>`;
+  container.innerHTML = html;
+}
+
+function changeRawPage(page) {
+  const totalPages = Math.ceil(filteredRawData.length / rawPageSize);
+  if (page < 1 || page > totalPages) return;
+  rawCurrentPage = page;
+  renderRawTable();
+  const tableEl = document.getElementById('rawMaterialsTable');
+  if (tableEl) tableEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function selectRawVendor(vendor) {
+  selectedRawVendor = vendor;
+  const vInput = document.getElementById('rawSearchVendor');
+  if (vInput) vInput.value = vendor;
+  rawCurrentPage = 1;
+  applyRawFilters();
+  renderRawVendorSidebar();
+}
+
+function renderRawVendorSidebar() {
+  const vAmounts = {};
+  const vCounts = {};
+  for (let i = 0; i < rawData.length; i++) {
+    const v = rawData[i][1];
+    vAmounts[v] = (vAmounts[v] || 0) + (rawData[i][6] || 0);
+    vCounts[v] = (vCounts[v] || 0) + 1;
+  }
+
+  const vendors = Object.keys(vAmounts).sort((a, b) => vAmounts[b] - vAmounts[a]);
+  const countEl = document.getElementById('rawSidebarVendorCount');
+  if (countEl) countEl.textContent = vendors.length;
+
+  const listEl = document.getElementById('rawSidebarVendorList');
+  if (!listEl) return;
+
+  let html = `<li class="vendor-item ${selectedRawVendor === '' ? 'active' : ''}" onclick="selectRawVendor('')">
+    <span>(전체 업체)</span>
+    <span class="vendor-badge">${formatNumber(rawData.length)}건</span>
+  </li>`;
+
+  vendors.forEach(v => {
+    html += `<li class="vendor-item ${selectedRawVendor === v ? 'active' : ''}" onclick="selectRawVendor('${escapeHtml(v)}')">
+      <span>${escapeHtml(v)}</span>
+      <span class="vendor-badge">${formatCompactCurrency(vAmounts[v])}</span>
+    </li>`;
+  });
+  listEl.innerHTML = html;
+
+  // Render Major Items if vendor selected
+  const majorSec = document.getElementById('rawMajorItemsSection');
+  const majorName = document.getElementById('rawMajorVendorName');
+  const majorList = document.getElementById('rawMajorItemsList');
+
+  if (selectedRawVendor && majorSec && majorName && majorList) {
+    majorSec.style.display = 'block';
+    majorName.textContent = selectedRawVendor;
+
+    const itemAmts = {};
+    for (let i = 0; i < rawData.length; i++) {
+      if (rawData[i][1] === selectedRawVendor) {
+        const itemKey = rawData[i][2] + (rawData[i][8] ? ' [' + rawData[i][8] + ']' : '') + (rawData[i][3] ? ' (' + rawData[i][3] + ')' : '');
+        itemAmts[itemKey] = (itemAmts[itemKey] || 0) + (rawData[i][6] || 0);
+      }
+    }
+    const topItems = Object.keys(itemAmts).sort((a, b) => itemAmts[b] - itemAmts[a]).slice(0, 10);
+    majorList.innerHTML = topItems.map((item, idx) => `
+      <li class="major-item">
+        <span class="major-rank">${idx + 1}</span>
+        <span class="major-name" title="${escapeHtml(item)}">${escapeHtml(item)}</span>
+        <span class="major-amount">${formatCompactCurrency(itemAmts[item])}</span>
+      </li>
+    `).join('');
+  } else if (majorSec) {
+    majorSec.style.display = 'none';
+  }
+}
+
+function filterRawVendorSidebarList() {
+  const query = (document.getElementById('rawVendorSidebarSearch') ? document.getElementById('rawVendorSidebarSearch').value.trim().toLowerCase() : '');
+  document.querySelectorAll('#rawSidebarVendorList li').forEach((li, idx) => {
+    if (idx === 0) return; // skip '전체'
+    const txt = li.textContent.toLowerCase();
+    li.style.display = txt.includes(query) ? '' : 'none';
+  });
+}
+
+function exportRawToCSV() {
+  const headers = ['입고일자', '업체명', '품명', '재질/강종', '규격', '수량(KG)', '단가', '공급가액', '비고'];
+  const rows = filteredRawData.map(r => [r[0], r[1], r[2], r[8] || '', r[3] || '', r[4], r[5], r[6], r[7] || '']);
+  exportToCSV(headers, rows, `원자재_검색결과_${new Date().toISOString().substring(0,10)}.csv`);
+  showToast('원자재 검색 결과 CSV 파일이 다운로드되었습니다.', 'success');
+}
+
+
 function switchMobileTab(targetId) {
   const targetTab = document.querySelector('.nav-tab[data-tab="' + targetId + '"]');
   if (targetTab) {
@@ -8994,6 +10107,14 @@ function exportPalletRatesToCSV() {
     <button class="m-nav-item active" data-tab="tab-search" onclick="switchMobileTab('tab-search')">
       <span class="m-nav-icon">📋</span>
       <span class="m-nav-label">소모품검색</span>
+    </button>
+    <button class="m-nav-item" data-tab="tab-sub" onclick="switchMobileTab('tab-sub')">
+      <span class="m-nav-icon">🧱</span>
+      <span class="m-nav-label">부자재</span>
+    </button>
+    <button class="m-nav-item" data-tab="tab-raw" onclick="switchMobileTab('tab-raw')">
+      <span class="m-nav-icon">🏭</span>
+      <span class="m-nav-label">원자재</span>
     </button>
     <button class="m-nav-item" data-tab="tab-scrap" onclick="switchMobileTab('tab-scrap')">
       <span class="m-nav-icon">💎</span>
