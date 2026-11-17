@@ -9028,7 +9028,19 @@ function deleteVendor(v) {
 // ==========================================
 function focusPasteInput() {
   const el = document.getElementById('pasteDirectInput');
+  const zone = document.getElementById('pasteDropZone');
   if (el) el.focus();
+  if (zone) {
+    zone.style.borderColor = '#2563eb';
+    zone.style.background = '#eff6ff';
+    zone.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.2)';
+    showToast('📋 붙여넣기 대기 중! 엑셀에서 복사(Ctrl+C)한 상태에서 키보드의 Ctrl + V 를 누르세요.', 'info');
+    setTimeout(() => {
+      zone.style.borderColor = '';
+      zone.style.background = '';
+      zone.style.boxShadow = '';
+    }, 2500);
+  }
 }
 
 function handleDirectPaste(e) {
