@@ -1,9 +1,10 @@
 # 올메탈(AllMetal) 폐초경 및 폐팁 시세 자동 업데이트 스크립트
-# 작성일: 2026-11-16
+# 최신 공지 기준: 2026-11-16 (wr_id=176)
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+if (-not $scriptDir) { $scriptDir = Get-Location }
 Set-Location $scriptDir
 
 $jsonPath = Join-Path $scriptDir "scrap_prices.json"
@@ -15,7 +16,7 @@ Write-Host "==========================================================" -Foregro
 
 # 1. 기존 데이터 로드
 $existingData = @()
-$maxId = 175
+$maxId = 176
 
 if (Test-Path $jsonPath) {
     try {

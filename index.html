@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -150,6 +150,10 @@
 }
 
 /* ─── Global Reset & Pretendard Typography ─── */
+html {
+  font-size: 16.5px;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -305,7 +309,7 @@ header {
   background: transparent;
   border: none;
   color: var(--slate-300);
-  font-size: 0.92rem;
+  font-size: 0.96rem;
   font-weight: 600;
   cursor: pointer;
   text-align: left;
@@ -446,7 +450,7 @@ main {
 }
 
 .stat-info .stat-label {
-  font-size: 0.8rem;
+  font-size: 0.86rem;
   font-weight: 600;
   color: var(--text-muted);
   text-transform: uppercase;
@@ -455,7 +459,7 @@ main {
 }
 
 .stat-info .stat-value {
-  font-size: 1.45rem;
+  font-size: 1.55rem;
   font-weight: 700;
   color: var(--slate-900);
   letter-spacing: -0.5px;
@@ -463,7 +467,7 @@ main {
 }
 
 .stat-info .stat-sub {
-  font-size: 0.75rem;
+  font-size: 0.82rem;
   color: var(--text-muted);
   margin-top: 3px;
 }
@@ -536,10 +540,10 @@ main {
 
 .sidebar-search-box input {
   width: 100%;
-  padding: 6px 10px;
+  padding: 7px 10px;
   border: 1px solid var(--input-border);
   border-radius: 6px;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   outline: none;
   background: var(--input-bg);
   color: var(--text-primary);
@@ -558,8 +562,8 @@ main {
 }
 
 .vendor-item {
-  padding: 8px 12px;
-  font-size: 0.83rem;
+  padding: 9px 12px;
+  font-size: 0.88rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -581,8 +585,8 @@ main {
 }
 
 .vendor-badge {
-  font-size: 0.72rem;
-  padding: 2px 6px;
+  font-size: 0.76rem;
+  padding: 2px 7px;
   border-radius: 10px;
   background: var(--slate-100);
   color: var(--text-secondary);
@@ -625,8 +629,8 @@ main {
 }
 
 .major-item {
-  padding: 7px 12px;
-  font-size: 0.78rem;
+  padding: 8px 12px;
+  font-size: 0.85rem;
   cursor: pointer;
   border-bottom: 1px solid var(--slate-100);
   transition: background 0.15s ease, color 0.15s ease;
@@ -653,9 +657,9 @@ main {
 .major-item-sub {
   display: flex;
   justify-content: space-between;
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   color: var(--text-muted);
-  margin-top: 2px;
+  margin-top: 3px;
 }
 
 /* ─── Main Data Panel ─── */
@@ -696,10 +700,10 @@ main {
 
 .search-input-wrapper input {
   width: 100%;
-  padding: 7px 32px 7px 12px;
+  padding: 8px 34px 8px 12px;
   border: 1px solid var(--input-border);
   border-radius: 6px;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   outline: none;
   background: var(--input-bg);
   color: var(--text-primary);
@@ -720,7 +724,7 @@ main {
   border: none;
   color: var(--slate-400);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.05rem;
   display: none;
 }
 
@@ -728,15 +732,15 @@ main {
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   color: var(--text-secondary);
 }
 
 .date-filter-group input[type="date"] {
-  padding: 6px 8px;
+  padding: 6px 9px;
   border: 1px solid var(--input-border);
   border-radius: 6px;
-  font-size: 0.82rem;
+  font-size: 0.88rem;
   outline: none;
   color: var(--text-primary);
   background: var(--input-bg);
@@ -749,9 +753,9 @@ main {
 
 /* ─── Buttons ─── */
 .btn {
-  padding: 6px 14px;
+  padding: 7px 14px;
   border-radius: 6px;
-  font-size: 0.84rem;
+  font-size: 0.88rem;
   font-weight: 600;
   cursor: pointer;
   border: 1px solid transparent;
@@ -842,7 +846,7 @@ main {
 table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.84rem;
+  font-size: 0.92rem;
   text-align: left;
 }
 
@@ -850,7 +854,8 @@ th {
   background: var(--table-header-bg);
   color: var(--table-header-color);
   font-weight: 700;
-  padding: 9px 12px;
+  font-size: 0.92rem;
+  padding: 10px 12px;
   position: sticky;
   top: 0;
   z-index: 10;
@@ -866,7 +871,7 @@ th:hover {
 }
 
 th .sort-icon {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   margin-left: 4px;
   color: var(--slate-400);
 }
@@ -876,7 +881,8 @@ th.sorted .sort-icon {
 }
 
 td {
-  padding: 8px 12px;
+  padding: 9px 12px;
+  font-size: 0.88rem;
   border-bottom: 1px solid var(--table-border);
   color: var(--text-primary);
   white-space: nowrap;
@@ -1400,6 +1406,90 @@ canvas.custom-chart {
 
 .pivot-table tr:hover td:first-child {
   background: var(--table-row-hover);
+}
+
+/* ─── Tab 2: Pivot Category Segmented Buttons ─── */
+.pivot-cat-btn-group {
+  display: inline-flex;
+  background: var(--slate-100, #f1f5f9);
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid var(--slate-300, #cbd5e1);
+  gap: 3px;
+}
+
+.pivot-cat-btn {
+  padding: 6px 14px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: var(--slate-600, #475569);
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+}
+
+.pivot-cat-btn:hover {
+  background: var(--slate-200, #e2e8f0);
+  color: var(--slate-800, #1e293b);
+}
+
+.pivot-cat-btn.active {
+  color: #ffffff !important;
+  font-weight: 700;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+.pivot-cat-btn[data-cat="all"].active {
+  background: #4f46e5;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.35);
+}
+.pivot-cat-btn[data-cat="consumables"].active {
+  background: #2563eb;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.35);
+}
+.pivot-cat-btn[data-cat="submaterials"].active {
+  background: #d97706;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35);
+}
+.pivot-cat-btn[data-cat="rawmaterials"].active {
+  background: #059669;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.35);
+}
+
+[data-theme="dark"] .pivot-cat-btn-group {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+[data-theme="dark"] .pivot-cat-btn {
+  color: #94a3b8;
+}
+
+[data-theme="dark"] .pivot-cat-btn:hover {
+  background: #334155;
+  color: #f1f5f9;
+}
+
+[data-theme="dark"] .pivot-cat-btn[data-cat="all"].active {
+  background: #6366f1;
+  color: #ffffff !important;
+}
+[data-theme="dark"] .pivot-cat-btn[data-cat="consumables"].active {
+  background: #3b82f6;
+  color: #ffffff !important;
+}
+[data-theme="dark"] .pivot-cat-btn[data-cat="submaterials"].active {
+  background: #f59e0b;
+  color: #1e1e1e !important;
+}
+[data-theme="dark"] .pivot-cat-btn[data-cat="rawmaterials"].active {
+  background: #10b981;
+  color: #1e1e1e !important;
 }
 
 /* ─── Tab 3: Monthly Closing & Report (A4 Print Preview) ─── */
@@ -2904,9 +2994,9 @@ canvas.custom-chart {
         <span class="nav-tab-icon">💎</span>
         <span class="nav-tab-text">폐팁 시세 동향</span>
       </button>
-      <button class="nav-tab" data-tab="tab-pallet" title="나무 파렛트 단가 계산기">
-        <span class="nav-tab-icon">🪵</span>
-        <span class="nav-tab-text">나무 파렛트 계산기</span>
+      <button class="nav-tab" data-tab="tab-pallet" title="박스 CBM계산기">
+        <span class="nav-tab-icon">📦</span>
+        <span class="nav-tab-text">박스 CBM계산기</span>
       </button>
       <button class="nav-tab" data-tab="tab-vendors" title="거래처 관리">
         <span class="nav-tab-icon">🏢</span>
@@ -2923,9 +3013,9 @@ canvas.custom-chart {
   <main>
 
     <!-- Top KPI Cards (Live across current active dataset) -->
-        <section class="stats-grid">
+    <section class="stats-grid" style="display: flex; flex-direction: column; gap: 10px;">
       <!-- 3대 카테고리 실시간 지표 퀵 토글 스위처 -->
-      <div style="grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 2px; padding: 8px 14px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; box-shadow: var(--card-shadow);">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 8px 14px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 8px; box-shadow: var(--card-shadow);">
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
           <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary);">📊 실시간 지표 기준:</span>
           <div style="display: inline-flex; gap: 6px;">
@@ -2936,37 +3026,17 @@ canvas.custom-chart {
         </div>
         <span id="categoryActiveIndicator" style="font-size: 0.8rem; color: #1e40af; font-weight: 700;">현재: 📋 소모품 구매 데이터 (45,922건) 분석 중</span>
       </div>
-      <div class="stat-card">
-        <div class="stat-info">
-          <div class="stat-label">총 거래금액</div>
-          <div class="stat-value" id="kpiTotalAmount">0원</div>
-          <div class="stat-sub" id="kpiTotalAmountSub">전체 누적 매입액</div>
+
+      <!-- 총 거래금액 카드 단독 표출 (원래 기본 너비 290px 유지) -->
+      <div style="display: flex; align-items: center;">
+        <div class="stat-card" style="width: 290px; max-width: 100%; flex: 0 0 290px;">
+          <div class="stat-info">
+            <div class="stat-label">총 거래금액</div>
+            <div class="stat-value" id="kpiTotalAmount">0원</div>
+            <div class="stat-sub" id="kpiTotalAmountSub">전체 누적 매입액</div>
+          </div>
+          <div class="stat-icon icon-blue" id="kpiTotalIcon">💰</div>
         </div>
-        <div class="stat-icon icon-blue">💰</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-info">
-          <div class="stat-label">총 거래수량</div>
-          <div class="stat-value" id="kpiTotalQty">0개</div>
-          <div class="stat-sub" id="kpiTotalQtySub">입고된 소모품 수량</div>
-        </div>
-        <div class="stat-icon icon-emerald">📦</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-info">
-          <div class="stat-label">가중 평균단가</div>
-          <div class="stat-value" id="kpiAvgPrice">0원</div>
-          <div class="stat-sub">총 금액 ÷ 총 수량</div>
-        </div>
-        <div class="stat-icon icon-amber">🏷️</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-info">
-          <div class="stat-label">조회 데이터 건수</div>
-          <div class="stat-value" id="kpiRowCount">0건</div>
-          <div class="stat-sub" id="kpiRowCountSub">현재 필터링된 결과</div>
-        </div>
-        <div class="stat-icon icon-purple">📋</div>
       </div>
     </section>
 
@@ -3003,34 +3073,59 @@ canvas.custom-chart {
 
         <!-- Main Data Table Panel -->
         <div class="data-panel">
-          <!-- Toolbar -->
-          <div class="data-toolbar">
-            <div class="search-inputs">
-              <div class="search-input-wrapper">
-                <input type="text" id="mainSearchInput" placeholder="🔍 품명, 규격, 업체명, 비고 통합 검색 (엔터 또는 입력)..." onkeydown="handleSearchKeyDown(event)" oninput="debouncedSearch()">
-                <span class="keyboard-shortcut-hint">Ctrl+K</span>
-                <button class="clear-search-btn" id="clearSearchBtn" onclick="clearSearch()">✕</button>
+          <!-- Filter Panel (부자재, 원자재와 동일한 4열 멀티 상세 검색 구조) -->
+          <div style="background: var(--card-bg, #ffffff); border: 1px solid var(--card-border, #e2e8f0); border-radius: 8px; padding: 12px 16px; margin-bottom: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 0.95rem; font-weight: 800; color: #2563eb; display: flex; align-items: center; gap: 6px;">
+                <span>📋 소모품 4열 멀티 검색</span>
+                <span class="badge" style="background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe; font-size:0.75rem;">ERP 45,922건</span>
+                <span class="badge" style="background:#eff6ff; color:#2563eb; border:1px solid #dbeafe; font-size:0.72rem;">마지막 입고: 2026-10-20</span>
               </div>
-              <button class="btn btn-primary" onclick="triggerSearch()">검색</button>
+              <button class="btn btn-sm btn-outline" onclick="resetAllFilters()">🔄 필터 초기화</button>
             </div>
 
-            <!-- Date range filter -->
-            <div class="date-filter-group">
-              <span>기간:</span>
-              <input type="date" id="filterStartDate" onchange="applyFilters()">
-              <span>~</span>
-              <input type="date" id="filterEndDate" onchange="applyFilters()">
-              <button class="btn btn-sm btn-outline" onclick="resetDateFilter()">전체</button>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 10px;">
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">🏢 업체명(공급사)</label>
+                <input type="text" id="suppliesSearchVendor" list="suppliesVendorDatalist" placeholder="업체명 선택/입력..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="onSuppliesVendorInputChange()">
+                <datalist id="suppliesVendorDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📦 품명(품목명)</label>
+                <input type="text" id="suppliesSearchItem" list="suppliesItemDatalist" placeholder="품명 검색 (인서트, 엔드밀, 드릴...)" class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="debouncedSearch()">
+                <datalist id="suppliesItemDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📐 규격(Dimension)</label>
+                <input type="text" id="suppliesSearchSpec" list="suppliesSpecDatalist" placeholder="규격 검색 (M10, 168, ST20...)" class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="debouncedSearch()">
+                <datalist id="suppliesSpecDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📝 비고(용도/부서)</label>
+                <input type="text" id="suppliesSearchRemark" list="suppliesRemarkDatalist" placeholder="비고 검색 (캠가공반, 나사1반...)" class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="debouncedSearch()">
+                <datalist id="suppliesRemarkDatalist"></datalist>
+              </div>
             </div>
 
-            <div style="display: flex; gap: 8px;">
-              <select id="pageSizeSelect" style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.82rem;" onchange="changePageSize(this.value)">
-                <option value="50">50개씩 보기</option>
-                <option value="100" selected>100개씩 보기</option>
-                <option value="200">200개씩 보기</option>
-                <option value="500">500개씩 보기</option>
-              </select>
-              <button class="btn btn-outline" onclick="exportCurrentTableToCSV()">📥 엑셀 내보내기</button>
+            <!-- Date Range & Page Size Toolbar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--slate-200); padding-top: 10px;">
+              <div class="date-filter-group">
+                <span>입고기간:</span>
+                <input type="date" id="filterStartDate" onchange="applyFilters()">
+                <span>~</span>
+                <input type="date" id="filterEndDate" onchange="applyFilters()">
+                <button class="btn btn-sm btn-outline" onclick="resetDateFilter()">전체</button>
+              </div>
+
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <select id="pageSizeSelect" style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.82rem;" onchange="changePageSize(this.value)">
+                  <option value="50">50개씩 보기</option>
+                  <option value="100" selected>100개씩 보기</option>
+                  <option value="200">200개씩 보기</option>
+                  <option value="500">500개씩 보기</option>
+                </select>
+                <button class="btn btn-outline btn-sm" onclick="exportCurrentTableToCSV()">📥 소모품 엑셀(CSV) 저장</button>
+              </div>
             </div>
           </div>
 
@@ -3169,19 +3264,8 @@ canvas.custom-chart {
               </div>
             </div>
 
-            <!-- Date Range & Quick Chips -->
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--slate-200); padding-top: 10px;">
-              <div class="search-chips" id="subSearchChips" style="display: flex; gap: 6px; flex-wrap: wrap;">
-                <button class="chip active" data-subchip="" onclick="filterSubChip('')">전체</button>
-                <button class="chip" data-subchip="환봉" onclick="filterSubChip('환봉')">⚪ 환봉/절단</button>
-                <button class="chip" data-subchip="볼트" onclick="filterSubChip('볼트')">🔩 볼트</button>
-                <button class="chip" data-subchip="너트" onclick="filterSubChip('너트')">🛑 너트</button>
-                <button class="chip" data-subchip="와셔" onclick="filterSubChip('와셔')">🔘 와셔</button>
-                <button class="chip" data-subchip="플레이트" onclick="filterSubChip('플레이트')">🔲 플레이트</button>
-                <button class="chip" data-subchip="단조" onclick="filterSubChip('단조')">⚙️ 단조품</button>
-                <button class="chip" data-subchip="디스크" onclick="filterSubChip('디스크')">💿 디스크</button>
-                <button class="chip" data-subchip="핀" onclick="filterSubChip('핀')">📌 핀/기타</button>
-              </div>
+            <!-- Date Range Filter -->
+            <div style="display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--slate-200); padding-top: 10px;">
               <div class="date-filter-group">
                 <span>입고기간:</span>
                 <input type="date" id="subFilterStartDate" onchange="applySubFilters()">
@@ -3288,17 +3372,8 @@ canvas.custom-chart {
               </div>
             </div>
 
-            <!-- Date Range & Quick Chips -->
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--slate-200); padding-top: 10px;">
-              <div class="search-chips" id="rawSearchChips" style="display: flex; gap: 6px; flex-wrap: wrap;">
-                <button class="chip active" data-rawchip="" onclick="filterRawChip('')">전체</button>
-                <button class="chip" data-rawchip="ROUND" onclick="filterRawChip('ROUND')">⚪ ROUND BAR</button>
-                <button class="chip" data-rawchip="HEX" onclick="filterRawChip('HEX')">🛑 HEX BAR</button>
-                <button class="chip" data-rawchip="PLATE" onclick="filterRawChip('PLATE')">🔲 PLATE</button>
-                <button class="chip" data-rawchip="FLAT" onclick="filterRawChip('FLAT')">🔩 FLAT BAR</button>
-                <button class="chip" data-rawchip="TUBE" onclick="filterRawChip('TUBE')">⚙️ TUBE/PIPE</button>
-                <button class="chip" data-rawchip="기타" onclick="filterRawChip('기타')">📌 기타</button>
-              </div>
+            <!-- Date Range Filter -->
+            <div style="display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--slate-200); padding-top: 10px;">
               <div class="date-filter-group">
                 <span>입고기간:</span>
                 <input type="date" id="rawFilterStartDate" onchange="applyRawFilters()">
@@ -3348,10 +3423,18 @@ canvas.custom-chart {
           <div>
             <h2 style="font-size: 1.15rem; font-weight: 700; color: var(--slate-900);">📊 거래처별 매입추이 피벗 분석</h2>
             <p style="font-size: 0.8rem; color: var(--slate-500); margin-top: 2px;">
-              월별 매입 흐름과 1년 누적 매입 랭킹을 크로스탭 피벗 테이블로 분석합니다.
+              월별 매입 흐름과 1년 누적 매입 랭킹을 크로스탭 피벗 테이블로 분석합니다. (소모품·부자재·원자재 통합 & 유사 업체명 자동 합산)
             </p>
           </div>
-          <div style="display: flex; gap: 8px;">
+          <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+            <!-- 클릭식 카테고리 전환 버튼 그룹 -->
+            <div class="pivot-cat-btn-group" role="group" aria-label="매입추이 카테고리 선택">
+              <button type="button" class="pivot-cat-btn active" data-cat="all" onclick="selectPivotCategory('all')">🏢 전체 통합</button>
+              <button type="button" class="pivot-cat-btn" data-cat="consumables" onclick="selectPivotCategory('consumables')">📋 소모품</button>
+              <button type="button" class="pivot-cat-btn" data-cat="submaterials" onclick="selectPivotCategory('submaterials')">🧱 부자재</button>
+              <button type="button" class="pivot-cat-btn" data-cat="rawmaterials" onclick="selectPivotCategory('rawmaterials')">🏭 원자재</button>
+            </div>
+            <input type="hidden" id="pivotCategorySelect" value="all">
             <select id="pivotPeriodSelect" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.84rem;" onchange="renderPivotView()">
               <option value="12">최근 12개월</option>
               <option value="24" selected>최근 24개월 (2년)</option>
@@ -3395,10 +3478,10 @@ canvas.custom-chart {
         <div style="margin-bottom: 8px; padding: 6px 12px; background: rgba(59, 130, 246, 0.05); border: 1px solid rgba(59, 130, 246, 0.15); border-radius: 6px; font-size: 0.8rem; color: var(--text-secondary); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
           <div style="display: flex; align-items: center; gap: 6px;">
             <span>💡</span>
-            <span>아래 피벗 표 또는 랭킹 목록에서 <strong>거래처명(예: 하나테크)</strong>을 클릭하면 해당 거래처의 <strong>월별 매입추이 그래프</strong>가 즉시 표시됩니다.</span>
+            <span>아래 피벗 표 또는 랭킹 목록에서 <strong>거래처명(예: 우영산업)</strong>을 클릭하면 해당 거래처(지점·유사명칭 통합)의 <strong>월별 매입추이 그래프</strong>가 즉시 표시됩니다.</span>
           </div>
           <div id="trendGuideActiveVendor" style="font-size: 0.78rem; font-weight: 700; color: var(--primary);">
-            현재: 전체 거래처 합산
+            현재: 전체 거래처 합산 (유사명칭 자동 통합)
           </div>
         </div>
 
@@ -3601,10 +3684,10 @@ canvas.custom-chart {
             </p>
           </div>
           <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-            <a href="https://allmetal.co.kr/bbs/board.php?bo_table=price&wr_id=173" target="_blank" class="btn btn-outline btn-sm" style="text-decoration: none; display: flex; align-items: center; gap: 4px;" title="올메탈 공식 시세 게시판 새창 열기">
+            <a href="https://allmetal.co.kr/bbs/board.php?bo_table=price&wr_id=176" target="_blank" class="btn btn-outline btn-sm" style="text-decoration: none; display: flex; align-items: center; gap: 4px;" title="올메탈 공식 시세 게시판 새창 열기">
               🔗 올메탈 원문 시세표 바로가기 ↗
             </a>
-            <button class="btn btn-primary btn-sm" onclick="exportScrapToCSV()" title="143회차 전체 시세 이력 엑셀 다운로드">
+            <button class="btn btn-primary btn-sm" onclick="exportScrapToCSV()" title="145회차 전체 시세 이력 엑셀 다운로드">
               📥 폐초경 시세 이력 엑셀(CSV) 저장
             </button>
           </div>
@@ -3785,7 +3868,7 @@ canvas.custom-chart {
     </section>
 
     <!-- ========================================== -->
-    <!-- TAB: 나무 파렛트 & 수출박스 CBM 단가 계산기 (유성수출포장 · 천우수출포장) -->
+    <!-- TAB: 박스 CBM계산기 (유성수출포장 · 천우수출포장) -->
     <!-- ========================================== -->
     <section id="tab-pallet" class="tab-content">
       <div class="data-panel" style="padding: 1.5rem; max-width: 1300px; margin: 0 auto; width: 100%;">
@@ -3794,7 +3877,7 @@ canvas.custom-chart {
         <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 1.25rem;">
           <div>
             <h2 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 8px;">
-              <span>🪵 나무 파렛트 &amp; 수출박스 단가 계산기</span>
+              <span>📦 박스 CBM계산기</span>
               <span class="brand-badge" style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a;">유성수출포장 · 천우수출포장 공식 연동</span>
             </h2>
             <p style="font-size: 0.85rem; color: var(--text-secondary); margin: 0;">
@@ -4262,6 +4345,281 @@ canvas.custom-chart {
             </div>
           </div>
 
+          <!-- Accordion 4: 천우수출 각재 가공 단가표 및 산출 기준 -->
+          <div class="pallet-box-card" style="padding: 0; overflow: hidden; margin-top: 1rem;">
+            <div style="padding: 12px 16px; background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border-bottom: 1px solid #a7f3d0; display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="togglePalletAccordion('accCheonwooTimberTable')">
+              <div style="font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                <span style="color: #065f46;">🪵 천우수출 각재 가공 단가표 및 단가 산출 기준</span>
+                <span class="badge" style="font-size: 0.72rem; background: #059669; color: #fff; font-weight: 700; border-radius: 4px; padding: 2px 7px;">천우수출포장 견적</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="iconAccCheonwooTimberTable" style="font-size: 0.9rem; color: #059669; transition: transform 0.2s;">▼</span>
+              </div>
+            </div>
+            <div id="accCheonwooTimberTable" style="display: block; padding: 1.25rem;">
+              
+              <!-- 견적서 기본 정보 & 원본 스캔본 보기 버튼 -->
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 1.25rem; background: var(--slate-50); border: 1px solid var(--card-border); border-radius: 8px; padding: 12px 16px; font-size: 0.82rem;">
+                <div>
+                  <div style="font-weight: 700; color: #065f46; font-size: 0.88rem; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
+                    <span>🏢 공급자: 천우수출포장 (대표 배현근)</span>
+                  </div>
+                  <div style="color: var(--slate-600); line-height: 1.5;">
+                    • <b>사업자등록번호</b>: 720-12-00558<br>
+                    • <b>사업장 주소</b>: 부산광역시 강서구 송동길 231<br>
+                    • <b>연락처</b>: 사무실 051-973-5614 | FAX 051-973-5615 | H.P 010-3584-5614<br>
+                    • <b>이메일</b>: cw5614@naver.com
+                  </div>
+                </div>
+                <div>
+                  <div style="font-weight: 700; color: #1e3a8a; font-size: 0.88rem; margin-bottom: 4px; display: flex; align-items: center; justify-content: space-between;">
+                    <span>📋 견적 개요 (수신: S &amp; W)</span>
+                    <button type="button" class="btn btn-sm btn-outline" onclick="toggleCheonwooQuoteImage()" style="padding: 2px 8px; font-size: 0.74rem; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+                      <span>📷</span> <span>견적서 원본 스캔 보기</span>
+                    </button>
+                  </div>
+                  <div style="color: var(--slate-600); line-height: 1.5;">
+                    • <b>수신처 / 참조</b>: S &amp; W (김태훈 주임님 귀하)<br>
+                    • <b>공사(품목)명</b>: 각재 가공<br>
+                    • <b>견적 조건</b>: 부가세 별도<br>
+                    • <b>주요 내용</b>: 각재 절단/가공, 홀가공(구당 200원), 가로재단 및 원본 각재 단가
+                  </div>
+                </div>
+              </div>
+
+              <!-- 원본 견적서 이미지 뷰어 (토글식) -->
+              <div id="cheonwooQuoteImageContainer" style="display: none; margin-bottom: 1.25rem; padding: 12px; background: #f8fafc; border: 1.5px dashed #059669; border-radius: 8px; text-align: center;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                  <span style="font-weight: 700; font-size: 0.85rem; color: #065f46;">📄 천우수출포장 각재 가공 견적서 원본 스캔본</span>
+                  <button type="button" class="btn btn-sm btn-outline" onclick="toggleCheonwooQuoteImage()" style="padding: 2px 8px; font-size: 0.74rem;">닫기 ✕</button>
+                </div>
+                <img src="cheonwoo_quote.png" alt="천우수출포장 각재 가공 견적서" style="max-width: 100%; max-height: 800px; border-radius: 6px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); border: 1px solid #cbd5e1;">
+              </div>
+
+              <!-- 천우수출 각재 가공 및 CBM 단가 산출 기준표 (견적서 하단 적색 기재 항목) -->
+              <div style="margin-bottom: 1.25rem; border: 1.5px solid #f87171; border-radius: 8px; overflow: hidden; background: #ffffff; box-shadow: 0 2px 8px rgba(220, 38, 38, 0.08);">
+                <div style="background: #fef2f2; padding: 10px 16px; border-bottom: 1.5px solid #fecaca; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 1rem;">📌</span>
+                    <h4 style="font-size: 0.92rem; font-weight: 800; color: #b91c1c; margin: 0;">
+                      천우수출 각재 가공 및 CBM 단가 산출 기준표
+                    </h4>
+                    <span style="font-size: 0.74rem; font-weight: 700; color: #dc2626; background: #fee2e2; padding: 2px 8px; border-radius: 4px; border: 1px solid #fca5a5;">견적서 적색 명시 기준</span>
+                  </div>
+                  <span style="font-size: 0.78rem; color: #991b1b; font-weight: 600;">(가공 규격별 단가 및 공임 추가 기준)</span>
+                </div>
+                <div style="overflow-x: auto;">
+                  <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                    <thead>
+                      <tr style="background: #fff5f5; border-bottom: 1.5px solid #fee2e2; color: #991b1b; font-size: 0.8rem;">
+                        <th style="padding: 9px 18px; text-align: left; width: 45%; border-right: 1px solid #fee2e2; font-weight: 700;">품목 및 가공 구분 (적색 표기 원문)</th>
+                        <th style="padding: 9px 18px; text-align: left; width: 35%; border-right: 1px solid #fee2e2; font-weight: 700;">단가 및 추가 공임 산출 기준</th>
+                        <th style="padding: 9px 18px; text-align: left; color: #64748b; font-weight: normal;">상세 적용 설명</th>
+                      </tr>
+                    </thead>
+                    <tbody style="font-weight: 700; color: #dc2626; font-size: 0.92rem;">
+                      <tr style="border-bottom: 1px solid #fee2e2; background: #ffffff;">
+                        <td style="padding: 10px 18px; border-right: 1px solid #fee2e2; letter-spacing: -0.2px;">각재원본 cbm당 2.000 원</td>
+                        <td style="padding: 10px 18px; border-right: 1px solid #fee2e2; color: #b91c1c;">CBM당 2,000원</td>
+                        <td style="padding: 10px 18px; font-weight: normal; color: #64748b; font-size: 0.82rem;">가공 전 각재 원본 CBM(체적) 기본 단가</td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #fee2e2; background: #fffafb;">
+                        <td style="padding: 10px 18px; border-right: 1px solid #fee2e2; letter-spacing: -0.2px;">각재절단 cbm당 2.200 원</td>
+                        <td style="padding: 10px 18px; border-right: 1px solid #fee2e2; color: #b91c1c;">CBM당 2,200원</td>
+                        <td style="padding: 10px 18px; font-weight: normal; color: #64748b; font-size: 0.82rem;">원목 각재 절단 가공 시 CBM(체적) 단가</td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #fee2e2; background: #ffffff;">
+                        <td style="padding: 10px 18px; border-right: 1px solid #fee2e2; letter-spacing: -0.2px;">각재 50*50 (가로재단)</td>
+                        <td style="padding: 10px 18px; border-right: 1px solid #fee2e2;">cbm단가 + 개당500원</td>
+                        <td style="padding: 10px 18px; font-weight: normal; color: #64748b; font-size: 0.82rem;">50×50 규격 가로재단 공임 개당 500원 추가</td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #fee2e2; background: #fffafb;">
+                        <td style="padding: 10px 18px; border-right: 1px solid #fee2e2; letter-spacing: -0.2px;">각재 40*40 (가로재단)</td>
+                        <td style="padding: 10px 18px; border-right: 1px solid #fee2e2;">cbm단가 + 개당500원</td>
+                        <td style="padding: 10px 18px; font-weight: normal; color: #64748b; font-size: 0.82rem;">40×40 규격 가로재단 공임 개당 500원 추가</td>
+                      </tr>
+                      <tr style="background: #ffffff;">
+                        <td style="padding: 10px 18px; border-right: 1px solid #fee2e2; letter-spacing: -0.2px;">홀가공 1구당 200원</td>
+                        <td style="padding: 10px 18px; border-right: 1px solid #fee2e2;">cbm단가 + 홀1구당200원</td>
+                        <td style="padding: 10px 18px; font-weight: normal; color: #64748b; font-size: 0.82rem;">타공 1구당 200원 가산 (예: 7홀 1,400원 / 8홀 1,600원)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- 견적서 품목별 단가표 -->
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                  <h4 style="font-size: 0.88rem; font-weight: 700; color: var(--text-primary); margin: 0;">
+                    📑 천우수출 각재 가공 견적서 품목별 세부 단가표 (총 11개 항목)
+                  </h4>
+                  <div style="display: flex; align-items: center; gap: 8px;">
+                    <input type="text" placeholder="품목/규격 검색..." style="padding: 4px 8px; font-size: 0.76rem; border-radius: 5px; border: 1px solid var(--card-border);" oninput="filterCheonwooTimberTable(this.value)">
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">* 부가세 별도</span>
+                  </div>
+                </div>
+                <div style="overflow-x: auto; border: 1px solid var(--card-border); border-radius: 8px;">
+                  <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.82rem;">
+                    <thead style="background: var(--slate-100);">
+                      <tr>
+                        <th style="width: 50px; text-align: center;">번호</th>
+                        <th style="width: 160px;">품명</th>
+                        <th style="width: 150px; text-align: center;">규격 (mm)</th>
+                        <th style="width: 80px; text-align: right;">수량</th>
+                        <th style="width: 110px; text-align: right; color: #065f46;">단가 (원)</th>
+                        <th style="width: 120px; text-align: right; color: #1e3a8a;">금액 (원)</th>
+                        <th>산출 및 가공 기준 비고</th>
+                      </tr>
+                    </thead>
+                    <tbody id="cheonwooTimberTableBody">
+                      <tr>
+                        <td style="text-align: center; color: var(--slate-500);">1</td>
+                        <td><b>각재</b></td>
+                        <td style="text-align: center; font-family: monospace;">40 × 30 × 570</td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: right; font-weight: 700; color: #065f46;">500</td>
+                        <td style="text-align: right; font-weight: 700; color: #1e3a8a;">50,000</td>
+                        <td style="color: var(--slate-600);">기본 각재</td>
+                      </tr>
+                      <tr style="background: #faf5ff;">
+                        <td style="text-align: center; color: var(--slate-500);">2</td>
+                        <td><b style="color: #6b21a8;">7홀가공</b> <span style="font-size: 0.72rem; color: #7e22ce;">(7*200)</span></td>
+                        <td style="text-align: center; color: #94a3b8;">-</td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: right; font-weight: 700; color: #7e22ce;">1,400</td>
+                        <td style="text-align: right; font-weight: 700; color: #6b21a8;">140,000</td>
+                        <td style="color: #6b21a8;">홀가공 7구 × 200원 = 1,400원</td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: center; color: var(--slate-500);">3</td>
+                        <td><b>각재</b></td>
+                        <td style="text-align: center; font-family: monospace;">80 × 50 × 570</td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: right; font-weight: 700; color: #065f46;">1,500</td>
+                        <td style="text-align: right; font-weight: 700; color: #1e3a8a;">150,000</td>
+                        <td style="color: var(--slate-600);">기본 각재</td>
+                      </tr>
+                      <tr style="background: #faf5ff;">
+                        <td style="text-align: center; color: var(--slate-500);">4</td>
+                        <td><b style="color: #6b21a8;">7홀가공</b> <span style="font-size: 0.72rem; color: #7e22ce;">(7*200)</span></td>
+                        <td style="text-align: center; color: #94a3b8;">-</td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: right; font-weight: 700; color: #7e22ce;">1,400</td>
+                        <td style="text-align: right; font-weight: 700; color: #6b21a8;">140,000</td>
+                        <td style="color: #6b21a8;">홀가공 7구 × 200원 = 1,400원</td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: center; color: var(--slate-500);">5</td>
+                        <td><b>각재</b></td>
+                        <td style="text-align: center; font-family: monospace;">80 × 50 × 790</td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: right; font-weight: 700; color: #065f46;">2,100</td>
+                        <td style="text-align: right; font-weight: 700; color: #1e3a8a;">210,000</td>
+                        <td style="color: var(--slate-600);">기본 각재</td>
+                      </tr>
+                      <tr style="background: #faf5ff;">
+                        <td style="text-align: center; color: var(--slate-500);">6</td>
+                        <td><b style="color: #6b21a8;">8홀가공</b> <span style="font-size: 0.72rem; color: #7e22ce;">(8*200)</span></td>
+                        <td style="text-align: center; color: #94a3b8;">-</td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: right; font-weight: 700; color: #7e22ce;">1,600</td>
+                        <td style="text-align: right; font-weight: 700; color: #6b21a8;">160,000</td>
+                        <td style="color: #6b21a8;">홀가공 8구 × 200원 = 1,600원</td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: center; color: var(--slate-500);">7</td>
+                        <td><b>각재 원본</b></td>
+                        <td style="text-align: center; font-family: monospace;">80 × 40 × 4000</td>
+                        <td style="text-align: right;">10</td>
+                        <td style="text-align: right; font-weight: 700; color: #065f46;">7,700</td>
+                        <td style="text-align: right; font-weight: 700; color: #1e3a8a;">77,000</td>
+                        <td style="color: var(--slate-600);">원본 4,000mm (4M) 각재</td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: center; color: var(--slate-500);">8</td>
+                        <td><b>각재</b></td>
+                        <td style="text-align: center; font-family: monospace;">80 × 40 × 1200</td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: right; font-weight: 700; color: #065f46;">2,500</td>
+                        <td style="text-align: right; font-weight: 700; color: #1e3a8a;">250,000</td>
+                        <td style="color: var(--slate-600);">기본 각재</td>
+                      </tr>
+                      <tr style="background: #f0fdf4;">
+                        <td style="text-align: center; color: var(--slate-500);">9</td>
+                        <td><b style="color: #065f46;">각재 ㄴ 가공</b></td>
+                        <td style="text-align: center; font-family: monospace;">80 × 40 × 1200</td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: right; font-weight: 700; color: #059669;">1,200</td>
+                        <td style="text-align: right; font-weight: 700; color: #065f46;">120,000</td>
+                        <td style="color: #065f46;">ㄴ자 모따기/홈 가공비</td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: center; color: var(--slate-500);">10</td>
+                        <td><b>각재</b></td>
+                        <td style="text-align: center; font-family: monospace;">40 × 40 × 800</td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: right; font-weight: 700; color: #065f46;">800</td>
+                        <td style="text-align: right; font-weight: 700; color: #1e3a8a;">80,000</td>
+                        <td style="color: var(--slate-600);">기본 각재</td>
+                      </tr>
+                      <tr style="background: #fffbeb;">
+                        <td style="text-align: center; color: var(--slate-500);">11</td>
+                        <td><b style="color: #b45309;">가로재단</b></td>
+                        <td style="text-align: center; font-family: monospace;">40 × 40</td>
+                        <td style="text-align: right;">100</td>
+                        <td style="text-align: right; font-weight: 700; color: #b45309;">500</td>
+                        <td style="text-align: right; font-weight: 700; color: #92400e;">50,000</td>
+                        <td style="color: #b45309;">가로재단 공임 (개당 500원)</td>
+                      </tr>
+                    </tbody>
+                    <!-- 견적서 하단 적색 기준표 행 (견적서 원본 하단 배치 반영) -->
+                    <tbody style="border-top: 2px solid #f87171; background: #fffbfb; font-weight: 700; color: #dc2626;">
+                      <tr style="border-bottom: 1px solid #fee2e2;">
+                        <td style="text-align: center; color: #ef4444; font-size: 0.76rem;">기준</td>
+                        <td colspan="2" style="color: #dc2626; font-size: 0.88rem;">각재원본 cbm당 2.000 원</td>
+                        <td style="text-align: right; color: #94a3b8;">-</td>
+                        <td style="text-align: right; color: #dc2626;">CBM당 2,000원</td>
+                        <td style="text-align: right; color: #94a3b8;">-</td>
+                        <td style="color: #7f1d1d; font-size: 0.78rem; font-weight: normal;">가공 전 각재 원본 체적 단가</td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #fee2e2;">
+                        <td style="text-align: center; color: #ef4444; font-size: 0.76rem;">기준</td>
+                        <td colspan="2" style="color: #dc2626; font-size: 0.88rem;">각재절단 cbm당 2.200 원</td>
+                        <td style="text-align: right; color: #94a3b8;">-</td>
+                        <td style="text-align: right; color: #dc2626;">CBM당 2,200원</td>
+                        <td style="text-align: right; color: #94a3b8;">-</td>
+                        <td style="color: #7f1d1d; font-size: 0.78rem; font-weight: normal;">원목 각재 절단 가공 시 체적 단가</td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #fee2e2;">
+                        <td style="text-align: center; color: #ef4444; font-size: 0.76rem;">기준</td>
+                        <td colspan="2" style="color: #dc2626; font-size: 0.88rem;">각재 50*50 (가로재단)</td>
+                        <td style="text-align: right; color: #94a3b8;">-</td>
+                        <td colspan="2" style="color: #dc2626; text-align: center; font-size: 0.88rem;">cbm단가 + 개당500원</td>
+                        <td style="color: #7f1d1d; font-size: 0.78rem; font-weight: normal;">50×50 규격 가로재단 공임 개당 500원 추가</td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #fee2e2;">
+                        <td style="text-align: center; color: #ef4444; font-size: 0.76rem;">기준</td>
+                        <td colspan="2" style="color: #dc2626; font-size: 0.88rem;">각재 40*40 (가로재단)</td>
+                        <td style="text-align: right; color: #94a3b8;">-</td>
+                        <td colspan="2" style="color: #dc2626; text-align: center; font-size: 0.88rem;">cbm단가 + 개당500원</td>
+                        <td style="color: #7f1d1d; font-size: 0.78rem; font-weight: normal;">40×40 규격 가로재단 공임 개당 500원 추가</td>
+                      </tr>
+                      <tr>
+                        <td style="text-align: center; color: #ef4444; font-size: 0.76rem;">기준</td>
+                        <td colspan="2" style="color: #dc2626; font-size: 0.88rem;">홀가공 1구당 200원</td>
+                        <td style="text-align: right; color: #94a3b8;">-</td>
+                        <td colspan="2" style="color: #dc2626; text-align: center; font-size: 0.88rem;">cbm단가 + 홀1구당200원</td>
+                        <td style="color: #7f1d1d; font-size: 0.78rem; font-weight: normal;">타공 1구당 200원 추가 (예: 7홀 1,400원 / 8홀 1,600원)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -4277,11 +4635,17 @@ canvas.custom-chart {
         <div class="data-panel">
           <div class="data-toolbar">
             <div>
-              <h2 style="font-size: 1.1rem; font-weight: 700;">🏢 등록 거래처 목록 (<span id="mgmtVendorCount">0</span>)</h2>
-              <p style="font-size: 0.78rem; color: var(--slate-500);">등록된 거래처 정보는 브라우저 저장소(LocalStorage)에 영구 보관됩니다.</p>
+              <h2 style="font-size: 1.15rem; font-weight: 700;">🏢 등록 거래처 목록 (<span id="mgmtVendorCount">0</span>)</h2>
+              <p style="font-size: 0.8rem; color: var(--slate-500);">소모품·부자재·원자재 공급 거래처 통합 관리 (브라우저 저장소 영구 보관)</p>
             </div>
-            <div style="display: flex; gap: 8px;">
-              <input type="text" id="mgmtSearchInput" placeholder="거래처 검색..." style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.82rem;" oninput="renderVendorMgmtTable()">
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              <select id="mgmtCategorySelect" style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.84rem; font-weight: 600;" onchange="renderVendorMgmtTable()">
+                <option value="all" selected>전체 구분 (소모품+부자재+원자재)</option>
+                <option value="소모품">📋 소모품</option>
+                <option value="부자재">🧱 부자재</option>
+                <option value="원자재">🏭 원자재</option>
+              </select>
+              <input type="text" id="mgmtSearchInput" placeholder="거래처 검색..." style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.84rem;" oninput="renderVendorMgmtTable()">
               <button class="btn btn-outline" onclick="exportVendorsToCSV()">📥 거래처 목록 저장</button>
             </div>
           </div>
@@ -4290,12 +4654,12 @@ canvas.custom-chart {
             <table>
               <thead>
                 <tr>
-                  <th>업체명</th>
+                  <th style="min-width: 170px;">업체명 (취급구분)</th>
                   <th>담당자</th>
                   <th>연락처</th>
                   <th>비고</th>
-                  <th class="text-right">누적 매입액</th>
-                  <th class="text-center">관리</th>
+                  <th class="text-right">누적 매입액 (통합)</th>
+                  <th class="text-center" style="width: 120px;">관리</th>
                 </tr>
               </thead>
               <tbody id="vendorMgmtTableBody">
@@ -4305,38 +4669,104 @@ canvas.custom-chart {
           </div>
         </div>
 
-        <!-- Vendor Form (Add / Edit) -->
-        <div class="vendor-form-card">
-          <h3 style="font-size: 0.95rem; font-weight: 700; border-bottom: 1px solid var(--slate-200); padding-bottom: 8px;" id="vendorFormTitle">
-            ✨ 거래처 신규 등록
-          </h3>
-
-          <input type="hidden" id="editVendorOriginalName">
-
-          <div class="form-group">
-            <label>업체명 <span style="color: var(--danger);">*</span></label>
-            <input type="text" id="formVendorName" placeholder="예: 하나테크">
+        <!-- Vendor Form (Dedicated Edit Section + New Registration Section) -->
+        <div class="vendor-form-card" id="vendorActionCard" style="border: 1px solid var(--card-border); transition: border-color 0.25s, box-shadow 0.25s;">
+          
+          <!-- Mode Tabs: 수정칸 vs 신규등록 -->
+          <div style="display: flex; background: var(--slate-100, #f1f5f9); padding: 4px; border-radius: 8px; gap: 4px; margin-bottom: 0.5rem; border: 1px solid var(--slate-200, #e2e8f0);">
+            <button type="button" id="vendorTabEditBtn" style="flex: 1; padding: 8px 6px; font-size: 0.88rem; font-weight: 700; border-radius: 6px; border: none; background: #2563eb; color: #fff; cursor: pointer; transition: all 0.15s;" onclick="switchVendorFormMode('edit')">
+              ✏️ 정보 수정 (수정칸)
+            </button>
+            <button type="button" id="vendorTabRegBtn" style="flex: 1; padding: 8px 6px; font-size: 0.88rem; font-weight: 600; border-radius: 6px; border: none; background: transparent; color: var(--slate-600, #475569); cursor: pointer; transition: all 0.15s;" onclick="switchVendorFormMode('register')">
+              ➕ 신규 거래처 등록
+            </button>
           </div>
 
-          <div class="form-group">
-            <label>담당자</label>
-            <input type="text" id="formContactPerson" placeholder="예: 김원진 과장">
+          <!-- ============================================== -->
+          <!-- 1. 수정칸 (기존 거래처 정보 수정 전용 패널) -->
+          <!-- ============================================== -->
+          <div id="vendorEditSection">
+            <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 8px 10px; margin-bottom: 10px; font-size: 0.78rem; color: #1e40af; line-height: 1.4;">
+              💡 <strong>수정칸 안내:</strong> 좌측 표의 <strong>[수정]</strong> 버튼을 누르거나, 아래 드롭다운에서 업체를 직접 선택하여 수정하세요.
+            </div>
+
+            <div class="form-group">
+              <label style="font-weight: 700; color: #1e3a8a; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center;">
+                <span>🔍 수정할 거래처 검색/선택 <span style="color: var(--danger);">*</span></span>
+                <span id="editVendorMatchCount" style="font-size: 0.75rem; font-weight: 600; color: #2563eb;"></span>
+              </label>
+              <!-- Real-time Quick Search Input -->
+              <input type="text" id="editVendorSearchInput" placeholder="🔍 업체명 빠른 검색 (예: 세한, 하나...)" style="width: 100%; padding: 7px 10px; border-radius: 6px; border: 1.5px solid #cbd5e1; font-size: 0.85rem; margin-bottom: 5px;" oninput="filterEditVendorDropdown(this.value)">
+              <select id="editVendorSelect" style="width: 100%; padding: 7px 10px; border-radius: 6px; border: 1.5px solid #3b82f6; font-size: 0.88rem; font-weight: 600; background: #fff;" onchange="onVendorEditSelectChange()">
+                <option value="">-- 수정할 거래처를 선택하세요 --</option>
+              </select>
+            </div>
+
+            <input type="hidden" id="editVendorOriginalName">
+
+            <div class="form-group" style="margin-top: 6px;">
+              <label style="font-size: 0.82rem; font-weight: 700;">
+                업체명 <span style="color: var(--danger);">*</span>
+                <span style="font-size: 0.74rem; font-weight: normal; color: #2563eb; margin-left: 4px;">(업체명을 직접 수정/변경할 수 있습니다)</span>
+              </label>
+              <input type="text" id="editFormVendorName" placeholder="업체명을 입력 또는 수정하세요" style="background: #fff; color: var(--text-primary); font-weight: 700; border: 1.5px solid #cbd5e1; padding: 7px 10px; border-radius: 6px;">
+            </div>
+
+            <div class="form-group">
+              <label style="font-size: 0.82rem;">담당자</label>
+              <input type="text" id="editFormContactPerson" placeholder="예: 김원진 과장">
+            </div>
+
+            <div class="form-group">
+              <label style="font-size: 0.82rem;">연락처</label>
+              <input type="text" id="editFormContactPhone" placeholder="예: 010-1234-5678 / 055-xxx-xxxx">
+            </div>
+
+            <div class="form-group">
+              <label style="font-size: 0.82rem;">비고</label>
+              <textarea id="editFormRemarks" rows="3" placeholder="거래 조건, 계좌번호, 취급 주요 품목 등"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+              <button class="btn btn-primary" style="flex: 2; padding: 9px; font-weight: 700; font-size: 0.9rem;" onclick="submitVendorUpdate()">💾 수정내용 저장</button>
+              <button class="btn btn-outline" style="flex: 1; padding: 9px;" onclick="cancelVendorEdit()">초기화</button>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label>연락처</label>
-            <input type="text" id="formContactPhone" placeholder="예: 010-1234-5678 / 055-xxx-xxxx">
+          <!-- ============================================== -->
+          <!-- 2. 신규 거래처 등록 전용 패널 -->
+          <!-- ============================================== -->
+          <div id="vendorRegisterSection" style="display: none;">
+            <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 8px 10px; margin-bottom: 10px; font-size: 0.78rem; color: #166534; line-height: 1.4;">
+              ✨ <strong>신규 거래처 등록:</strong> 새로운 거래처를 등록합니다. (기존 거래처 수정은 상단 <strong>[수정칸]</strong> 탭을 클릭하세요)
+            </div>
+
+            <div class="form-group">
+              <label style="font-weight: 700; font-size: 0.85rem;">신규 업체명 <span style="color: var(--danger);">*</span></label>
+              <input type="text" id="regFormVendorName" placeholder="예: 하나테크">
+            </div>
+
+            <div class="form-group">
+              <label style="font-size: 0.82rem;">담당자</label>
+              <input type="text" id="regFormContactPerson" placeholder="예: 이영희 대리">
+            </div>
+
+            <div class="form-group">
+              <label style="font-size: 0.82rem;">연락처</label>
+              <input type="text" id="regFormContactPhone" placeholder="예: 010-9876-5432">
+            </div>
+
+            <div class="form-group">
+              <label style="font-size: 0.82rem;">비고</label>
+              <textarea id="regFormRemarks" rows="3" placeholder="거래 조건, 계좌번호, 취급 주요 품목 등"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 8px; margin-top: 8px;">
+              <button class="btn btn-primary" style="flex: 2; padding: 9px; font-weight: 700; font-size: 0.9rem; background: #059669; border-color: #059669;" onclick="submitVendorRegister()">➕ 신규 거래처 등록</button>
+              <button class="btn btn-outline" style="flex: 1; padding: 9px;" onclick="resetRegisterForm()">초기화</button>
+            </div>
           </div>
 
-          <div class="form-group">
-            <label>비고</label>
-            <textarea id="formRemarks" rows="3" placeholder="거래 조건, 계좌번호, 취급 주요 품목 등"></textarea>
-          </div>
-
-          <div style="display: flex; gap: 8px; margin-top: 6px;">
-            <button class="btn btn-primary" style="flex: 1;" onclick="saveVendorForm()">저장</button>
-            <button class="btn btn-outline" onclick="resetVendorForm()">초기화</button>
-          </div>
         </div>
 
       </div>
@@ -4524,8 +4954,8 @@ canvas.custom-chart {
       <div class="modal-body">
         
         <!-- Header Info -->
-        <div>
-          <div style="font-size: 0.8rem; font-weight: 600; color: var(--primary);" id="modalVendorName">업체명</div>
+        <div style="margin-bottom: 0.75rem;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary);" id="modalVendorName">🏢 업체명</div>
           <div style="font-size: 1.25rem; font-weight: 800; color: var(--slate-900); margin-top: 2px;" id="modalItemFullName">품명 ■ 규격</div>
         </div>
 
@@ -4627,7 +5057,8 @@ canvas.custom-chart {
             <table>
               <thead>
                 <tr>
-                  <th>입고일자</th>
+                  <th style="text-align: center; width: 95px;">입고일자</th>
+                  <th style="min-width: 120px;">공급업체</th>
                   <th class="text-right">수량</th>
                   <th class="text-right">단가</th>
                   <th class="text-right">공급가액</th>
@@ -4727,6 +5158,233 @@ let pastedSpreadsheetRows = []; // Rows in Tab 5 Excel paste live spreadsheet gr
 let currentTrendVendor = ''; // Tab 2: Selected vendor filter for trend graphs ('': all vendors)
 
 let searchDebounceTimer = null; // [NEW] Debounce timer for real-time search
+
+// ==========================================
+// 1-1. Vendor Normalization & Canonical Dictionary
+// ==========================================
+let userVendorRenames = {};
+
+function loadVendorRenamesFromStorage() {
+  try {
+    const saved = localStorage.getItem('SNW_VENDOR_RENAMES');
+    if (saved) {
+      userVendorRenames = JSON.parse(saved);
+    }
+  } catch (e) {
+    console.error('Failed to load user vendor renames:', e);
+  }
+}
+
+function saveVendorRenamesToStorage() {
+  try {
+    localStorage.setItem('SNW_VENDOR_RENAMES', JSON.stringify(userVendorRenames));
+  } catch (e) {
+    console.error('Failed to save user vendor renames:', e);
+  }
+}
+
+// Immediate initial load
+loadVendorRenamesFromStorage();
+
+const VENDOR_CANONICAL_EXPLICIT = {
+  // S&W
+  '(주)S&W진례공장': 'S&W 진례공장',
+  'S&W진례공장': 'S&W 진례공장',
+  'S&W 진례공장': 'S&W 진례공장',
+  'S&W 진례 공장': 'S&W 진례공장',
+  '(주)S&W': 'S&W 진례공장',
+  'S&W': 'S&W 진례공장',
+
+  // 우영산업 (사용자 명시 예시: 우영산업, 우영산업(주), 우영산업(주)부산지점 등)
+  '우영산업': '우영산업',
+  '우영산업㈜': '우영산업',
+  '우영산업(주)': '우영산업',
+  '우영산업㈜ 부산지점': '우영산업',
+  '우영산업㈜부산지점': '우영산업',
+  '우영산업(주)부산지점': '우영산업',
+  '우영산업(주) 부산지점': '우영산업',
+  '우영산업 부산지점': '우영산업',
+
+  // 한빛산업 (사용자 명시 예시: 한빛산업, 한빛산업(주))
+  '한빛산업': '한빛산업',
+  '한빛산업㈜': '한빛산업',
+  '한빛산업(주)': '한빛산업',
+  '(주)한빛산업': '한빛산업',
+
+  // 강성공업
+  '강성공업': '강성공업',
+  '강성공업주식회사': '강성공업',
+  '강성공업(주)': '강성공업',
+  '(주)강성공업': '강성공업',
+
+  // 델타기계
+  '델타기계': '델타기계',
+  '델타기계주식회사': '델타기계',
+  '델타기계(주)': '델타기계',
+  '(주)델타기계': '델타기계',
+
+  // 동원테크
+  '동원테크': '동원테크',
+  '㈜동원테크': '동원테크',
+  '(주)동원테크': '동원테크',
+  '동원테크(주)': '동원테크',
+
+  // 원자케미칼상사
+  '원자케미칼상사': '원자케미칼상사',
+  '㈜원자케미칼상사': '원자케미칼상사',
+  '(주)원자케미칼상사': '원자케미칼상사',
+
+  // 제일연마
+  '제일연마': '제일연마',
+  '㈜제일연마': '제일연마',
+  '(주)제일연마': '제일연마',
+  '㈜제일연마부산직매소': '제일연마',
+  '(주)제일연마부산직매소': '제일연마',
+  '제일연마부산직매소': '제일연마',
+  '제일연마 부산직매소': '제일연마',
+
+  // 한길AW
+  '한길AW': '한길AW',
+  '㈜한길AW': '한길AW',
+  '(주)한길AW': '한길AW',
+
+  // 행복삼하
+  '행복삼하': '행복삼하',
+  '㈜행복삼하': '행복삼하',
+  '(주)행복삼하': '행복삼하',
+  '행복삼하(진례)': '행복삼하',
+  '행복삼하진례': '행복삼하',
+
+  // 협신산업가스
+  '협신산업가스': '협신산업가스',
+  '협신산업가스㈜': '협신산업가스',
+  '협신산업가스(주)': '협신산업가스',
+  '(주)협신산업가스': '협신산업가스',
+
+  // 삼양연마
+  '삼양연마': '삼양연마',
+  '삼양연마B&S': '삼양연마',
+
+  // 천우수출포장 (천우, 천우수출)
+  '천우': '천우수출포장',
+  '천우수출포장': '천우수출포장',
+  '천우수출': '천우수출포장',
+  '(주)천우수출포장': '천우수출포장',
+
+  // 케이디세이프티
+  '케이디세이프티(안전)': '케이디세이프티',
+  '케이디세이프티': '케이디세이프티',
+
+  // 에이스메탈
+  '에이스메탈': '에이스메탈',
+  '에이스메탈(비철)': '에이스메탈',
+  '에이스 메탈': '에이스메탈',
+
+  // 볼트코리아
+  '볼트코리아': '볼트코리아',
+  '볼트코리아(폐업)': '볼트코리아',
+
+  // 유앤아이스틸
+  '유앤아이스틸': '유앤아이스틸',
+  '(주)유앤아이스틸': '유앤아이스틸',
+  '유앤아이스틸(회사명변경전)': '유앤아이스틸',
+
+  // 동아
+  '(주)동아 창원공장': '동아',
+  '주식회사 동아': '동아',
+  '동아': '동아',
+
+  // 넥스틸
+  '(주)넥스틸': '넥스틸',
+  '넥스틸': '넥스틸',
+
+  // 삼양종합특수강
+  '삼양종합특수강': '삼양종합특수강',
+  '삼양종합특수강(주)': '삼양종합특수강',
+  '(주)삼양종합특수강': '삼양종합특수강',
+
+  // 세화특수강
+  '㈜세화특수강': '세화특수강',
+  '세화특수강(주)': '세화특수강',
+  '세화특수강': '세화특수강',
+
+  // 진양특수강
+  '진양특수강(주)': '진양특수강',
+  '진양특수강(주)2공장': '진양특수강',
+  '진양특수강': '진양특수강',
+
+  // 진양공업
+  '진양공업(주)': '진양공업',
+  '진양공업(주)영천공장': '진양공업',
+  '진양공업': '진양공업',
+
+  // 국제종합특수강
+  '국제종합특수강': '국제종합특수강',
+  '㈜국제종합특수강': '국제종합특수강',
+  '(주)국제종합특수강': '국제종합특수강',
+
+  // 가야특수강
+  '가야특수강': '가야특수강',
+  '(주)가야특수강': '가야특수강',
+
+  // 고려철강
+  '고려철강': '고려철강',
+  '(주)고려철강': '고려철강',
+
+  // 메탈테크
+  '메탈테크(주)': '메탈테크',
+  '(주)메탈테크': '메탈테크',
+  '메탈테크': '메탈테크',
+
+  // 준스틸
+  '준스틸': '준스틸',
+  '준스틸(주)': '준스틸',
+
+  // 꼬네
+  '꼬네': '꼬네',
+  '꼬네(주)한국지사': '꼬네',
+  '꼬네(주)': '꼬네',
+
+  // 용진스테코
+  '용진스테코': '용진스테코',
+  '(주)용진스테코 부산지사': '용진스테코',
+  '(주)용진스테코': '용진스테코'
+};
+
+function normalizeVendorName(raw) {
+  if (!raw || typeof raw !== 'string') return '';
+  const trimmed = raw.trim();
+
+  // 0. Custom vendor rename (raw name check)
+  if (userVendorRenames && userVendorRenames[trimmed]) {
+    return userVendorRenames[trimmed];
+  }
+
+  // 1. Explicit canonical dictionary
+  if (VENDOR_CANONICAL_EXPLICIT[trimmed]) {
+    const canon = VENDOR_CANONICAL_EXPLICIT[trimmed];
+    return (userVendorRenames && userVendorRenames[canon]) || canon;
+  }
+
+  let name = trimmed;
+  // 1. Remove corporate legal forms: (주), 주식회사, ㈜, (유), 유한회사, (합), 합자회사
+  name = name.replace(/\(주\)|주식회사|㈜|\(유\)|유한회사|\(합\)|합자회사/g, '');
+
+  // 2. Remove parenthesized annotations: (폐업), (비철), (진례), (안전) etc.
+  name = name.replace(/\([^)]*\)/g, '');
+
+  // 3. Remove regional branch/factory/office suffixes
+  name = name.replace(/(부산|경남|창원|울산|양산|김해|대구|서울|경기|인천|포항|영천|진례|한국)?\s*(지점|지사|공장|2공장|영업소|사무소|사업소|직매소)/g, '');
+
+  // 4. Strip surrounding punctuation and whitespace
+  name = name.replace(/^[_\s\.\-]+|[_\s\.\-]+$/g, '');
+
+  // 5. Collapse internal spaces for consistent canonical name (e.g. '에이스 메탈' -> '에이스메탈')
+  name = name.replace(/\s+/g, '');
+
+  const finalName = name || trimmed;
+  return (userVendorRenames && userVendorRenames[finalName]) || finalName;
+}
 
 // ==========================================
 // 2. IndexedDB Persistence & Initialization
@@ -4888,6 +5546,9 @@ async function initApp() {
     window._isUsingLocalDB = false;
   }
 
+  // Pre-calculate price fluctuation trends (신규 / 보합 / 인상 / 인하)
+  try { assignPriceTrends(allData); } catch (e) { console.error('assignPriceTrends error:', e); }
+
   // 2. Load Stored Vendor Contacts
   try { loadStoredVendors(); } catch (e) { console.error('loadStoredVendors error:', e); }
 
@@ -4904,6 +5565,7 @@ async function initApp() {
   try { initRealtimeSearch(); } catch (e) { console.error('initRealtimeSearch error:', e); }
   
   // 5. Initial Render (첫 화면 초고속 즉시 표출)
+  try { populateSuppliesDatalists(); } catch (e) { console.error('populateSuppliesDatalists error:', e); }
   try { applyFilters(); } catch (e) { console.error('applyFilters error:', e); }
   try { renderVendorSidebar(); } catch (e) { console.error('renderVendorSidebar error:', e); }
   try { updatePageTitle(); } catch (e) {}
@@ -4913,6 +5575,8 @@ async function initApp() {
 
   // 7. 백그라운드 지연 로딩 (메인 스레드 멈춤 없이 보이지 않는 탭들 비동기 준비)
   setTimeout(() => {
+    try { initSubMaterials(); } catch (e) { console.error('initSubMaterials error:', e); }
+    try { initRawMaterials(); } catch (e) { console.error('initRawMaterials error:', e); }
     try { renderPivotView(); } catch (e) { console.error('renderPivotView error:', e); }
     try { renderClosingView(); } catch (e) { console.error('renderClosingView error:', e); }
     try { renderScrapView(); } catch (e) { console.error('renderScrapView error:', e); }
@@ -4975,11 +5639,11 @@ function initNavTabs() {
         syncCategorySwitcher('consumables');
       } else if (target === 'tab-sub') {
         syncCategorySwitcher('submaterials');
-        if (subData.length === 0) initSubMaterials();
+        if (!filteredSubData || filteredSubData.length === 0) initSubMaterials();
         else renderSubTable();
       } else if (target === 'tab-raw') {
         syncCategorySwitcher('rawmaterials');
-        if (rawData.length === 0) initRawMaterials();
+        if (!filteredRawData || filteredRawData.length === 0) initRawMaterials();
         else renderRawTable();
       } else if (target === 'tab-trends') {
         renderPivotView();
@@ -4989,6 +5653,8 @@ function initNavTabs() {
         renderScrapView();
       } else if (target === 'tab-pallet') {
         renderPalletView();
+      } else if (target === 'tab-vendors') {
+        renderVendorMgmtTable();
       }
     });
   });
@@ -5032,56 +5698,121 @@ function resetDateFilter() {
 // 3. Search & Filter Logic
 // ==========================================
 
-// [NEW] Real-time search with debounce
-function initRealtimeSearch() {
-  const input = document.getElementById('mainSearchInput');
-  if (input) {
-    input.addEventListener('input', () => {
-      debouncedSearch();
-    });
+// Datalist auto-population for Consumables (업체명, 품명, 규격, 비고)
+let suppliesDatalistsPopulated = false;
+
+function populateSuppliesDatalists(force) {
+  if (!force && suppliesDatalistsPopulated) return;
+  if (!allData || allData.length === 0) return;
+  suppliesDatalistsPopulated = true;
+
+  const vendorSet = new Set();
+  const itemSet = new Set();
+  const specSet = new Set();
+  const remarkSet = new Set();
+
+  for (let i = 0; i < allData.length; i++) {
+    const r = allData[i];
+    if (r[1]) {
+      const normV = normalizeVendorName(r[1]);
+      if (normV) vendorSet.add(normV);
+    }
+    if (r[2]) itemSet.add(String(r[2]).trim());
+    if (r[3]) specSet.add(String(r[3]).trim());
+    if (r[7]) remarkSet.add(String(r[7]).trim());
   }
+
+  const vList = document.getElementById('suppliesVendorDatalist');
+  if (vList) {
+    vList.innerHTML = Array.from(vendorSet).sort((a, b) => a.localeCompare(b, 'ko')).map(v => `<option value="${escapeHtml(v)}">`).join('');
+  }
+  const iList = document.getElementById('suppliesItemDatalist');
+  if (iList) {
+    iList.innerHTML = Array.from(itemSet).filter(Boolean).sort((a, b) => a.localeCompare(b, 'ko')).slice(0, 500).map(item => `<option value="${escapeHtml(item)}">`).join('');
+  }
+  const sList = document.getElementById('suppliesSpecDatalist');
+  if (sList) {
+    sList.innerHTML = Array.from(specSet).filter(Boolean).sort((a, b) => a.localeCompare(b, 'ko')).slice(0, 500).map(sp => `<option value="${escapeHtml(sp)}">`).join('');
+  }
+  const rList = document.getElementById('suppliesRemarkDatalist');
+  if (rList) {
+    rList.innerHTML = Array.from(remarkSet).filter(Boolean).sort((a, b) => a.localeCompare(b, 'ko')).slice(0, 500).map(rem => `<option value="${escapeHtml(rem)}">`).join('');
+  }
+}
+
+// [NEW] Real-time search with debounce across 4-column filter inputs
+function initRealtimeSearch() {
+  ['suppliesSearchVendor', 'suppliesSearchItem', 'suppliesSearchSpec', 'suppliesSearchRemark'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
+          applyFilters();
+        }
+      });
+    }
+  });
 }
 
 function debouncedSearch() {
   if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
   searchDebounceTimer = setTimeout(() => {
-    triggerSearch();
-  }, 300);
+    applyFilters();
+  }, 250);
 }
 
 function triggerSearch() {
-  const input = document.getElementById('mainSearchInput');
-  currentSearchTerm = (input.value || '').trim();
-  document.getElementById('clearSearchBtn').style.display = currentSearchTerm ? 'block' : 'none';
+  if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
   applyFilters();
 }
 
 function handleSearchKeyDown(e) {
   if (e.key === 'Enter') {
-    // Clear debounce timer and search immediately on Enter
     if (searchDebounceTimer) clearTimeout(searchDebounceTimer);
-    triggerSearch();
+    applyFilters();
   }
 }
 
 function clearSearch() {
-  document.getElementById('mainSearchInput').value = '';
-  currentSearchTerm = '';
-  document.getElementById('clearSearchBtn').style.display = 'none';
-  applyFilters();
+  resetAllFilters();
+}
+
+function onSuppliesVendorInputChange() {
+  const vInput = document.getElementById('suppliesSearchVendor');
+  const val = (vInput ? vInput.value.trim() : '');
+  if (!val) {
+    selectedVendor = '';
+  } else {
+    selectedVendor = normalizeVendorName(val);
+  }
+
+  if (selectedVendor) {
+    renderMajorItems(selectedVendor);
+  } else {
+    const majorSec = document.getElementById('majorItemsSection');
+    if (majorSec) majorSec.style.display = 'none';
+  }
+  renderVendorSidebar();
+  debouncedSearch();
 }
 
 function selectVendor(vendor) {
-  selectedVendor = vendor;
+  selectedVendor = vendor ? normalizeVendorName(vendor) : '';
+  const vInput = document.getElementById('suppliesSearchVendor');
+  if (vInput) vInput.value = selectedVendor;
   renderVendorSidebar();
-  renderMajorItems(vendor);
+  renderMajorItems(selectedVendor);
   applyFilters();
 }
 
 function applyFilters() {
-  const startDate = document.getElementById('filterStartDate').value;
-  const endDate = document.getElementById('filterEndDate').value;
-  const term = currentSearchTerm.toLowerCase();
+  const vInput = (document.getElementById('suppliesSearchVendor') ? document.getElementById('suppliesSearchVendor').value.trim().toLowerCase() : '');
+  const itemInput = (document.getElementById('suppliesSearchItem') ? document.getElementById('suppliesSearchItem').value.trim().toLowerCase() : '');
+  const specInput = (document.getElementById('suppliesSearchSpec') ? document.getElementById('suppliesSearchSpec').value.trim().toLowerCase() : '');
+  const remarkInput = (document.getElementById('suppliesSearchRemark') ? document.getElementById('suppliesSearchRemark').value.trim().toLowerCase() : '');
+  const startDate = document.getElementById('filterStartDate') ? document.getElementById('filterStartDate').value : '';
+  const endDate = document.getElementById('filterEndDate') ? document.getElementById('filterEndDate').value : '';
 
   filteredData = [];
   let totalAmount = 0;
@@ -5090,31 +5821,39 @@ function applyFilters() {
   for (let i = 0; i < allData.length; i++) {
     const row = allData[i];
     const d = row[0];
-    const v = row[1];
-    const item = row[2];
-    const spec = row[3];
+    const v = row[1] || '';
+    const item = row[2] || '';
+    const spec = row[3] || '';
     const q = row[4];
     const amount = row[6];
-    const remark = row[7];
+    const remark = row[7] || '';
 
     // 1. Vendor Filter
-    if (selectedVendor && v !== selectedVendor) {
-      continue;
+    if (vInput) {
+      const rawV = v.toLowerCase();
+      const normV = normalizeVendorName(v).toLowerCase();
+      if (!rawV.includes(vInput) && !normV.includes(vInput)) {
+        continue;
+      }
+    } else if (selectedVendor) {
+      const normV = normalizeVendorName(v);
+      if (normV !== selectedVendor && v !== selectedVendor) {
+        continue;
+      }
     }
 
     // 2. Date Filter
     if (startDate && d < startDate) continue;
     if (endDate && d > endDate) continue;
 
-    // 3. Search Term Filter (Search in date, vendor, item, spec, remark)
-    if (term) {
-      const match = d.toLowerCase().includes(term) ||
-                    v.toLowerCase().includes(term) ||
-                    item.toLowerCase().includes(term) ||
-                    spec.toLowerCase().includes(term) ||
-                    remark.toLowerCase().includes(term);
-      if (!match) continue;
-    }
+    // 3. Item Filter
+    if (itemInput && !item.toLowerCase().includes(itemInput)) continue;
+
+    // 4. Spec Filter
+    if (specInput && !spec.toLowerCase().includes(specInput)) continue;
+
+    // 5. Remark Filter
+    if (remarkInput && !remark.toLowerCase().includes(remarkInput)) continue;
 
     filteredData.push(row);
     totalAmount += amount;
@@ -5131,12 +5870,13 @@ function applyFilters() {
   const kpiAvgPriceEl = document.getElementById('kpiAvgPrice');
   const avgPrice = totalQty > 0 ? Math.round(totalAmount / totalQty) : 0;
 
-  animateValue(kpiTotalAmountEl, 0, totalAmount, 600, '원', formatNumber);
+  animateValue(kpiTotalAmountEl, null, totalAmount, 700, '원', formatNumber);
   animateValue(kpiTotalQtyEl, 0, totalQty, 600, '개', formatNumber);
   animateValue(kpiRowCountEl, 0, filteredData.length, 600, '건', formatNumber);
   animateValue(kpiAvgPriceEl, 0, avgPrice, 600, '원', formatNumber);
 
-  document.getElementById('headerTotalCount').textContent = formatNumber(filteredData.length) + '건 로드됨';
+  const headerTotalCount = document.getElementById('headerTotalCount');
+  if (headerTotalCount) headerTotalCount.textContent = formatNumber(filteredData.length) + '건 로드됨';
 
   // Update Filter Pills
   updateFilterTags(startDate, endDate);
@@ -5146,54 +5886,125 @@ function applyFilters() {
   renderTable();
 }
 
-// [NEW] KPI count-up animation
+// [NEW] KPI count-up / rolling animation (숫자가 보이면서 자연스럽게 롤링)
 function animateValue(element, start, end, duration, suffix, formatter) {
   if (!element) return;
-  // If end is 0 or very small, just set directly
-  if (end === 0) {
-    element.textContent = (formatter ? formatter(0) : '0') + (suffix || '');
+
+  if (element._animId) {
+    cancelAnimationFrame(element._animId);
+    element._animId = null;
+  }
+
+  // start가 주어지지 않았으면 직전 저장값 또는 현재 화면에 표시된 숫자 자동 감지
+  let fromVal = 0;
+  if (typeof start === 'number') {
+    fromVal = start;
+  } else if (typeof element._currentValue === 'number') {
+    fromVal = element._currentValue;
+  } else {
+    fromVal = parseInt((element.textContent || '').replace(/[^0-9]/g, ''), 10) || 0;
+  }
+
+  const targetVal = Number(end) || 0;
+  element._currentValue = targetVal;
+  const dur = duration || 750;
+  const suf = (suffix !== undefined) ? suffix : '원';
+  const fmt = formatter || formatNumber;
+
+  if (fromVal === targetVal) {
+    element.textContent = fmt(targetVal) + suf;
     return;
   }
 
   const startTime = performance.now();
-  const diff = end - start;
+  const diff = targetVal - fromVal;
+
+  // 롤링 애니메이션 중 살짝 확대되는 스케일 효과
+  element.style.transition = 'transform 0.15s ease';
+  element.style.transform = 'scale(1.035)';
 
   function step(currentTime) {
     const elapsed = currentTime - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    // Ease-out cubic for smooth deceleration
+    const progress = Math.min(elapsed / dur, 1);
+    // Ease-out cubic: 빠르게 숫자가 롤링되다가 부드럽게 감속하며 안착
     const eased = 1 - Math.pow(1 - progress, 3);
-    const currentVal = Math.round(start + diff * eased);
+    const currentVal = Math.round(fromVal + diff * eased);
 
-    element.textContent = (formatter ? formatter(currentVal) : currentVal.toString()) + (suffix || '');
+    element.textContent = fmt(currentVal) + suf;
 
     if (progress < 1) {
-      requestAnimationFrame(step);
+      element._animId = requestAnimationFrame(step);
+    } else {
+      element.textContent = fmt(targetVal) + suf;
+      element._animId = null;
+      element.style.transform = 'scale(1)';
     }
   }
 
-  requestAnimationFrame(step);
+  element._animId = requestAnimationFrame(step);
+}
+
+function clearSuppliesFilter(type) {
+  if (type === 'vendor') {
+    selectedVendor = '';
+    const v = document.getElementById('suppliesSearchVendor'); if (v) v.value = '';
+    renderVendorSidebar();
+    const majorSec = document.getElementById('majorItemsSection');
+    if (majorSec) majorSec.style.display = 'none';
+  } else if (type === 'item') {
+    const item = document.getElementById('suppliesSearchItem'); if (item) item.value = '';
+    document.querySelectorAll('.chip-btn').forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-chip') === 'all');
+    });
+  } else if (type === 'spec') {
+    const spec = document.getElementById('suppliesSearchSpec'); if (spec) spec.value = '';
+  } else if (type === 'remark') {
+    const rem = document.getElementById('suppliesSearchRemark'); if (rem) rem.value = '';
+  }
+  applyFilters();
 }
 
 function updateFilterTags(startDate, endDate) {
   const tagsContainer = document.getElementById('filterTagsContainer');
   const box = document.getElementById('activeFilterTags');
+  if (!tagsContainer || !box) return;
   tagsContainer.innerHTML = '';
   let hasFilters = false;
 
-  if (selectedVendor) {
+  const vInput = (document.getElementById('suppliesSearchVendor')?.value || '').trim();
+  const itemInput = (document.getElementById('suppliesSearchItem')?.value || '').trim();
+  const specInput = (document.getElementById('suppliesSearchSpec')?.value || '').trim();
+  const remarkInput = (document.getElementById('suppliesSearchRemark')?.value || '').trim();
+
+  if (selectedVendor || vInput) {
     hasFilters = true;
     const tag = document.createElement('span');
     tag.className = 'filter-tag';
-    tag.innerHTML = `업체: ${selectedVendor} <span class="filter-tag-remove" onclick="selectVendor('')">✕</span>`;
+    tag.innerHTML = `업체: ${selectedVendor || vInput} <span class="filter-tag-remove" onclick="clearSuppliesFilter('vendor')">✕</span>`;
     tagsContainer.appendChild(tag);
   }
 
-  if (currentSearchTerm) {
+  if (itemInput) {
     hasFilters = true;
     const tag = document.createElement('span');
     tag.className = 'filter-tag';
-    tag.innerHTML = `검색어: "${currentSearchTerm}" <span class="filter-tag-remove" onclick="clearSearch()">✕</span>`;
+    tag.innerHTML = `품명: "${itemInput}" <span class="filter-tag-remove" onclick="clearSuppliesFilter('item')">✕</span>`;
+    tagsContainer.appendChild(tag);
+  }
+
+  if (specInput) {
+    hasFilters = true;
+    const tag = document.createElement('span');
+    tag.className = 'filter-tag';
+    tag.innerHTML = `규격: "${specInput}" <span class="filter-tag-remove" onclick="clearSuppliesFilter('spec')">✕</span>`;
+    tagsContainer.appendChild(tag);
+  }
+
+  if (remarkInput) {
+    hasFilters = true;
+    const tag = document.createElement('span');
+    tag.className = 'filter-tag';
+    tag.innerHTML = `비고: "${remarkInput}" <span class="filter-tag-remove" onclick="clearSuppliesFilter('remark')">✕</span>`;
     tagsContainer.appendChild(tag);
   }
 
@@ -5211,13 +6022,23 @@ function updateFilterTags(startDate, endDate) {
 function resetAllFilters() {
   selectedVendor = '';
   currentSearchTerm = '';
-  document.getElementById('mainSearchInput').value = '';
-  document.getElementById('filterStartDate').value = '';
-  document.getElementById('filterEndDate').value = '';
+  const v = document.getElementById('suppliesSearchVendor'); if (v) v.value = '';
+  const item = document.getElementById('suppliesSearchItem'); if (item) item.value = '';
+  const spec = document.getElementById('suppliesSearchSpec'); if (spec) spec.value = '';
+  const rem = document.getElementById('suppliesSearchRemark'); if (rem) rem.value = '';
+  const main = document.getElementById('mainSearchInput'); if (main) main.value = '';
+  const s = document.getElementById('filterStartDate'); if (s) s.value = '';
+  const e = document.getElementById('filterEndDate'); if (e) e.value = '';
+
+  document.querySelectorAll('.chip-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-chip') === 'all');
+  });
+
   renderVendorSidebar();
-  document.getElementById('majorItemsSection').style.display = 'none';
+  const majorSec = document.getElementById('majorItemsSection');
+  if (majorSec) majorSec.style.display = 'none';
   applyFilters();
-  showToast('모든 필터가 초기화되었습니다.', 'info'); // [NEW]
+  showToast('소모품 검색 필터가 모두 초기화되었습니다.', 'info');
 }
 
 // ==========================================
@@ -5226,16 +6047,26 @@ function resetAllFilters() {
 function renderVendorSidebar() {
   const vendorCounts = {};
   const vendorAmounts = {};
+  const vendorRawMap = {};
+
   for (let i = 0; i < allData.length; i++) {
-    const v = allData[i][1];
-    vendorCounts[v] = (vendorCounts[v] || 0) + 1;
-    vendorAmounts[v] = (vendorAmounts[v] || 0) + allData[i][6];
+    const rawV = allData[i][1] || '';
+    const normV = normalizeVendorName(rawV);
+    if (!normV) continue;
+
+    vendorCounts[normV] = (vendorCounts[normV] || 0) + 1;
+    vendorAmounts[normV] = (vendorAmounts[normV] || 0) + (allData[i][6] || 0);
+
+    if (!vendorRawMap[normV]) vendorRawMap[normV] = new Set();
+    vendorRawMap[normV].add(rawV);
   }
 
-  const sortedVendors = Object.keys(vendorCounts).sort();
-  document.getElementById('sidebarVendorCount').textContent = sortedVendors.length;
+  const sortedVendors = Object.keys(vendorCounts).sort((a, b) => a.localeCompare(b, 'ko'));
+  const countEl = document.getElementById('sidebarVendorCount');
+  if (countEl) countEl.textContent = sortedVendors.length;
 
   const list = document.getElementById('sidebarVendorList');
+  if (!list) return;
   list.innerHTML = '';
 
   // All item
@@ -5246,20 +6077,33 @@ function renderVendorSidebar() {
   list.appendChild(allItem);
 
   sortedVendors.forEach(v => {
+    const rawList = Array.from(vendorRawMap[v] || [v]);
+    const isMerged = rawList.length > 1;
+    const mergeBadge = isMerged ? `<span style="font-size: 0.68rem; color: #4338ca; background: #e0e7ff; padding: 1px 5px; border-radius: 4px; font-weight: 600; margin-left: 4px;" title="통합된 원본 명칭 (${rawList.length}개): ${rawList.join(', ')}">통합 ${rawList.length}</span>` : '';
+
     const li = document.createElement('li');
     li.className = 'vendor-item' + (selectedVendor === v ? ' active' : '');
-    li.innerHTML = `<span>${v}</span> <span class="vendor-badge">${formatCompactCurrency(vendorAmounts[v])}</span>`;
+    li.setAttribute('data-vendor', v);
+    li.setAttribute('title', isMerged ? `${v} (통합 명칭: ${rawList.join(', ')})` : v);
+    li.innerHTML = `
+      <span style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        <span style="overflow: hidden; text-overflow: ellipsis;">${escapeHtml(v)}</span>
+        ${mergeBadge}
+      </span>
+      <span class="vendor-badge">${formatCompactCurrency(vendorAmounts[v])}</span>
+    `;
     li.onclick = () => selectVendor(v);
     list.appendChild(li);
   });
 }
 
 function filterVendorList() {
-  const query = document.getElementById('vendorSearchInput').value.toLowerCase();
+  const query = (document.getElementById('vendorSearchInput')?.value || '').toLowerCase().replace(/\s+/g, '');
   const items = document.querySelectorAll('#sidebarVendorList .vendor-item');
   items.forEach(item => {
-    const name = item.querySelector('span').textContent.toLowerCase();
-    item.style.display = name.includes(query) ? 'flex' : 'none';
+    const name = (item.getAttribute('data-vendor') || item.textContent || '').toLowerCase().replace(/\s+/g, '');
+    const title = (item.getAttribute('title') || '').toLowerCase().replace(/\s+/g, '');
+    item.style.display = (name.includes(query) || title.includes(query)) ? 'flex' : 'none';
   });
 }
 
@@ -5274,18 +6118,22 @@ function renderMajorItems(vendor) {
   section.style.display = 'flex';
   document.getElementById('majorVendorName').textContent = vendor;
 
-  // Group items by item + spec
+  const targetNorm = normalizeVendorName(vendor);
+
+  // Group items by item + spec across all raw variations of this vendor
   const itemMap = {};
   for (let i = 0; i < allData.length; i++) {
-    if (allData[i][1] === vendor) {
+    const rawV = allData[i][1] || '';
+    const normV = normalizeVendorName(rawV);
+    if (normV === targetNorm || rawV === vendor) {
       const item = allData[i][2];
       const spec = allData[i][3];
       const key = item + (spec ? ' ■ ' + spec : '');
       if (!itemMap[key]) {
         itemMap[key] = { key, item, spec, amount: 0, qty: 0, count: 0 };
       }
-      itemMap[key].amount += allData[i][6];
-      itemMap[key].qty += allData[i][4];
+      itemMap[key].amount += (allData[i][6] || 0);
+      itemMap[key].qty += (allData[i][4] || 0);
       itemMap[key].count++;
     }
   }
@@ -5303,7 +6151,7 @@ function renderMajorItems(vendor) {
     const li = document.createElement('li');
     li.className = 'major-item';
     li.innerHTML = `
-      <div class="major-item-name">${idx + 1}. ${itemObj.item} <span style="font-weight: 400; color: #888;">${itemObj.spec}</span></div>
+      <div class="major-item-name">${idx + 1}. ${escapeHtml(itemObj.item)} <span style="font-weight: 400; color: #888;">${escapeHtml(itemObj.spec || '')}</span></div>
       <div class="major-item-sub">
         <span>${formatNumber(itemObj.qty)}개 (${itemObj.count}건)</span>
         <span style="font-weight: 700; color: var(--primary);">${formatCurrency(itemObj.amount)}</span>
@@ -5399,21 +6247,27 @@ function renderTable() {
     const row = filteredData[i];
     const tr = document.createElement('tr');
     
+    const rawV = row[1] || '';
+    const normV = normalizeVendorName(rawV);
+    const vendorDisplay = (normV !== rawV)
+      ? `<span title="원본 입력: ${escapeHtml(rawV)}">${escapeHtml(normV)}</span>`
+      : escapeHtml(rawV);
+
     tr.innerHTML = `
       <td class="col-date">${row[0]}</td>
-      <td class="col-vendor" style="font-weight: 600;">${escapeHtml(row[1])}</td>
+      <td class="col-vendor" style="font-weight: 600;">${vendorDisplay}</td>
       <td class="item-spec-cell">
         <div class="m-card-top">
           <strong class="m-card-title">${escapeHtml(row[2])}</strong>
           ${row[3] ? `<span class="spec-badge"> ■ ${escapeHtml(row[3])}</span>` : ''}
         </div>
         <div class="m-card-meta">
-          <span>🏢 ${escapeHtml(row[1])}</span>
+          <span>🏢 ${vendorDisplay}</span>
           <span>📅 ${row[0]}</span>
         </div>
       </td>
       <td class="col-qty text-right"><span class="m-label">수량: </span>${formatNumber(row[4])}개</td>
-      <td class="col-unit-price text-right"><span class="m-label">단가: </span>${formatNumber(row[5])}원</td>
+      <td class="col-unit-price text-right" style="vertical-align: middle;"><span class="m-label">단가: </span><span style="font-weight: 600;">${formatCurrency(row[5])}</span>${renderPriceBadge(row._trend)}</td>
       <td class="col-amount text-right" style="font-weight: 700; color: #1e3a8a;">
         <span class="m-card-amt">${formatCurrency(row[6])}</span>
         <span class="m-card-arrow">›</span>
@@ -5422,7 +6276,7 @@ function renderTable() {
     `;
 
     tr.onclick = () => {
-      openItemDetail(row[1], row[2], row[3]);
+      openItemDetail(normV || rawV, row[2], row[3], 'consumables');
     };
 
     fragment.appendChild(tr);
@@ -5463,10 +6317,26 @@ function renderTableSummaryFooter() {
   mainTable.appendChild(tfoot);
 }
 
+function scrollConsumablesTableToTop() {
+  const container = document.querySelector('#tab-search .table-container');
+  if (container) {
+    container.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  const tableEl = document.getElementById('mainTable');
+  if (tableEl) {
+    const rect = tableEl.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    window.scrollTo({ top: Math.max(0, rect.top + scrollTop - 80), behavior: 'smooth' });
+  } else {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
 function changePageSize(val) {
   pageSize = parseInt(val, 10);
   currentPage = 1;
   renderTable();
+  scrollConsumablesTableToTop();
 }
 
 function renderPagination(totalPages) {
@@ -5478,7 +6348,13 @@ function renderPagination(totalPages) {
   prevBtn.className = 'page-btn';
   prevBtn.textContent = '◀ 이전';
   prevBtn.disabled = currentPage === 1;
-  prevBtn.onclick = () => { if (currentPage > 1) { currentPage--; renderTable(); } };
+  prevBtn.onclick = () => { 
+    if (currentPage > 1) { 
+      currentPage--; 
+      renderTable(); 
+      scrollConsumablesTableToTop();
+    } 
+  };
   container.appendChild(prevBtn);
 
   // Simple window of pages
@@ -5490,7 +6366,11 @@ function renderPagination(totalPages) {
     const pBtn = document.createElement('button');
     pBtn.className = 'page-btn' + (p === currentPage ? ' active' : '');
     pBtn.textContent = p;
-    pBtn.onclick = () => { currentPage = p; renderTable(); };
+    pBtn.onclick = () => { 
+      currentPage = p; 
+      renderTable(); 
+      scrollConsumablesTableToTop();
+    };
     container.appendChild(pBtn);
   }
 
@@ -5504,7 +6384,13 @@ function renderPagination(totalPages) {
   nextBtn.className = 'page-btn';
   nextBtn.textContent = '다음 ▶';
   nextBtn.disabled = currentPage === totalPages;
-  nextBtn.onclick = () => { if (currentPage < totalPages) { currentPage++; renderTable(); } };
+  nextBtn.onclick = () => { 
+    if (currentPage < totalPages) { 
+      currentPage++; 
+      renderTable(); 
+      scrollConsumablesTableToTop();
+    } 
+  };
   container.appendChild(nextBtn);
 }
 
@@ -5533,52 +6419,163 @@ function setItemChartRange(range, btn) {
   drawItemPriceChart(currentItemHistory);
 }
 
-function openItemDetail(vendor, item, spec) {
-  document.getElementById('modalVendorName').textContent = vendor;
-  document.getElementById('modalItemFullName').textContent = item + (spec ? ' ■ ' + spec : '');
+// ==========================================
+// 🏷️ Price Fluctuation Classification (신규 / 보합 / 인상 / 인하) - 업체별/품목별 독립 산출
+// ==========================================
+function assignPriceTrends(dataset) {
+  if (!dataset || dataset.length === 0) return;
 
-  // Find all history of this item (matching item & spec)
+  const indices = new Array(dataset.length);
+  for (let i = 0; i < dataset.length; i++) indices[i] = i;
+  indices.sort((a, b) => (dataset[a][0] || '').localeCompare(dataset[b][0] || ''));
+
+  const itemLastPrice = new Map();
+
+  for (let k = 0; k < indices.length; k++) {
+    const idx = indices[k];
+    const r = dataset[idx];
+    const normV = (typeof normalizeVendorName === 'function' && r[1]) ? normalizeVendorName(r[1]) : (r[1] ? r[1].trim() : '');
+    const matKey = r[8] ? ('||' + r[8]) : '';
+    // 업체명(정규화) + 품명 + 규격 + 재질을 고유 키로 사용하여 업체 간 단가 혼선 방지
+    const itemKey = normV + '||' + (r[2] || '') + '||' + (r[3] || '') + matKey;
+    const price = Number(r[5]) || 0;
+
+    if (!itemLastPrice.has(itemKey)) {
+      r._trend = { type: 'new', label: '신규', color: '#4338ca', bg: '#e0e7ff', border: '#c7d2fe' };
+      itemLastPrice.set(itemKey, price);
+    } else {
+      const prevPrice = itemLastPrice.get(itemKey);
+      if (price > prevPrice) {
+        const diff = price - prevPrice;
+        const pct = prevPrice > 0 ? ((diff / prevPrice) * 100).toFixed(1) : '0';
+        r._trend = { type: 'up', label: '인상 ▲', pct: `+${pct}%`, color: '#b91c1c', bg: '#fee2e2', border: '#fca5a5' };
+      } else if (price < prevPrice) {
+        const diff = prevPrice - price;
+        const pct = prevPrice > 0 ? ((diff / prevPrice) * 100).toFixed(1) : '0';
+        r._trend = { type: 'down', label: '인하 ▼', pct: `-${pct}%`, color: '#15803d', bg: '#dcfce7', border: '#86efac' };
+      } else {
+        r._trend = { type: 'steady', label: '보합', pct: '0%', color: '#475569', bg: '#f1f5f9', border: '#cbd5e1' };
+      }
+      itemLastPrice.set(itemKey, price);
+    }
+  }
+}
+
+function renderPriceBadge(trend) {
+  if (!trend) return '';
+  const pctStr = (trend.pct && trend.type !== 'steady' && trend.type !== 'new') ? ` ${trend.pct}` : '';
+  return `<div style="margin-top: 3px; line-height: 1;"><span class="price-trend-tag ${trend.type}" style="display:inline-block; font-size:0.68rem; font-weight:700; padding:1px 5px; border-radius:3px; background:${trend.bg}; color:${trend.color}; border:1px solid ${trend.border}; line-height:1.2;">${trend.label}${pctStr}</span></div>`;
+}
+
+let currentDetailVendor = '';
+let currentDetailItem = '';
+let currentDetailSpec = '';
+let currentDetailCategory = 'consumables';
+let currentDetailMaterial = '';
+
+function openItemDetail(vendor, item, spec, category = 'consumables', material = '') {
+  currentDetailVendor = vendor || '';
+  currentDetailItem = item || '';
+  currentDetailSpec = spec || '';
+  currentDetailCategory = category || 'consumables';
+  currentDetailMaterial = material || '';
+
+  loadAndRenderDetailModal();
+}
+
+function loadAndRenderDetailModal() {
+  let sourceData = allData;
+  let catBadgeHtml = '<span class="badge" style="background:#dbeafe; color:#1e40af; font-size:0.75rem; margin-right:6px; font-weight:700;">📋 소모품</span>';
+  let unitLabel = '개';
+
+  if (currentDetailCategory === 'submaterials') {
+    sourceData = (subData && subData.length > 0) ? subData : (window.INITIAL_SUB_MATERIALS_DATA || []);
+    catBadgeHtml = '<span class="badge" style="background:#fef3c7; color:#92400e; font-size:0.75rem; margin-right:6px; font-weight:700;">🧱 부자재</span>';
+    unitLabel = '개';
+  } else if (currentDetailCategory === 'rawmaterials') {
+    sourceData = (rawData && rawData.length > 0) ? rawData : (window.INITIAL_RAW_MATERIALS_DATA || []);
+    catBadgeHtml = '<span class="badge" style="background:#d1fae5; color:#065f46; font-size:0.75rem; margin-right:6px; font-weight:700;">🏭 원자재</span>';
+    unitLabel = 'KG';
+  }
+
+  // Target Normalized Vendor
+  const targetNormV = (typeof normalizeVendorName === 'function' && currentDetailVendor) ? normalizeVendorName(currentDetailVendor) : (currentDetailVendor ? currentDetailVendor.trim() : '');
+
+  // Header display
+  const vendorNameEl = document.getElementById('modalVendorName');
+  if (vendorNameEl) {
+    if (currentDetailVendor) {
+      vendorNameEl.innerHTML = `🏢 <strong style="font-size: 0.95rem; color: #1e3a8a;">${escapeHtml(currentDetailVendor)}</strong> <span style="font-size: 0.76rem; font-weight: 600; color: #2563eb; background:#eff6ff; padding:2px 7px; border-radius:4px; border:1px solid #bfdbfe; margin-left:6px;">해당 업체 단가 전용</span>`;
+    } else {
+      vendorNameEl.innerHTML = `🏢 공급업체`;
+    }
+  }
+
+  const itemTitleEl = document.getElementById('modalItemFullName');
+  if (itemTitleEl) {
+    const matBadgeHtml = currentDetailMaterial ? `<span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:0.75rem; font-weight:700; margin-right:4px;">${escapeHtml(currentDetailMaterial)}</span>` : '';
+    itemTitleEl.innerHTML = `${catBadgeHtml} ${matBadgeHtml}${escapeHtml(currentDetailItem)}${currentDetailSpec ? ' ■ ' + escapeHtml(currentDetailSpec) : ''}`;
+  }
+
+  // Filter history
   currentItemHistory = [];
   let totalAmount = 0;
   let totalQty = 0;
   let minDate = '9999-99-99';
   let maxDate = '0000-00-00';
 
-  for (let i = 0; i < allData.length; i++) {
-    const r = allData[i];
-    if (r[2] === item && (r[3] === spec || (!r[3] && !spec))) {
-      currentItemHistory.push(r);
-      totalAmount += r[6];
-      totalQty += r[4];
-      if (r[0] < minDate) minDate = r[0];
-      if (r[0] > maxDate) maxDate = r[0];
+  for (let i = 0; i < sourceData.length; i++) {
+    const r = sourceData[i];
+    // Match item
+    if (r[2] !== currentDetailItem) continue;
+
+    // Match spec
+    if (currentDetailSpec && r[3] !== currentDetailSpec) continue;
+    if (!currentDetailSpec && r[3]) continue;
+
+    // Match material if specified
+    if (currentDetailMaterial && r[8] && r[8] !== currentDetailMaterial) continue;
+
+    // Match vendor (strictly matching the clicked vendor)
+    if (targetNormV) {
+      const rNormV = (typeof normalizeVendorName === 'function' && r[1]) ? normalizeVendorName(r[1]) : (r[1] ? r[1].trim() : '');
+      if (rNormV !== targetNormV) continue;
     }
+
+    currentItemHistory.push(r);
+    totalAmount += (r[6] || 0);
+    totalQty += (r[4] || 0);
+    if (r[0] && r[0] < minDate) minDate = r[0];
+    if (r[0] && r[0] > maxDate) maxDate = r[0];
   }
 
   // Sort history descending by date for table display
-  currentItemHistory.sort((a, b) => b[0].localeCompare(a[0]));
+  currentItemHistory.sort((a, b) => (b[0] || '').localeCompare(a[0] || ''));
 
   // Fill KPI stats
-  document.getElementById('modalPeriod').textContent = 
+  document.getElementById('modalPeriod').textContent =
     currentItemHistory.length > 0 ? `${minDate} ~ ${maxDate}` : '-';
-  document.getElementById('modalTotalQty').textContent = formatNumber(totalQty) + '개';
+  document.getElementById('modalTotalQty').textContent = formatNumber(totalQty) + ' ' + unitLabel;
   document.getElementById('modalTotalAmount').textContent = formatCurrency(totalAmount);
   const avgPrice = totalQty > 0 ? Math.round(totalAmount / totalQty) : 0;
-  document.getElementById('modalAvgPrice').textContent = formatCurrency(avgPrice);
+  document.getElementById('modalAvgPrice').textContent = formatCurrency(avgPrice) + (unitLabel === 'KG' ? '/kg' : '');
 
-  document.getElementById('modalHistoryCount').textContent = currentItemHistory.length;
+  document.getElementById('modalHistoryCount').textContent = formatNumber(currentItemHistory.length);
 
-  // Render History Table
+  // Render History Table with Price Badges & Vendor column
   const tbody = document.getElementById('modalHistoryBody');
   tbody.innerHTML = '';
   currentItemHistory.forEach(r => {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${r[0]}</td>
-      <td class="text-right">${formatNumber(r[4])}</td>
-      <td class="text-right" style="font-weight: 600;">${formatNumber(r[5])}원</td>
+      <td style="text-align: center;">${r[0]}</td>
+      <td style="font-weight: 600; color: #1e3a8a;">${escapeHtml(r[1])}</td>
+      <td class="text-right">${formatNumber(r[4])} ${unitLabel}</td>
+      <td class="text-right" style="font-weight: 600; vertical-align: middle;">
+        <div>${formatCurrency(r[5])}</div>${renderPriceBadge(r._trend)}
+      </td>
       <td class="text-right" style="color: var(--primary); font-weight: 700;">${formatCurrency(r[6])}</td>
-      <td style="color: var(--slate-600);">${r[7] || ''}</td>
+      <td style="color: var(--slate-600);">${escapeHtml(r[7] || '')}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -5756,15 +6753,26 @@ function drawItemPriceChart(history) {
   // 4. Update Ribbon UI
   const badge = document.getElementById('priceFluctuationBadge');
   if (badge) {
-    if (priceDiff > 0) {
+    if (chronological.length <= 1) {
+      badge.className = 'price-trend-badge new';
+      badge.style.background = '#e0e7ff';
+      badge.style.color = '#3730a3';
+      badge.innerHTML = `★ 신규 (최초 등록 품목)`;
+    } else if (priceDiff > 0) {
       badge.className = 'price-trend-badge inc';
+      badge.style.background = '#fee2e2';
+      badge.style.color = '#b91c1c';
       badge.innerHTML = `▲ +${formatNumber(priceDiff)}원 (+${pctDiff}%) 인상`;
     } else if (priceDiff < 0) {
       badge.className = 'price-trend-badge dec';
+      badge.style.background = '#dcfce7';
+      badge.style.color = '#15803d';
       badge.innerHTML = `▼ -${formatNumber(Math.abs(priceDiff))}원 (${pctDiff}%) 인하`;
     } else {
       badge.className = 'price-trend-badge steady';
-      badge.innerHTML = `동결 (0%)`;
+      badge.style.background = '#f1f5f9';
+      badge.style.color = '#475569';
+      badge.innerHTML = `─ 보합 (0%)`;
     }
   }
 
@@ -6061,7 +7069,7 @@ function initItemChartHover() {
         </div>
         <div style="display: flex; justify-content: space-between; gap: 14px; margin-bottom: 2px;">
           <span style="color: #cbd5e1;">입고수량:</span>
-          <span style="color: #f1f5f9;">${formatNumber(closest.qty)}개 (${formatCurrency(closest.amount)})</span>
+          <span style="color: #f1f5f9;">${formatNumber(closest.qty)} ${currentDetailCategory === 'rawmaterials' ? 'KG' : '개'} (${formatCurrency(closest.amount)})</span>
         </div>
         <div style="display: flex; justify-content: space-between; gap: 14px;">
           <span style="color: #cbd5e1;">공급업체:</span>
@@ -6117,6 +7125,11 @@ function initItemChartHover() {
     if (scrapTab && scrapTab.classList.contains('active') && typeof drawScrapTrendChart === 'function') {
       drawScrapTrendChart();
     }
+    const trendsTab = document.getElementById('tab-trends');
+    if (trendsTab && trendsTab.classList.contains('active')) {
+      if (typeof renderMonthlySpendChartCanvas === 'function') renderMonthlySpendChartCanvas();
+      if (typeof renderTopChartCanvas === 'function') renderTopChartCanvas();
+    }
   });
 }
 
@@ -6153,14 +7166,79 @@ function resetTrendVendor() {
   renderPivotView();
 }
 
+function ensureMaterialsLoaded() {
+  if ((!subData || subData.length === 0) && window.INITIAL_SUB_MATERIALS_DATA) {
+    subData = window.INITIAL_SUB_MATERIALS_DATA;
+    try { assignPriceTrends(subData); } catch (e) {}
+  }
+  if ((!rawData || rawData.length === 0) && window.INITIAL_RAW_MATERIALS_DATA) {
+    rawData = window.INITIAL_RAW_MATERIALS_DATA;
+    try { assignPriceTrends(rawData); } catch (e) {}
+  }
+}
+
+let cachedAllCombinedData = null;
+function getPivotDataset(cat) {
+  ensureMaterialsLoaded();
+  const d1 = (allData && allData.length > 0) ? allData : (window.INITIAL_SUPPLIES_DATA || []);
+  const d2 = (subData && subData.length > 0) ? subData : (window.INITIAL_SUB_MATERIALS_DATA || []);
+  const d3 = (rawData && rawData.length > 0) ? rawData : (window.INITIAL_RAW_MATERIALS_DATA || []);
+
+  if (cat === 'consumables') return d1;
+  if (cat === 'submaterials') return d2;
+  if (cat === 'rawmaterials') return d3;
+  if (!cachedAllCombinedData || cachedAllCombinedData.length !== (d1.length + d2.length + d3.length)) {
+    cachedAllCombinedData = d1.concat(d2, d3);
+  }
+  return cachedAllCombinedData;
+}
+
+let canonicalRawNamesMap = {};
+
 function filterByVendorFromPivot(v) {
-  document.querySelector('[data-tab="tab-search"]').click();
-  selectVendor(v);
+  const catEl = document.getElementById('pivotCategorySelect');
+  const cat = catEl ? catEl.value : 'all';
+  if (cat === 'submaterials') {
+    const nav = document.querySelector('[data-tab="tab-sub"]');
+    if (nav) nav.click();
+    selectSubVendor(v);
+  } else if (cat === 'rawmaterials') {
+    const nav = document.querySelector('[data-tab="tab-raw"]');
+    if (nav) nav.click();
+    selectRawVendor(v);
+  } else {
+    const nav = document.querySelector('[data-tab="tab-search"]');
+    if (nav) nav.click();
+    selectVendor(v);
+  }
+}
+
+function selectPivotCategory(cat) {
+  const hiddenInput = document.getElementById('pivotCategorySelect');
+  if (hiddenInput) hiddenInput.value = cat;
+
+  document.querySelectorAll('.pivot-cat-btn').forEach(btn => {
+    if (btn.getAttribute('data-cat') === cat) {
+      btn.classList.add('active');
+    } else {
+      btn.classList.remove('active');
+    }
+  });
+
+  renderPivotView();
 }
 
 function renderPivotView() {
+  ensureMaterialsLoaded();
+  const catEl = document.getElementById('pivotCategorySelect');
+  const cat = catEl ? catEl.value : 'all';
   const periodMonths = parseInt(document.getElementById('pivotPeriodSelect').value, 10);
+  const currentDataset = getPivotDataset(cat);
   
+  if (currentTrendVendor) {
+    currentTrendVendor = normalizeVendorName(currentTrendVendor);
+  }
+
   // 1. Gather all month keys (YYYY-MM), vendor sums, and transaction counts
   const vendorMonthMap = {};
   const vendorMonthCounts = {};
@@ -6168,12 +7246,20 @@ function renderPivotView() {
   const monthCounts = {};
   const vendorTotals = {};
   const allMonthsSet = new Set();
+  canonicalRawNamesMap = {};
 
-  for (let i = 0; i < allData.length; i++) {
-    const d = allData[i][0];
-    const v = allData[i][1];
-    const amt = allData[i][6];
-    if (!d || !v || amt <= 0) continue;
+  for (let i = 0; i < currentDataset.length; i++) {
+    const row = currentDataset[i];
+    const d = row[0];
+    const rawV = row[1];
+    const amt = row[6];
+    if (!d || !rawV || amt <= 0) continue;
+
+    const v = normalizeVendorName(rawV);
+    if (!canonicalRawNamesMap[v]) {
+      canonicalRawNamesMap[v] = new Set();
+    }
+    canonicalRawNamesMap[v].add(rawV);
 
     const ym = d.substring(0, 7);
     allMonthsSet.add(ym);
@@ -6191,13 +7277,22 @@ function renderPivotView() {
   const sortedMonths = Array.from(allMonthsSet).sort().reverse();
   const displayMonths = periodMonths >= 999 ? sortedMonths : sortedMonths.slice(0, periodMonths);
 
-  // Sort vendors by latest month amount, then total amount descending
-  const latestMonth = displayMonths[0];
+  // Calculate period total for each vendor across displayMonths
+  const vendorPeriodTotals = {};
+  Object.keys(vendorTotals).forEach(v => {
+    let pSum = 0;
+    displayMonths.forEach(m => {
+      pSum += (vendorMonthMap[v + '|' + m] || 0);
+    });
+    vendorPeriodTotals[v] = pSum;
+  });
+
+  // Sort vendors by currently selected period sum descending, then total amount descending
   const sortedVendors = Object.keys(vendorTotals).sort((a, b) => {
-    const amtA = vendorMonthMap[a + '|' + latestMonth] || 0;
-    const amtB = vendorMonthMap[b + '|' + latestMonth] || 0;
-    if (amtB !== amtA) return amtB - amtA;
-    return vendorTotals[b] - vendorTotals[a];
+    const pA = vendorPeriodTotals[a] || 0;
+    const pB = vendorPeriodTotals[b] || 0;
+    if (pB !== pA) return pB - pA;
+    return (vendorTotals[b] || 0) - (vendorTotals[a] || 0);
   });
 
   // Calculate max value per column for heatmap coloring
@@ -6213,11 +7308,16 @@ function renderPivotView() {
 
   // 2. Build Pivot Matrix HTML
   const thead = document.getElementById('pivotTableHead');
-  let headHtml = '<tr><th style="min-width: 150px;">업체명 (클릭시 그래프)</th>';
+  let periodHeaderBg = '#3730a3';
+  if (cat === 'consumables') periodHeaderBg = '#1e40af';
+  else if (cat === 'submaterials') periodHeaderBg = '#b45309';
+  else if (cat === 'rawmaterials') periodHeaderBg = '#047857';
+
+  let headHtml = '<tr><th style="min-width: 170px;">업체명 (클릭시 그래프)</th>';
   displayMonths.forEach(m => {
     headHtml += `<th style="min-width: 95px;">${m}</th>`;
   });
-  headHtml += '<th style="min-width: 110px; background: #1e3a8a;">기간 합계</th></tr>';
+  headHtml += `<th style="min-width: 115px; background: ${periodHeaderBg}; color: #ffffff;">기간 합계</th></tr>`;
   thead.innerHTML = headHtml;
 
   const tbody = document.getElementById('pivotTableBody');
@@ -6227,6 +7327,8 @@ function renderPivotView() {
     let rowSum = 0;
     let colsHtml = '';
     const isSelected = (v === currentTrendVendor);
+    const rawNames = canonicalRawNamesMap[v] ? Array.from(canonicalRawNamesMap[v]) : [v];
+    const isMerged = rawNames.length > 1;
 
     displayMonths.forEach(m => {
       const val = vendorMonthMap[v + '|' + m] || 0;
@@ -6236,10 +7338,25 @@ function renderPivotView() {
       if (isSelected) {
         bgStyle = 'background: #eff6ff; font-weight: 700;';
       } else if (val > 0 && columnMaxValues[m] > 0) {
-        const intensity = val / columnMaxValues[m];
-        const r = Math.round(239 - (239 - 147) * intensity);
-        const g = Math.round(246 - (246 - 197) * intensity);
-        const b = Math.round(255 - (255 - 253) * intensity);
+        const intensity = Math.min(1, val / columnMaxValues[m]);
+        let r, g, b;
+        if (cat === 'consumables') {
+          r = Math.round(239 - (239 - 147) * intensity);
+          g = Math.round(246 - (246 - 197) * intensity);
+          b = Math.round(255 - (255 - 253) * intensity);
+        } else if (cat === 'submaterials') {
+          r = Math.round(254 - (254 - 245) * intensity);
+          g = Math.round(243 - (243 - 158) * intensity);
+          b = Math.round(199 - (199 - 11) * intensity);
+        } else if (cat === 'rawmaterials') {
+          r = Math.round(236 - (236 - 110) * intensity);
+          g = Math.round(253 - (253 - 231) * intensity);
+          b = Math.round(245 - (245 - 183) * intensity);
+        } else {
+          r = Math.round(238 - (238 - 165) * intensity);
+          g = Math.round(242 - (242 - 180) * intensity);
+          b = Math.round(255 - (255 - 252) * intensity);
+        }
         bgStyle = `background: rgb(${r}, ${g}, ${b});`;
       }
 
@@ -6248,22 +7365,23 @@ function renderPivotView() {
 
     const rowStyle = isSelected ? 'background: #eff6ff; border-left: 4px solid var(--primary); font-weight: 700;' : '';
     const activeBadge = isSelected ? '<span style="font-size: 0.72rem; color: #1e40af; margin-left: 5px; background: #dbeafe; padding: 1px 6px; border-radius: 4px; font-weight: 700;">선택됨</span>' : '';
+    const mergedBadge = isMerged ? `<span style="font-size: 0.68rem; color: #3730a3; margin-left: 4px; background: #e0e7ff; padding: 1px 5px; border-radius: 4px; font-weight: 600;" title="통합된 원본 명칭 (${rawNames.length}개): ${rawNames.join(', ')}">통합 ${rawNames.length}</span>` : '';
 
     bodyHtml += `
       <tr style="${rowStyle}">
-        <td style="cursor: pointer; color: var(--primary); font-weight: 600;" onclick="toggleTrendVendor('${v}')" title="클릭하여 ${v} 월별 추이 그래프 보기">
-          <span>${v}</span>${activeBadge}
+        <td style="cursor: pointer; color: var(--primary); font-weight: 600;" onclick="toggleTrendVendor('${v}')" title="클릭하여 ${v} 월별 추이 그래프 보기${isMerged ? ' (통합: ' + rawNames.join(', ') + ')' : ''}">
+          <span>${v}</span>${mergedBadge}${activeBadge}
           <a href="javascript:void(0)" onclick="event.stopPropagation(); filterByVendorFromPivot('${v}')" title="상세 검색 탭에서 ${v} 내역 보기" style="margin-left: 6px; font-size: 0.72rem; text-decoration: none; opacity: 0.65;">🔍</a>
         </td>
         ${colsHtml}
-        <td class="text-right" style="font-weight: 700; background: #f8fafc; color: #1e3a8a;">${formatNumber(rowSum)}</td>
+        <td class="text-right" style="font-weight: 700; background: #f8fafc; color: ${periodHeaderBg};">${formatNumber(rowSum)}</td>
       </tr>
     `;
   });
   tbody.innerHTML = bodyHtml;
 
   // 3. Render 1-Year Summary Ranking Table
-  render1YearRanking(sortedMonths);
+  const yearRanking = render1YearRanking(sortedMonths, currentDataset);
 
   // 4. Render Monthly Total Table
   renderMonthlySummaryTable(sortedMonths, monthTotals);
@@ -6275,21 +7393,32 @@ function renderPivotView() {
   const topTitleEl = document.getElementById('topVendorChartTitle');
   const guideVendorEl = document.getElementById('trendGuideActiveVendor');
 
+  const catNames = {
+    all: '전체 통합 (소모품+부자재+원자재)',
+    consumables: '소모품',
+    submaterials: '부자재',
+    rawmaterials: '원자재'
+  };
+  const catLabel = catNames[cat] || '전체 통합';
+
   if (currentTrendVendor) {
+    const rawNames = canonicalRawNamesMap[currentTrendVendor] ? Array.from(canonicalRawNamesMap[currentTrendVendor]) : [currentTrendVendor];
+    const mergeInfo = rawNames.length > 1 ? ` (${rawNames.join(', ')} 등 ${rawNames.length}개 명칭 통합)` : '';
+
     if (trendTitleEl) trendTitleEl.textContent = `📅 [${currentTrendVendor}] 월별 매입금액 추이`;
     if (trendBadgeEl) {
-      trendBadgeEl.textContent = `🏢 ${currentTrendVendor}`;
+      trendBadgeEl.textContent = `🏢 ${currentTrendVendor}${rawNames.length > 1 ? ' (' + rawNames.length + '개 통합)' : ''}`;
       trendBadgeEl.style.display = 'inline-block';
     }
     if (resetBtnEl) resetBtnEl.style.display = 'inline-block';
     if (topTitleEl) topTitleEl.textContent = `📦 [${currentTrendVendor}] 매입 상위 TOP 5 품목`;
-    if (guideVendorEl) guideVendorEl.textContent = `현재: [${currentTrendVendor}] 단독 분석 중`;
+    if (guideVendorEl) guideVendorEl.textContent = `현재: [${currentTrendVendor}] 단독 분석 중${mergeInfo} · ${catLabel}`;
   } else {
-    if (trendTitleEl) trendTitleEl.textContent = '📅 월별 총 매입금액 추이';
+    if (trendTitleEl) trendTitleEl.textContent = `📅 [${catLabel}] 월별 총 매입금액 추이`;
     if (trendBadgeEl) trendBadgeEl.style.display = 'none';
     if (resetBtnEl) resetBtnEl.style.display = 'none';
     if (topTitleEl) topTitleEl.textContent = '🏆 최근 1년 매입 상위 TOP 5 거래처';
-    if (guideVendorEl) guideVendorEl.textContent = '현재: 전체 거래처 합산';
+    if (guideVendorEl) guideVendorEl.textContent = `현재: ${catLabel} 합산 (유사 명칭 자동 통합 분석)`;
   }
 
   // 6. Draw Trend Chart (Single Vendor or All Vendors)
@@ -6304,39 +7433,45 @@ function renderPivotView() {
     chartTotals = monthTotals;
     chartCounts = monthCounts;
   }
-  drawMonthlySpendChart(displayMonths, chartTotals, currentTrendVendor, chartCounts);
+  drawMonthlySpendChart(displayMonths, chartTotals, currentTrendVendor, chartCounts, cat);
 
   // 7. Draw Top 5 Chart (Top Vendors or Top Items for selected vendor)
   if (currentTrendVendor) {
     const itemMap = {};
-    for (let i = 0; i < allData.length; i++) {
-      if (allData[i][1] === currentTrendVendor && allData[i][6] > 0) {
-        const item = allData[i][2] || '기타';
-        itemMap[item] = (itemMap[item] || 0) + allData[i][6];
+    for (let i = 0; i < currentDataset.length; i++) {
+      const r = currentDataset[i];
+      if (normalizeVendorName(r[1]) === currentTrendVendor && r[6] > 0) {
+        const item = r[2] || '기타';
+        itemMap[item] = (itemMap[item] || 0) + r[6];
       }
     }
     const topItemsData = Object.keys(itemMap)
       .map(name => ({ name, amount: itemMap[name] }))
       .sort((a, b) => b.amount - a.amount);
-    drawTopVendorsOrItemsChart(topItemsData, true);
+    drawTopVendorsOrItemsChart(topItemsData, true, cat);
   } else {
-    const topVendorsData = sortedVendors.map(v => ({ name: v, amount: vendorTotals[v] || 0 }));
-    drawTopVendorsOrItemsChart(topVendorsData, false);
+    // 최근 1년(12개월) 실제 매입금액 순위 및 1년 실금액으로 정확히 일치
+    const topVendorsData = (yearRanking || []).slice(0, 5).map(r => ({ name: r.vendor, amount: r.amount }));
+    drawTopVendorsOrItemsChart(topVendorsData, false, cat);
   }
 }
 
-function render1YearRanking(sortedMonths) {
+function render1YearRanking(sortedMonths, currentDataset) {
   const yearMonths = new Set(sortedMonths.slice(0, 12));
   const yearVendorSums = {};
   let total1Year = 0;
+  const ds = currentDataset || getPivotDataset('all');
 
-  for (let i = 0; i < allData.length; i++) {
-    const ym = (allData[i][0] || '').substring(0, 7);
+  for (let i = 0; i < ds.length; i++) {
+    const r = ds[i];
+    const ym = (r[0] || '').substring(0, 7);
     if (yearMonths.has(ym)) {
-      const v = allData[i][1];
-      const amt = allData[i][6];
-      yearVendorSums[v] = (yearVendorSums[v] || 0) + amt;
-      total1Year += amt;
+      const v = normalizeVendorName(r[1]);
+      const amt = r[6];
+      if (amt > 0) {
+        yearVendorSums[v] = (yearVendorSums[v] || 0) + amt;
+        total1Year += amt;
+      }
     }
   }
 
@@ -6349,16 +7484,20 @@ function render1YearRanking(sortedMonths) {
   ranking.forEach((r, idx) => {
     const pct = total1Year > 0 ? ((r.amount / total1Year) * 100).toFixed(1) : '0.0';
     const isSelected = (r.vendor === currentTrendVendor);
+    const rawNames = canonicalRawNamesMap[r.vendor] ? Array.from(canonicalRawNamesMap[r.vendor]) : [r.vendor];
+    const isMerged = rawNames.length > 1;
     const rowStyle = isSelected ? 'background: #eff6ff; border-left: 3px solid var(--primary); font-weight: 700;' : '';
 
     const tr = document.createElement('tr');
     if (rowStyle) tr.setAttribute('style', rowStyle);
     tr.style.cursor = 'pointer';
-    tr.title = `클릭하여 ${r.vendor} 전용 그래프 보기`;
+    tr.title = `클릭하여 ${r.vendor} 전용 그래프 보기${isMerged ? ' (통합: ' + rawNames.join(', ') + ')' : ''}`;
     tr.innerHTML = `
       <td class="text-center" style="font-weight: 700;">${idx + 1}</td>
       <td style="font-weight: 600; color: var(--primary);">
-        ${r.vendor} ${isSelected ? '<span style="font-size: 0.72rem; color: #1e40af; background: #dbeafe; padding: 1px 4px; border-radius: 3px;">선택됨</span>' : ''}
+        ${r.vendor}
+        ${isMerged ? `<span style="font-size: 0.68rem; color: #3730a3; background: #e0e7ff; padding: 1px 4px; border-radius: 3px; font-weight: 600; margin-left: 3px;">통합 ${rawNames.length}</span>` : ''}
+        ${isSelected ? '<span style="font-size: 0.72rem; color: #1e40af; background: #dbeafe; padding: 1px 4px; border-radius: 3px; margin-left: 3px;">선택됨</span>' : ''}
       </td>
       <td class="text-right" style="font-weight: 700; color: #1e40af;">${formatCurrency(r.amount)}</td>
       <td class="text-right" style="color: var(--slate-500);">${pct}%</td>
@@ -6366,6 +7505,7 @@ function render1YearRanking(sortedMonths) {
     tr.onclick = () => toggleTrendVendor(r.vendor);
     tbody.appendChild(tr);
   });
+  return ranking;
 }
 
 function renderMonthlySummaryTable(sortedMonths, monthTotals) {
@@ -6401,14 +7541,15 @@ function renderMonthlySummaryTable(sortedMonths, monthTotals) {
 }
 
 // Pure Canvas Bar Chart with Interactive Tooltips
-function drawMonthlySpendChart(months, totals, vendorName, counts) {
-  lastTrendChartData = { months, totals, vendorName, counts };
+function drawMonthlySpendChart(months, totals, vendorName, counts, category) {
+  lastTrendChartData = { months, totals, vendorName, counts, category: category || 'all' };
   renderMonthlySpendChartCanvas();
 }
 
 function renderMonthlySpendChartCanvas() {
   if (!lastTrendChartData) return;
-  const { months, totals, vendorName, counts } = lastTrendChartData;
+  const { months, totals, vendorName, counts, category } = lastTrendChartData;
+  const cat = category || 'all';
 
   const canvas = document.getElementById('monthlyTrendChart');
   if (!canvas) return;
@@ -6481,17 +7622,40 @@ function renderMonthlySpendChartCanvas() {
       topY: y
     });
 
-    // Bar gradient
+    // Bar gradient based on vendor selection and category
     const grad = ctx.createLinearGradient(0, y, 0, padding.top + chartH);
     if (isHovered) {
-      grad.addColorStop(0, '#60a5fa');
-      grad.addColorStop(1, '#2563eb');
+      if (vendorName) {
+        grad.addColorStop(0, '#a78bfa');
+        grad.addColorStop(1, '#7c3aed');
+      } else if (cat === 'consumables') {
+        grad.addColorStop(0, '#60a5fa');
+        grad.addColorStop(1, '#2563eb');
+      } else if (cat === 'submaterials') {
+        grad.addColorStop(0, '#fbbf24');
+        grad.addColorStop(1, '#d97706');
+      } else if (cat === 'rawmaterials') {
+        grad.addColorStop(0, '#34d399');
+        grad.addColorStop(1, '#059669');
+      } else {
+        grad.addColorStop(0, '#818cf8');
+        grad.addColorStop(1, '#4f46e5');
+      }
     } else if (vendorName) {
+      grad.addColorStop(0, '#8b5cf6');
+      grad.addColorStop(1, '#6d28d9');
+    } else if (cat === 'consumables') {
+      grad.addColorStop(0, '#3b82f6');
+      grad.addColorStop(1, '#1d4ed8');
+    } else if (cat === 'submaterials') {
+      grad.addColorStop(0, '#f59e0b');
+      grad.addColorStop(1, '#b45309');
+    } else if (cat === 'rawmaterials') {
       grad.addColorStop(0, '#10b981');
       grad.addColorStop(1, '#047857');
     } else {
-      grad.addColorStop(0, '#3b82f6');
-      grad.addColorStop(1, '#1e40af');
+      grad.addColorStop(0, '#6366f1');
+      grad.addColorStop(1, '#4338ca');
     }
 
     ctx.fillStyle = grad;
@@ -6517,7 +7681,13 @@ function renderMonthlySpendChartCanvas() {
     }
 
     // X-axis Month Label
-    ctx.fillStyle = isHovered ? '#1e40af' : '#64748b';
+    let labelActiveColor = '#4338ca';
+    if (vendorName) labelActiveColor = '#6d28d9';
+    else if (cat === 'consumables') labelActiveColor = '#1d4ed8';
+    else if (cat === 'submaterials') labelActiveColor = '#b45309';
+    else if (cat === 'rawmaterials') labelActiveColor = '#047857';
+
+    ctx.fillStyle = isHovered ? labelActiveColor : '#64748b';
     ctx.font = isHovered ? 'bold 10px "Pretendard Variable", Pretendard, sans-serif' : '9.5px "Pretendard Variable", Pretendard, sans-serif';
     ctx.textAlign = 'center';
 
@@ -6558,9 +7728,15 @@ function attachTrendChartHover(canvas) {
 
       canvas.style.cursor = 'pointer';
       if (tooltip) {
+        let headerColor = '#a5b4fc';
+        if (currentTrendVendor) headerColor = '#c4b5fd';
+        else if (lastTrendChartData && lastTrendChartData.category === 'consumables') headerColor = '#93c5fd';
+        else if (lastTrendChartData && lastTrendChartData.category === 'submaterials') headerColor = '#fde68a';
+        else if (lastTrendChartData && lastTrendChartData.category === 'rawmaterials') headerColor = '#a7f3d0';
+
         const vTitle = currentTrendVendor ? `🏢 ${currentTrendVendor}` : '🏢 전체 거래처';
         tooltip.innerHTML = `
-          <div style="font-size: 0.73rem; color: #93c5fd; font-weight: 700; margin-bottom: 2px;">
+          <div style="font-size: 0.73rem; color: ${headerColor}; font-weight: 700; margin-bottom: 2px;">
             ${b.month} · ${vTitle}
           </div>
           <div style="font-size: 0.96rem; font-weight: 800; color: #ffffff;">
@@ -6601,14 +7777,15 @@ function attachTrendChartHover(canvas) {
 }
 
 // Pure Canvas Horizontal Bar Chart for Top Vendors or Top Items
-function drawTopVendorsOrItemsChart(items, isVendorItems) {
-  lastTopChartData = { items, isVendorItems };
+function drawTopVendorsOrItemsChart(items, isVendorItems, category) {
+  lastTopChartData = { items, isVendorItems, category: category || 'all' };
   renderTopChartCanvas();
 }
 
 function renderTopChartCanvas() {
   if (!lastTopChartData) return;
-  const { items, isVendorItems } = lastTopChartData;
+  const { items, isVendorItems, category } = lastTopChartData;
+  const cat = category || 'all';
 
   const canvas = document.getElementById('topVendorChart');
   if (!canvas) return;
@@ -6665,23 +7842,53 @@ function renderTopChartCanvas() {
     });
 
     // Label on the left
-    ctx.fillStyle = isHovered ? '#1e40af' : '#334155';
+    let labelActiveColor = '#4338ca';
+    if (isVendorItems) labelActiveColor = '#6d28d9';
+    else if (cat === 'consumables') labelActiveColor = '#1d4ed8';
+    else if (cat === 'submaterials') labelActiveColor = '#b45309';
+    else if (cat === 'rawmaterials') labelActiveColor = '#047857';
+
+    ctx.fillStyle = isHovered ? labelActiveColor : '#334155';
     ctx.font = isHovered ? 'bold 10px "Pretendard Variable", Pretendard, sans-serif' : '10px "Pretendard Variable", Pretendard, sans-serif';
     ctx.textAlign = 'right';
     const label = item.name.length > 7 ? item.name.substring(0, 6) + '..' : item.name;
     ctx.fillText(label, padding.left - 8, y + barH * 0.72);
 
-    // Bar gradient
+    // Bar gradient based on category or vendor items
     const grad = ctx.createLinearGradient(padding.left, 0, padding.left + bW, 0);
     if (isHovered) {
-      grad.addColorStop(0, '#38bdf8');
-      grad.addColorStop(1, '#0284c7');
+      if (isVendorItems) {
+        grad.addColorStop(0, '#c4b5fd');
+        grad.addColorStop(1, '#7c3aed');
+      } else if (cat === 'consumables') {
+        grad.addColorStop(0, '#93c5fd');
+        grad.addColorStop(1, '#2563eb');
+      } else if (cat === 'submaterials') {
+        grad.addColorStop(0, '#fde68a');
+        grad.addColorStop(1, '#d97706');
+      } else if (cat === 'rawmaterials') {
+        grad.addColorStop(0, '#a7f3d0');
+        grad.addColorStop(1, '#059669');
+      } else {
+        grad.addColorStop(0, '#c7d2fe');
+        grad.addColorStop(1, '#4f46e5');
+      }
     } else if (isVendorItems) {
-      grad.addColorStop(0, '#34d399');
-      grad.addColorStop(1, '#059669');
+      grad.addColorStop(0, idx === 0 ? '#8b5cf6' : '#a78bfa');
+      grad.addColorStop(1, idx === 0 ? '#6d28d9' : '#8b5cf6');
+    } else if (cat === 'consumables') {
+      grad.addColorStop(0, idx === 0 ? '#3b82f6' : '#60a5fa');
+      grad.addColorStop(1, idx === 0 ? '#1d4ed8' : '#2563eb');
+    } else if (cat === 'submaterials') {
+      grad.addColorStop(0, idx === 0 ? '#f59e0b' : '#fbbf24');
+      grad.addColorStop(1, idx === 0 ? '#b45309' : '#d97706');
+    } else if (cat === 'rawmaterials') {
+      grad.addColorStop(0, idx === 0 ? '#10b981' : '#34d399');
+      grad.addColorStop(1, idx === 0 ? '#047857' : '#059669');
     } else {
-      grad.addColorStop(0, idx === 0 ? '#3b82f6' : '#93c5fa');
-      grad.addColorStop(1, idx === 0 ? '#1e40af' : '#3b82f6');
+      // all
+      grad.addColorStop(0, idx === 0 ? '#6366f1' : '#818cf8');
+      grad.addColorStop(1, idx === 0 ? '#4338ca' : '#4f46e5');
     }
     ctx.fillStyle = grad;
 
@@ -6703,7 +7910,7 @@ function renderTopChartCanvas() {
     }
 
     // Value text on the right
-    ctx.fillStyle = isHovered ? '#1e3a8a' : '#475569';
+    ctx.fillStyle = isHovered ? labelActiveColor : '#475569';
     ctx.font = isHovered ? 'bold 10px "Pretendard Variable", Pretendard, sans-serif' : '10px "Pretendard Variable", Pretendard, sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText(formatCompactCurrency(val), padding.left + bW + 6, y + barH * 0.72);
@@ -6741,9 +7948,15 @@ function attachTopChartHover(canvas) {
 
       canvas.style.cursor = b.isVendor ? 'pointer' : 'default';
       if (tooltip) {
+        let headerColor = '#a5b4fc';
+        if (!b.isVendor) headerColor = '#c4b5fd';
+        else if (lastTopChartData && lastTopChartData.category === 'consumables') headerColor = '#93c5fd';
+        else if (lastTopChartData && lastTopChartData.category === 'submaterials') headerColor = '#fde68a';
+        else if (lastTopChartData && lastTopChartData.category === 'rawmaterials') headerColor = '#a7f3d0';
+
         const typeLabel = b.isVendor ? '거래처 매입' : '품목 매입';
         tooltip.innerHTML = `
-          <div style="font-size: 0.72rem; color: #93c5fd; font-weight: 700; margin-bottom: 2px;">
+          <div style="font-size: 0.72rem; color: ${headerColor}; font-weight: 700; margin-bottom: 2px;">
             ${b.name} (${typeLabel})
           </div>
           <div style="font-size: 0.96rem; font-weight: 800; color: #ffffff;">
@@ -6829,15 +8042,20 @@ function renderClosingView() {
 
   // Filter vendors active in this month
   const monthlyVendors = {};
+  const monthlyRawMap = {};
   for (let i = 0; i < allData.length; i++) {
     const d = allData[i][0];
     if (d && d.substring(0, 7) === currentClosingMonth) {
-      const v = allData[i][1];
-      monthlyVendors[v] = (monthlyVendors[v] || 0) + allData[i][6];
+      const rawV = allData[i][1] || '';
+      const normV = normalizeVendorName(rawV);
+      if (!normV) continue;
+      monthlyVendors[normV] = (monthlyVendors[normV] || 0) + (allData[i][6] || 0);
+      if (!monthlyRawMap[normV]) monthlyRawMap[normV] = new Set();
+      monthlyRawMap[normV].add(rawV);
     }
   }
 
-  const sortedV = Object.keys(monthlyVendors).sort();
+  const sortedV = Object.keys(monthlyVendors).sort((a, b) => a.localeCompare(b, 'ko'));
   document.getElementById('closingVendorCount').textContent = sortedV.length;
   if ((!currentClosingVendor || !monthlyVendors[currentClosingVendor]) && sortedV.length > 0) {
     currentClosingVendor = sortedV[0];
@@ -6847,9 +8065,19 @@ function renderClosingView() {
   const vList = document.getElementById('closingVendorList');
   vList.innerHTML = '';
   sortedV.forEach(v => {
+    const rawList = Array.from(monthlyRawMap[v] || [v]);
+    const isMerged = rawList.length > 1;
+    const mergeBadge = isMerged ? `<span style="font-size: 0.68rem; color: #4338ca; background: #e0e7ff; padding: 1px 5px; border-radius: 4px; font-weight: 600; margin-left: 4px;" title="통합된 원본 명칭 (${rawList.length}개): ${rawList.join(', ')}">통합 ${rawList.length}</span>` : '';
+
     const li = document.createElement('li');
     li.className = 'vendor-item' + (currentClosingVendor === v ? ' active' : '');
-    li.innerHTML = `<span>${v}</span> <span class="vendor-badge">${formatCompactCurrency(monthlyVendors[v])}</span>`;
+    li.innerHTML = `
+      <span style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        <span style="overflow: hidden; text-overflow: ellipsis;">${escapeHtml(v)}</span>
+        ${mergeBadge}
+      </span>
+      <span class="vendor-badge">${formatCompactCurrency(monthlyVendors[v])}</span>
+    `;
     li.onclick = () => {
       currentClosingVendor = v;
       document.querySelectorAll('#closingVendorList .vendor-item').forEach(el => el.classList.remove('active'));
@@ -7188,7 +8416,7 @@ function renderPrintableReport() {
     for (let i = 0; i < allData.length; i++) {
       const row = allData[i];
       if (row[0] && row[0].substring(0, 7) === currentClosingMonth) {
-        if (!currentClosingVendor || row[1] === currentClosingVendor) {
+        if (!currentClosingVendor || row[1] === currentClosingVendor || normalizeVendorName(row[1]) === currentClosingVendor) {
           reportItems.push([...row]);
           totalQty += row[4];
           totalAmt += row[6];
@@ -7315,6 +8543,8 @@ window.addEventListener('beforeprint', () => {
 // 9. TAB 4: Vendor Management (UserForm 2)
 // ==========================================
 function loadStoredVendors() {
+  loadVendorRenamesFromStorage();
+  ensureMaterialsLoaded();
   try {
     const saved = localStorage.getItem('SNW_VENDOR_CONTACTS');
     if (saved) {
@@ -7324,9 +8554,77 @@ function loadStoredVendors() {
     console.error('Failed to load localStorage vendors:', e);
   }
 
-  // Ensure all vendors from data exist in vendorContacts
+  let contactsModified = false;
+
+  // 1. Specific migration: 'S&W' -> 'S&W 진례공장'
+  if (vendorContacts['S&W']) {
+    const target = 'S&W 진례공장';
+    if (!vendorContacts[target]) {
+      vendorContacts[target] = vendorContacts['S&W'];
+    } else {
+      vendorContacts[target].contact = vendorContacts[target].contact || vendorContacts['S&W'].contact || '';
+      vendorContacts[target].phone = vendorContacts[target].phone || vendorContacts['S&W'].phone || '';
+      vendorContacts[target].remarks = vendorContacts[target].remarks || vendorContacts['S&W'].remarks || '';
+    }
+    delete vendorContacts['S&W'];
+    contactsModified = true;
+  }
+
+  // 2. Dynamic migration: apply userVendorRenames
+  if (userVendorRenames) {
+    Object.keys(userVendorRenames).forEach(oldKey => {
+      const newKey = userVendorRenames[oldKey];
+      if (oldKey !== newKey && vendorContacts[oldKey]) {
+        if (!vendorContacts[newKey]) {
+          vendorContacts[newKey] = vendorContacts[oldKey];
+        } else {
+          vendorContacts[newKey].contact = vendorContacts[newKey].contact || vendorContacts[oldKey].contact || '';
+          vendorContacts[newKey].phone = vendorContacts[newKey].phone || vendorContacts[oldKey].phone || '';
+          vendorContacts[newKey].remarks = vendorContacts[newKey].remarks || vendorContacts[oldKey].remarks || '';
+        }
+        delete vendorContacts[oldKey];
+        contactsModified = true;
+      }
+    });
+  }
+
+  // 3. Normalize any unnormalized keys in vendorContacts
+  Object.keys(vendorContacts).forEach(key => {
+    const norm = typeof normalizeVendorName === 'function' ? normalizeVendorName(key) : key;
+    if (norm && norm !== key) {
+      if (!vendorContacts[norm]) {
+        vendorContacts[norm] = vendorContacts[key];
+      } else {
+        vendorContacts[norm].contact = vendorContacts[norm].contact || vendorContacts[key].contact || '';
+        vendorContacts[norm].phone = vendorContacts[norm].phone || vendorContacts[key].phone || '';
+        vendorContacts[norm].remarks = vendorContacts[norm].remarks || vendorContacts[key].remarks || '';
+      }
+      delete vendorContacts[key];
+      contactsModified = true;
+    }
+  });
+
+  if (contactsModified) {
+    saveVendorsToStorage();
+  }
+
+  // Ensure all vendors from all 3 datasets exist in vendorContacts
+  const allDatasets = [
+    (allData && allData.length > 0) ? allData : (window.INITIAL_SUPPLIES_DATA || []),
+    (subData && subData.length > 0) ? subData : (window.INITIAL_SUB_MATERIALS_DATA || []),
+    (rawData && rawData.length > 0) ? rawData : (window.INITIAL_RAW_MATERIALS_DATA || [])
+  ];
+
   const set = new Set();
-  allData.forEach(r => { if (r[1]) set.add(r[1]); });
+  allDatasets.forEach(ds => {
+    ds.forEach(r => {
+      if (r && r[1]) {
+        const normV = typeof normalizeVendorName === 'function' ? normalizeVendorName(r[1]) : r[1].trim();
+        if (normV) set.add(normV);
+      }
+    });
+  });
+
   set.forEach(v => {
     if (!vendorContacts[v]) {
       vendorContacts[v] = { contact: '', phone: '', remarks: '' };
@@ -7343,94 +8641,385 @@ function saveVendorsToStorage() {
 }
 
 function renderVendorMgmtTable() {
-  const query = (document.getElementById('mgmtSearchInput').value || '').toLowerCase();
+  ensureMaterialsLoaded();
+  const searchInput = document.getElementById('mgmtSearchInput');
+  const query = (searchInput ? searchInput.value : '').toLowerCase().trim();
+  const catFilterEl = document.getElementById('mgmtCategorySelect');
+  const catFilter = catFilterEl ? catFilterEl.value : 'all';
   const tbody = document.getElementById('vendorMgmtTableBody');
+  if (!tbody) return;
   tbody.innerHTML = '';
 
-  // Compute total spent per vendor
+  const allDatasets = [
+    { name: '소모품', data: (allData && allData.length > 0) ? allData : (window.INITIAL_SUPPLIES_DATA || []) },
+    { name: '부자재', data: (subData && subData.length > 0) ? subData : (window.INITIAL_SUB_MATERIALS_DATA || []) },
+    { name: '원자재', data: (rawData && rawData.length > 0) ? rawData : (window.INITIAL_RAW_MATERIALS_DATA || []) }
+  ];
+
+  // Compute total spent, categories, and raw names per normalized vendor
   const vTotals = {};
-  allData.forEach(r => {
-    vTotals[r[1]] = (vTotals[r[1]] || 0) + r[6];
+  const vCategories = {};
+  const vRawNames = {};
+
+  allDatasets.forEach(dsObj => {
+    dsObj.data.forEach(r => {
+      if (!r || !r[1] || r[6] <= 0) return;
+      const rawV = r[1];
+      const normV = typeof normalizeVendorName === 'function' ? normalizeVendorName(rawV) : rawV.trim();
+
+      vTotals[normV] = (vTotals[normV] || 0) + r[6];
+      if (!vCategories[normV]) vCategories[normV] = new Set();
+      vCategories[normV].add(dsObj.name);
+
+      if (!vRawNames[normV]) vRawNames[normV] = new Set();
+      vRawNames[normV].add(rawV);
+    });
   });
 
-  const list = Object.keys(vendorContacts).sort().filter(v => v.toLowerCase().includes(query));
-  document.getElementById('mgmtVendorCount').textContent = Object.keys(vendorContacts).length;
+  // Ensure all vendors in vTotals exist in vendorContacts
+  Object.keys(vTotals).forEach(v => {
+    if (!vendorContacts[v]) {
+      vendorContacts[v] = { contact: '', phone: '', remarks: '' };
+    }
+  });
+
+  let list = Object.keys(vendorContacts).sort((a, b) => (vTotals[b] || 0) - (vTotals[a] || 0));
+
+  // Filter by category
+  if (catFilter !== 'all') {
+    list = list.filter(v => vCategories[v] && vCategories[v].has(catFilter));
+  }
+
+  // Filter by search query
+  if (query) {
+    list = list.filter(v => {
+      const info = vendorContacts[v] || {};
+      const rawList = vRawNames[v] ? Array.from(vRawNames[v]).join(' ') : '';
+      return v.toLowerCase().includes(query) ||
+             (info.contact && info.contact.toLowerCase().includes(query)) ||
+             (info.phone && info.phone.includes(query)) ||
+             (info.remarks && info.remarks.toLowerCase().includes(query)) ||
+             rawList.toLowerCase().includes(query);
+    });
+  }
+
+  const countEl = document.getElementById('mgmtVendorCount');
+  if (countEl) countEl.textContent = list.length;
 
   list.forEach(v => {
     const info = vendorContacts[v] || { contact: '', phone: '', remarks: '' };
+    const cats = vCategories[v] ? Array.from(vCategories[v]) : ['소모품'];
+    const catBadgesHtml = cats.map(c => {
+      let bStyle = 'background:#e2e8f0; color:#334155;';
+      if (c === '소모품') bStyle = 'background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe;';
+      else if (c === '부자재') bStyle = 'background:#fef3c7; color:#92400e; border:1px solid #fde68a;';
+      else if (c === '원자재') bStyle = 'background:#d1fae5; color:#065f46; border:1px solid #a7f3d0;';
+      return `<span class="badge" style="${bStyle} font-size:0.7rem; padding:1px 5px; border-radius:3px; margin-right:3px; font-weight:700;">${c}</span>`;
+    }).join('');
+
+    const rawList = vRawNames[v] ? Array.from(vRawNames[v]) : [v];
+    const mergeBadge = rawList.length > 1 ? `<span class="badge" style="background:#e0e7ff; color:#3730a3; font-size:0.68rem; padding:1px 4px; border-radius:3px; margin-left:4px;" title="통합된 표기 (${rawList.length}개): ${rawList.join(', ')}">통합 ${rawList.length}</span>` : '';
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><strong>${v}</strong></td>
-      <td>${info.contact || '<span style="color:#aaa;">-</span>'}</td>
-      <td>${info.phone || '<span style="color:#aaa;">-</span>'}</td>
-      <td style="color: var(--slate-600);">${info.remarks || ''}</td>
-      <td class="text-right" style="font-weight: 700; color: #1e3a8a;">${formatCurrency(vTotals[v] || 0)}</td>
+      <td>
+        <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+          <strong style="color:var(--text-primary); font-size:0.92rem;">${escapeHtml(v)}</strong>
+          ${mergeBadge}
+          <div style="margin-left: 4px; display:inline-flex; gap:2px;">${catBadgesHtml}</div>
+        </div>
+      </td>
+      <td>${info.contact ? escapeHtml(info.contact) : '<span style="color:#aaa;">-</span>'}</td>
+      <td>${info.phone ? escapeHtml(info.phone) : '<span style="color:#aaa;">-</span>'}</td>
+      <td style="color: var(--slate-600);">${info.remarks ? escapeHtml(info.remarks) : ''}</td>
+      <td class="text-right" style="font-weight: 700; color: #1e3a8a; font-size:0.92rem;">${formatCurrency(vTotals[v] || 0)}</td>
       <td class="text-center" style="white-space: nowrap;">
-        <button class="btn btn-sm btn-outline" onclick="editVendor('${v}')">수정</button>
-        <button class="btn btn-sm btn-outline" style="color: var(--danger); border-color: #fca5a5;" onclick="deleteVendor('${v}')">삭제</button>
+        <button class="btn btn-sm btn-outline" onclick="editVendor('${escapeHtml(v)}')">수정</button>
+        <button class="btn btn-sm btn-outline" style="color: var(--danger); border-color: #fca5a5; margin-left: 4px;" onclick="deleteVendor('${escapeHtml(v)}')">삭제</button>
       </td>
     `;
     tbody.appendChild(tr);
   });
+  populateEditVendorSelect();
+}
+
+function populateEditVendorSelect(currentVal) {
+  const sel = document.getElementById('editVendorSelect');
+  const countEl = document.getElementById('editVendorMatchCount');
+  if (!sel) return;
+  const oldVal = (currentVal !== undefined && currentVal !== null && currentVal !== '') ? currentVal : sel.value;
+  sel.innerHTML = '<option value="">-- 수정할 거래처를 선택하세요 --</option>';
+
+  const list = Object.keys(vendorContacts).sort((a, b) => a.localeCompare(b, 'ko'));
+  if (countEl) {
+    countEl.textContent = `(${list.length}개 업체)`;
+  }
+
+  list.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v;
+    opt.textContent = v;
+    if (v === oldVal) opt.selected = true;
+    sel.appendChild(opt);
+  });
+}
+
+function filterEditVendorDropdown(query) {
+  const q = (query || '').toLowerCase().trim();
+  const sel = document.getElementById('editVendorSelect');
+  const countEl = document.getElementById('editVendorMatchCount');
+  if (!sel) return;
+
+  const currentVal = sel.value;
+  sel.innerHTML = '<option value="">-- 수정할 거래처를 선택하세요 --</option>';
+
+  const allVendors = Object.keys(vendorContacts).sort((a, b) => a.localeCompare(b, 'ko'));
+  const filtered = q ? allVendors.filter(v => v.toLowerCase().includes(q)) : allVendors;
+
+  if (countEl) {
+    countEl.textContent = q ? `('${query}' 검색: ${filtered.length}개)` : `(${allVendors.length}개 업체)`;
+  }
+
+  filtered.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v;
+    opt.textContent = v;
+    if (v === currentVal) opt.selected = true;
+    sel.appendChild(opt);
+  });
+
+  // If filtered down to 1 match and search query is at least 1 char, auto-load that vendor!
+  if (filtered.length === 1 && q.length >= 1) {
+    sel.value = filtered[0];
+    loadVendorIntoEditFields(filtered[0]);
+  }
+}
+
+function switchVendorFormMode(mode) {
+  const editSec = document.getElementById('vendorEditSection');
+  const regSec = document.getElementById('vendorRegisterSection');
+  const editBtn = document.getElementById('vendorTabEditBtn');
+  const regBtn = document.getElementById('vendorTabRegBtn');
+
+  if (mode === 'edit') {
+    if (editSec) editSec.style.display = 'block';
+    if (regSec) regSec.style.display = 'none';
+    if (editBtn) {
+      editBtn.style.background = '#2563eb';
+      editBtn.style.color = '#fff';
+      editBtn.style.fontWeight = '700';
+    }
+    if (regBtn) {
+      regBtn.style.background = 'transparent';
+      regBtn.style.color = 'var(--slate-600, #475569)';
+      regBtn.style.fontWeight = '600';
+    }
+  } else {
+    if (editSec) editSec.style.display = 'none';
+    if (regSec) regSec.style.display = 'block';
+    if (regBtn) {
+      regBtn.style.background = '#059669';
+      regBtn.style.color = '#fff';
+      regBtn.style.fontWeight = '700';
+    }
+    if (editBtn) {
+      editBtn.style.background = 'transparent';
+      editBtn.style.color = 'var(--slate-600, #475569)';
+      editBtn.style.fontWeight = '600';
+    }
+    const nameInput = document.getElementById('regFormVendorName');
+    if (nameInput) nameInput.focus();
+  }
+}
+
+function loadVendorIntoEditFields(v) {
+  const origEl = document.getElementById('editVendorOriginalName');
+  const nameEl = document.getElementById('editFormVendorName');
+  const contactEl = document.getElementById('editFormContactPerson');
+  const phoneEl = document.getElementById('editFormContactPhone');
+  const remarksEl = document.getElementById('editFormRemarks');
+
+  if (!v) {
+    if (origEl) origEl.value = '';
+    if (nameEl) nameEl.value = '';
+    if (contactEl) contactEl.value = '';
+    if (phoneEl) phoneEl.value = '';
+    if (remarksEl) remarksEl.value = '';
+    return;
+  }
+
+  const info = vendorContacts[v] || { contact: '', phone: '', remarks: '' };
+  if (origEl) origEl.value = v;
+  if (nameEl) nameEl.value = v;
+  if (contactEl) contactEl.value = info.contact || '';
+  if (phoneEl) phoneEl.value = info.phone || '';
+  if (remarksEl) remarksEl.value = info.remarks || '';
+}
+
+function onVendorEditSelectChange() {
+  const sel = document.getElementById('editVendorSelect');
+  const v = sel ? sel.value : '';
+  loadVendorIntoEditFields(v);
+  if (v) {
+    const nameEl = document.getElementById('editFormVendorName');
+    if (nameEl) nameEl.focus();
+  }
 }
 
 function editVendor(v) {
-  const info = vendorContacts[v] || {};
-  document.getElementById('vendorFormTitle').textContent = `✏️ 거래처 정보 수정: ${v}`;
-  document.getElementById('editVendorOriginalName').value = v;
-  document.getElementById('formVendorName').value = v;
-  document.getElementById('formContactPerson').value = info.contact || '';
-  document.getElementById('formContactPhone').value = info.phone || '';
-  document.getElementById('formRemarks').value = info.remarks || '';
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  switchVendorFormMode('edit');
+  const searchInput = document.getElementById('editVendorSearchInput');
+  if (searchInput) searchInput.value = '';
+  populateEditVendorSelect(v);
+  loadVendorIntoEditFields(v);
+
+  const card = document.getElementById('vendorActionCard');
+  if (card) {
+    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    card.style.borderColor = '#2563eb';
+    card.style.boxShadow = '0 0 0 3px rgba(37, 99, 235, 0.35)';
+    setTimeout(() => {
+      card.style.borderColor = 'var(--card-border)';
+      card.style.boxShadow = 'var(--card-shadow)';
+    }, 1800);
+  }
+
+  const nameEl = document.getElementById('editFormVendorName');
+  if (nameEl) nameEl.focus();
 }
 
-function resetVendorForm() {
-  document.getElementById('vendorFormTitle').textContent = '✨ 거래처 신규 등록';
-  document.getElementById('editVendorOriginalName').value = '';
-  document.getElementById('formVendorName').value = '';
-  document.getElementById('formContactPerson').value = '';
-  document.getElementById('formContactPhone').value = '';
-  document.getElementById('formRemarks').value = '';
+function cancelVendorEdit() {
+  const searchInput = document.getElementById('editVendorSearchInput');
+  if (searchInput) searchInput.value = '';
+  populateEditVendorSelect('');
+  loadVendorIntoEditFields('');
 }
 
-function saveVendorForm() {
-  const origName = document.getElementById('editVendorOriginalName').value.trim();
-  const name = document.getElementById('formVendorName').value.trim();
-  const contact = document.getElementById('formContactPerson').value.trim();
-  const phone = document.getElementById('formContactPhone').value.trim();
-  const remarks = document.getElementById('formRemarks').value.trim();
+function submitVendorUpdate() {
+  const origEl = document.getElementById('editVendorOriginalName');
+  const origName = (origEl ? origEl.value : '').trim();
+  const nameEl = document.getElementById('editFormVendorName');
+  const newName = (nameEl ? nameEl.value : '').trim();
+
+  if (!newName) {
+    alert('업체명을 입력해주세요.');
+    if (nameEl) nameEl.focus();
+    return;
+  }
+
+  const contact = (document.getElementById('editFormContactPerson')?.value || '').trim();
+  const phone = (document.getElementById('editFormContactPhone')?.value || '').trim();
+  const remarks = (document.getElementById('editFormRemarks')?.value || '').trim();
+
+  // If renaming to an existing vendor name (different from origName)
+  if (origName && newName !== origName && vendorContacts[newName]) {
+    const overwrite = confirm(`'${newName}' 업체는 이미 등록되어 있습니다.\n해당 업체의 정보를 덮어쓰시겠습니까?`);
+    if (!overwrite) return;
+  }
+
+  // If renaming: remove old key and update persistent custom rename mappings
+  if (origName && newName !== origName) {
+    delete vendorContacts[origName];
+    // Update chained aliases
+    if (userVendorRenames) {
+      for (const k in userVendorRenames) {
+        if (userVendorRenames[k] === origName) {
+          userVendorRenames[k] = newName;
+        }
+      }
+      userVendorRenames[origName] = newName;
+      saveVendorRenamesToStorage();
+    }
+  }
+
+  vendorContacts[newName] = { contact, phone, remarks };
+  saveVendorsToStorage();
+
+  if (origEl) origEl.value = newName;
+
+  renderVendorMgmtTable();
+  if (typeof renderVendorSidebar === 'function') renderVendorSidebar();
+  if (typeof renderPivotView === 'function') renderPivotView();
+
+  populateEditVendorSelect(newName);
+  loadVendorIntoEditFields(newName);
+
+  if (origName && newName !== origName) {
+    showToast(`'${origName}' 업체명이 '${newName}'(으)로 변경 저장되었습니다.`, 'success');
+  } else {
+    showToast(`'${newName}' 거래처 정보가 성공적으로 수정되었습니다.`, 'success');
+  }
+}
+
+function submitVendorRegister() {
+  const nameEl = document.getElementById('regFormVendorName');
+  const name = nameEl ? nameEl.value.trim() : '';
 
   if (!name) {
-    alert('업체명을 입력해주세요.');
-    document.getElementById('formVendorName').focus();
+    alert('등록할 업체명을 입력해주세요.');
+    if (nameEl) nameEl.focus();
     return;
   }
 
-  // Check duplicate if adding or changing name
-  if ((!origName || origName !== name) && vendorContacts[name]) {
-    alert('이미 등록된 업체명입니다.');
+  const normV = typeof normalizeVendorName === 'function' ? normalizeVendorName(name) : name;
+  if (vendorContacts[name] || vendorContacts[normV]) {
+    const existing = vendorContacts[name] ? name : normV;
+    const goEdit = confirm(`'${existing}' 업체는 이미 등록되어 있습니다.\n\n해당 업체의 정보를 수정하시겠습니까?`);
+    if (goEdit) {
+      editVendor(existing);
+    }
     return;
   }
 
-  if (origName && origName !== name) {
-    delete vendorContacts[origName];
-  }
+  const contact = (document.getElementById('regFormContactPerson')?.value || '').trim();
+  const phone = (document.getElementById('regFormContactPhone')?.value || '').trim();
+  const remarks = (document.getElementById('regFormRemarks')?.value || '').trim();
 
   vendorContacts[name] = { contact, phone, remarks };
   saveVendorsToStorage();
-  resetVendorForm();
+  resetRegisterForm();
   renderVendorMgmtTable();
-  renderVendorSidebar();
-  showToast('거래처 정보가 저장되었습니다.', 'success');
+  if (typeof renderVendorSidebar === 'function') renderVendorSidebar();
+  showToast(`'${name}' 거래처가 신규 등록되었습니다.`, 'success');
+}
+
+function resetRegisterForm() {
+  if (document.getElementById('regFormVendorName')) document.getElementById('regFormVendorName').value = '';
+  if (document.getElementById('regFormContactPerson')) document.getElementById('regFormContactPerson').value = '';
+  if (document.getElementById('regFormContactPhone')) document.getElementById('regFormContactPhone').value = '';
+  if (document.getElementById('regFormRemarks')) document.getElementById('regFormRemarks').value = '';
+}
+
+function resetVendorForm() {
+  resetRegisterForm();
+  cancelVendorEdit();
+}
+
+function saveVendorForm() {
+  const regSec = document.getElementById('vendorRegisterSection');
+  if (regSec && regSec.style.display !== 'none') {
+    submitVendorRegister();
+  } else {
+    submitVendorUpdate();
+  }
 }
 
 function deleteVendor(v) {
   if (confirm(`'${v}' 거래처를 삭제하시겠습니까?\n(기존 거래 내역 데이터는 유지됩니다.)`)) {
     delete vendorContacts[v];
+    if (userVendorRenames && userVendorRenames[v]) {
+      delete userVendorRenames[v];
+      saveVendorRenamesToStorage();
+    }
     saveVendorsToStorage();
     renderVendorMgmtTable();
-    renderVendorSidebar();
+    if (typeof renderVendorSidebar === 'function') renderVendorSidebar();
+    if (typeof renderPivotView === 'function') renderPivotView();
+    const sel = document.getElementById('editVendorSelect');
+    if (sel && sel.value === v) {
+      cancelVendorEdit();
+    }
+    showToast(`'${v}' 거래처가 삭제되었습니다.`, 'info');
   }
 }
 
@@ -7709,6 +9298,7 @@ async function applyPastedData(mode) {
   
   loadStoredVendors();
   initDateFilters();
+  populateSuppliesDatalists(true);
   applyFilters();
   renderVendorSidebar();
   renderPivotView();
@@ -7785,11 +9375,11 @@ function updateSyncInfo() {
   const rowCountEl = document.getElementById('syncTotalRows');
   if (rowCountEl) {
     const totalAll = (allData.length || 0) + (subData.length || 0) + (rawData.length || 0);
-    rowCountEl.innerHTML = ${formatNumber(totalAll)}건 <div style="font-size:0.75rem; color:var(--text-muted); font-weight:normal; margin-top:4px;">소모품 건 / 부자재 건 / 원자재 건</div>;
+    rowCountEl.innerHTML = `${formatNumber(totalAll)}건 <div style="font-size:0.75rem; color:var(--text-muted); font-weight:normal; margin-top:4px;">소모품 ${formatNumber(allData.length)}건 / 부자재 ${formatNumber(subData.length)}건 / 원자재 ${formatNumber(rawData.length)}건</div>`;
   }
   const headerTotal = (allData.length || 0) + (subData.length || 0) + (rawData.length || 0);
   const headerEl = document.getElementById('headerTotalCount');
-  if (headerEl) headerEl.textContent = 통합 건 로드됨;
+  if (headerEl) headerEl.textContent = `통합 ${formatNumber(headerTotal)}건 로드됨`;
   
   let minD = '9999-99-99';
   let maxD = '0000-00-00';
@@ -7832,6 +9422,7 @@ async function resetToInitialData() {
   }
   loadStoredVendors();
   initDateFilters();
+  populateSuppliesDatalists(true);
   applyFilters();
   renderVendorSidebar();
   renderPivotView();
@@ -7874,10 +9465,11 @@ function exportFullDataToCSV() {
 }
 
 function exportItemHistoryToCSV() {
-  const headers = ['입고일자', '수량', '단가', '공급가액', '비고'];
-  const rows = currentItemHistory.map(r => [r[0], r[4], r[5], r[6], r[7]]);
+  const headers = ['입고일자', '공급업체', '수량', '단가', '공급가액', '비고'];
+  const rows = currentItemHistory.map(r => [r[0], r[1], r[4], r[5], r[6], r[7] || '']);
   const itemTitle = document.getElementById('modalItemFullName').textContent.replace(/[\\/:*?"<>|]/g, '_');
-  exportToCSV(headers, rows, `품목이력_${itemTitle}_${new Date().toISOString().substring(0,10)}.csv`);
+  const vendorPrefix = currentDetailVendor ? (currentDetailVendor + '_') : '';
+  exportToCSV(headers, rows, `품목이력_${vendorPrefix}${itemTitle}_${new Date().toISOString().substring(0,10)}.csv`);
   showToast('품목 이력 CSV 파일이 다운로드되었습니다.', 'success');
 }
 
@@ -7909,26 +9501,54 @@ function exportReportToCSV() {
 }
 
 function exportVendorsToCSV() {
-  const headers = ['업체명', '담당자', '연락처', '비고'];
+  ensureMaterialsLoaded();
+  const headers = ['업체명', '취급구분', '담당자', '연락처', '비고', '누적매입액'];
+  const allDatasets = [
+    { name: '소모품', data: (allData && allData.length > 0) ? allData : (window.INITIAL_SUPPLIES_DATA || []) },
+    { name: '부자재', data: (subData && subData.length > 0) ? subData : (window.INITIAL_SUB_MATERIALS_DATA || []) },
+    { name: '원자재', data: (rawData && rawData.length > 0) ? rawData : (window.INITIAL_RAW_MATERIALS_DATA || []) }
+  ];
+
+  const vTotals = {};
+  const vCategories = {};
+  allDatasets.forEach(dsObj => {
+    dsObj.data.forEach(r => {
+      if (!r || !r[1] || r[6] <= 0) return;
+      const normV = typeof normalizeVendorName === 'function' ? normalizeVendorName(r[1]) : r[1].trim();
+      vTotals[normV] = (vTotals[normV] || 0) + r[6];
+      if (!vCategories[normV]) vCategories[normV] = new Set();
+      vCategories[normV].add(dsObj.name);
+    });
+  });
+
   const rows = Object.keys(vendorContacts).sort().map(v => {
     const info = vendorContacts[v] || {};
-    return [v, info.contact || '', info.phone || '', info.remarks || ''];
+    const cats = vCategories[v] ? Array.from(vCategories[v]).join('/') : '소모품';
+    return [v, cats, info.contact || '', info.phone || '', info.remarks || '', vTotals[v] || 0];
   });
-  exportToCSV(headers, rows, `거래처목록_${new Date().toISOString().substring(0,10)}.csv`);
-  showToast('거래처 목록 CSV 파일이 다운로드되었습니다.', 'success');
+  exportToCSV(headers, rows, `거래처목록_통합_${new Date().toISOString().substring(0,10)}.csv`);
+  showToast('통합 거래처 목록 CSV 파일이 다운로드되었습니다.', 'success');
 }
 
 function exportPivotToCSV() {
+  ensureMaterialsLoaded();
+  const catEl = document.getElementById('pivotCategorySelect');
+  const cat = catEl ? catEl.value : 'all';
   const periodMonths = parseInt(document.getElementById('pivotPeriodSelect').value, 10);
+  const currentDataset = getPivotDataset(cat);
+
   const vendorMonthMap = {};
   const allMonthsSet = new Set();
   const vendorSet = new Set();
 
-  for (let i = 0; i < allData.length; i++) {
-    const d = allData[i][0];
-    const v = allData[i][1];
-    const amt = allData[i][6];
-    if (!d || !v || amt <= 0) continue;
+  for (let i = 0; i < currentDataset.length; i++) {
+    const row = currentDataset[i];
+    const d = row[0];
+    const rawV = row[1];
+    const amt = row[6];
+    if (!d || !rawV || amt <= 0) continue;
+
+    const v = normalizeVendorName(rawV);
     const ym = d.substring(0, 7);
     allMonthsSet.add(ym);
     vendorSet.add(v);
@@ -7937,7 +9557,7 @@ function exportPivotToCSV() {
 
   const sortedMonths = Array.from(allMonthsSet).sort().reverse();
   const displayMonths = periodMonths >= 999 ? sortedMonths : sortedMonths.slice(0, periodMonths);
-  const headers = ['업체명', ...displayMonths, '합계'];
+  const headers = ['업체명(유사명칭통합)', ...displayMonths, '기간 합계'];
 
   const rows = Array.from(vendorSet).sort().map(v => {
     let sum = 0;
@@ -7951,8 +9571,10 @@ function exportPivotToCSV() {
     return r;
   });
 
-  exportToCSV(headers, rows, `거래처별매입추이_${new Date().toISOString().substring(0,10)}.csv`);
-  showToast('매입추이 CSV 파일이 다운로드되었습니다.', 'success');
+  const catNames = { all: '전체통합', consumables: '소모품', submaterials: '부자재', rawmaterials: '원자재' };
+  const catName = catNames[cat] || '통합';
+  exportToCSV(headers, rows, `거래처별매입추이_${catName}_${new Date().toISOString().substring(0,10)}.csv`);
+  showToast(`[${catName}] 매입추이 CSV 파일이 다운로드되었습니다.`, 'success');
 }
 
 function exportToCSV(headers, rows, filename) {
@@ -8112,10 +9734,10 @@ function showToast(message, type) {
 // ==========================================
 function initKeyboardShortcuts() {
   document.addEventListener('keydown', (e) => {
-    // Ctrl+K → focus search input
+    // Ctrl+K → focus search input (소모품 품명 검색창)
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
       e.preventDefault();
-      const searchInput = document.getElementById('mainSearchInput');
+      const searchInput = document.getElementById('suppliesSearchItem') || document.getElementById('mainSearchInput');
       if (searchInput) {
         // Switch to search tab if not active
         const searchTab = document.querySelector('[data-tab="tab-search"]');
@@ -8763,8 +10385,10 @@ function syncCategorySwitcher(cat) {
     rowCount = src.length;
     avgPrice = rowCount > 0 ? Math.round(totalAmt / (totalQty || 1)) : 0;
 
-    const elAmt = document.getElementById('kpiTotalAmount'); if (elAmt) elAmt.textContent = formatCurrency(totalAmt);
+    const elAmt = document.getElementById('kpiTotalAmount'); 
+    if (elAmt) animateValue(elAmt, null, totalAmt, 750, '원', formatNumber);
     const elAmtSub = document.getElementById('kpiTotalAmountSub'); if (elAmtSub) elAmtSub.textContent = '전체 누적 매입액 (소모품)';
+    const elIcon = document.getElementById('kpiTotalIcon'); if (elIcon) elIcon.className = 'stat-icon icon-blue';
     const elQty = document.getElementById('kpiTotalQty'); if (elQty) elQty.textContent = formatNumber(totalQty) + '개';
     const elQtySub = document.getElementById('kpiTotalQtySub'); if (elQtySub) elQtySub.textContent = '입고된 소모품 수량';
     const elAvg = document.getElementById('kpiAvgPrice'); if (elAvg) elAvg.textContent = formatCurrency(avgPrice);
@@ -8781,8 +10405,10 @@ function syncCategorySwitcher(cat) {
     rowCount = src.length;
     avgPrice = rowCount > 0 ? Math.round(totalAmt / (totalQty || 1)) : 0;
 
-    const elAmt = document.getElementById('kpiTotalAmount'); if (elAmt) elAmt.textContent = formatCurrency(totalAmt);
+    const elAmt = document.getElementById('kpiTotalAmount'); 
+    if (elAmt) animateValue(elAmt, null, totalAmt, 750, '원', formatNumber);
     const elAmtSub = document.getElementById('kpiTotalAmountSub'); if (elAmtSub) elAmtSub.textContent = '전체 누적 매입액 (부자재)';
+    const elIcon = document.getElementById('kpiTotalIcon'); if (elIcon) elIcon.className = 'stat-icon icon-amber';
     const elQty = document.getElementById('kpiTotalQty'); if (elQty) elQty.textContent = formatNumber(totalQty) + '개';
     const elQtySub = document.getElementById('kpiTotalQtySub'); if (elQtySub) elQtySub.textContent = '입고된 부자재 수량';
     const elAvg = document.getElementById('kpiAvgPrice'); if (elAvg) elAvg.textContent = formatCurrency(avgPrice);
@@ -8799,8 +10425,10 @@ function syncCategorySwitcher(cat) {
     rowCount = src.length;
     avgPrice = rowCount > 0 ? Math.round(totalAmt / (totalQty || 1)) : 0;
 
-    const elAmt = document.getElementById('kpiTotalAmount'); if (elAmt) elAmt.textContent = formatCurrency(totalAmt);
+    const elAmt = document.getElementById('kpiTotalAmount'); 
+    if (elAmt) animateValue(elAmt, null, totalAmt, 750, '원', formatNumber);
     const elAmtSub = document.getElementById('kpiTotalAmountSub'); if (elAmtSub) elAmtSub.textContent = '전체 누적 매입액 (원자재)';
+    const elIcon = document.getElementById('kpiTotalIcon'); if (elIcon) elIcon.className = 'stat-icon icon-emerald';
     const elQty = document.getElementById('kpiTotalQty'); if (elQty) elQty.textContent = formatNumber(totalQty) + ' KG';
     const elQtySub = document.getElementById('kpiTotalQtySub'); if (elQtySub) elQtySub.textContent = '입고된 원자재 중량';
     const elAvg = document.getElementById('kpiAvgPrice'); if (elAvg) elAvg.textContent = formatCurrency(avgPrice) + ' /kg';
@@ -8843,6 +10471,7 @@ function initSubMaterials() {
   } else {
     subData = [];
   }
+  try { assignPriceTrends(subData); } catch (e) { console.error('assignPriceTrends error:', e); }
   populateSubDatalists();
   applySubFilters();
   renderSubVendorSidebar();
@@ -8936,7 +10565,7 @@ function applySubFilters() {
     const rem = row[7] || '';
     const mat = row[8] || '';
 
-    if (selectedSubVendor && v !== selectedSubVendor) continue;
+    if (selectedSubVendor && v !== selectedSubVendor && (typeof normalizeVendorName === 'function' ? normalizeVendorName(v) !== selectedSubVendor : true)) continue;
     if (vInput && !v.toLowerCase().includes(vInput)) continue;
     if (itemInput && !item.toLowerCase().includes(itemInput)) continue;
     if (matInput && !mat.toLowerCase().includes(matInput)) continue;
@@ -9046,14 +10675,14 @@ function renderSubTable() {
     const matBadge = row[8] ? `<span class="badge" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-size:0.75rem; font-weight:700;">${escapeHtml(row[8])}</span>` : '<span style="color:#aaa;">-</span>';
     
     rowsHtml.push(`
-      <tr>
+      <tr onclick="openItemDetail('${escapeHtml(row[1])}', '${escapeHtml(row[2])}', '${escapeHtml(row[3] || '')}', 'submaterials', '${escapeHtml(row[8] || '')}')" style="cursor: pointer;">
         <td class="col-date" style="text-align: center; font-size:0.8rem;">${row[0]}</td>
         <td class="col-vendor" style="font-weight: 600;">${escapeHtml(row[1])}</td>
         <td style="font-weight: 700; color: var(--text-primary);">${escapeHtml(row[2])}</td>
         <td style="text-align: center;">${matBadge}</td>
         <td style="font-size: 0.82rem; color: var(--text-secondary);">${row[3] ? escapeHtml(row[3]) : '<span style="color:#aaa;">-</span>'}</td>
         <td style="text-align: right; font-weight: 600;">${formatNumber(row[4])}</td>
-        <td style="text-align: right; color: var(--text-secondary);">${formatCurrency(row[5])}</td>
+        <td style="text-align: right; font-weight: 600;">${formatCurrency(row[5])} ${renderPriceBadge(row._trend)}</td>
         <td style="text-align: right; font-weight: 700; color: #b45309;">${formatCurrency(row[6])}</td>
         <td style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(row[7] || '')}</td>
       </tr>
@@ -9101,14 +10730,20 @@ function changeSubPage(page) {
   if (page < 1 || page > totalPages) return;
   subCurrentPage = page;
   renderSubTable();
+  const container = document.querySelector('#tab-sub .table-container');
+  if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
   const tableEl = document.getElementById('subMaterialsTable');
-  if (tableEl) tableEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (tableEl) {
+    const rect = tableEl.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    window.scrollTo({ top: Math.max(0, rect.top + scrollTop - 80), behavior: 'smooth' });
+  }
 }
 
 function selectSubVendor(vendor) {
-  selectedSubVendor = vendor;
+  selectedSubVendor = vendor ? normalizeVendorName(vendor) : '';
   const vInput = document.getElementById('subSearchVendor');
-  if (vInput) vInput.value = vendor;
+  if (vInput) vInput.value = selectedSubVendor;
   subCurrentPage = 1;
   applySubFilters();
   renderSubVendorSidebar();
@@ -9117,10 +10752,15 @@ function selectSubVendor(vendor) {
 function renderSubVendorSidebar() {
   const vAmounts = {};
   const vCounts = {};
+  const vRawMap = {};
   for (let i = 0; i < subData.length; i++) {
-    const v = subData[i][1];
-    vAmounts[v] = (vAmounts[v] || 0) + (subData[i][6] || 0);
-    vCounts[v] = (vCounts[v] || 0) + 1;
+    const rawV = subData[i][1] || '';
+    const normV = normalizeVendorName(rawV);
+    if (!normV) continue;
+    vAmounts[normV] = (vAmounts[normV] || 0) + (subData[i][6] || 0);
+    vCounts[normV] = (vCounts[normV] || 0) + 1;
+    if (!vRawMap[normV]) vRawMap[normV] = new Set();
+    vRawMap[normV].add(rawV);
   }
 
   const vendors = Object.keys(vAmounts).sort((a, b) => vAmounts[b] - vAmounts[a]);
@@ -9136,8 +10776,15 @@ function renderSubVendorSidebar() {
   </li>`;
 
   vendors.forEach(v => {
+    const rawList = Array.from(vRawMap[v] || [v]);
+    const isMerged = rawList.length > 1;
+    const mergeBadge = isMerged ? `<span style="font-size: 0.68rem; color: #b45309; background: #fef3c7; padding: 1px 5px; border-radius: 4px; font-weight: 600; margin-left: 4px;" title="통합된 원본 명칭 (${rawList.length}개): ${rawList.join(', ')}">통합 ${rawList.length}</span>` : '';
+
     html += `<li class="vendor-item ${selectedSubVendor === v ? 'active' : ''}" onclick="selectSubVendor('${escapeHtml(v)}')">
-      <span>${escapeHtml(v)}</span>
+      <span style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        <span style="overflow: hidden; text-overflow: ellipsis;">${escapeHtml(v)}</span>
+        ${mergeBadge}
+      </span>
       <span class="vendor-badge">${formatCompactCurrency(vAmounts[v])}</span>
     </li>`;
   });
@@ -9154,19 +10801,29 @@ function renderSubVendorSidebar() {
 
     const itemAmts = {};
     for (let i = 0; i < subData.length; i++) {
-      if (subData[i][1] === selectedSubVendor) {
-        const itemKey = subData[i][2] + (subData[i][3] ? ' (' + subData[i][3] + ')' : '');
-        itemAmts[itemKey] = (itemAmts[itemKey] || 0) + (subData[i][6] || 0);
+      const rawV = subData[i][1] || '';
+      const normV = normalizeVendorName(rawV);
+      if (normV === selectedSubVendor || rawV === selectedSubVendor) {
+        const rawItem = subData[i][2];
+        const rawSpec = subData[i][3] || '';
+        const itemKey = rawItem + (rawSpec ? ' (' + rawSpec + ')' : '');
+        if (!itemAmts[itemKey]) {
+          itemAmts[itemKey] = { amount: 0, item: rawItem, spec: rawSpec, material: subData[i][8] || '' };
+        }
+        itemAmts[itemKey].amount += (subData[i][6] || 0);
       }
     }
-    const topItems = Object.keys(itemAmts).sort((a, b) => itemAmts[b] - itemAmts[a]).slice(0, 10);
-    majorList.innerHTML = topItems.map((item, idx) => `
-      <li class="major-item">
-        <span class="major-rank">${idx + 1}</span>
-        <span class="major-name" title="${escapeHtml(item)}">${escapeHtml(item)}</span>
-        <span class="major-amount">${formatCompactCurrency(itemAmts[item])}</span>
-      </li>
-    `).join('');
+    const topItems = Object.keys(itemAmts).sort((a, b) => itemAmts[b].amount - itemAmts[a].amount).slice(0, 10);
+    majorList.innerHTML = topItems.map((k, idx) => {
+      const obj = itemAmts[k];
+      return `
+        <li class="major-item" onclick="openItemDetail('${escapeHtml(selectedSubVendor)}', '${escapeHtml(obj.item)}', '${escapeHtml(obj.spec)}', 'submaterials', '${escapeHtml(obj.material || '')}')" style="cursor: pointer;">
+          <span class="major-rank">${idx + 1}</span>
+          <span class="major-name" title="${escapeHtml(k)}">${escapeHtml(k)}</span>
+          <span class="major-amount">${formatCompactCurrency(obj.amount)}</span>
+        </li>
+      `;
+    }).join('');
   } else if (majorSec) {
     majorSec.style.display = 'none';
   }
@@ -9207,6 +10864,7 @@ function initRawMaterials() {
   } else {
     rawData = [];
   }
+  try { assignPriceTrends(rawData); } catch (e) { console.error('assignPriceTrends error:', e); }
   populateRawDatalists();
   applyRawFilters();
   renderRawVendorSidebar();
@@ -9300,7 +10958,7 @@ function applyRawFilters() {
     const rem = row[7] || '';
     const mat = row[8] || '';
 
-    if (selectedRawVendor && v !== selectedRawVendor) continue;
+    if (selectedRawVendor && v !== selectedRawVendor && (typeof normalizeVendorName === 'function' ? normalizeVendorName(v) !== selectedRawVendor : true)) continue;
     if (vInput && !v.toLowerCase().includes(vInput)) continue;
     if (itemInput && !item.toLowerCase().includes(itemInput)) continue;
     if (matInput && !mat.toLowerCase().includes(matInput)) continue;
@@ -9406,14 +11064,14 @@ function renderRawTable() {
     const matBadge = row[8] ? `<span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:0.75rem; font-weight:700;">${escapeHtml(row[8])}</span>` : '<span style="color:#aaa;">-</span>';
     
     rowsHtml.push(`
-      <tr>
+      <tr onclick="openItemDetail('${escapeHtml(row[1])}', '${escapeHtml(row[2])}', '${escapeHtml(row[3] || '')}', 'rawmaterials', '${escapeHtml(row[8] || '')}')" style="cursor: pointer;">
         <td class="col-date" style="text-align: center; font-size:0.8rem;">${row[0]}</td>
         <td class="col-vendor" style="font-weight: 600;">${escapeHtml(row[1])}</td>
         <td style="font-weight: 700; color: var(--text-primary);">${escapeHtml(row[2])}</td>
         <td style="text-align: center;">${matBadge}</td>
         <td style="font-size: 0.82rem; color: var(--text-secondary);">${row[3] ? escapeHtml(row[3]) : '<span style="color:#aaa;">-</span>'}</td>
         <td style="text-align: right; font-weight: 600;">${formatNumber(row[4])}</td>
-        <td style="text-align: right; color: var(--text-secondary);">${formatCurrency(row[5])}</td>
+        <td style="text-align: right; font-weight: 600;">${formatCurrency(row[5])} ${renderPriceBadge(row._trend)}</td>
         <td style="text-align: right; font-weight: 700; color: #059669;">${formatCurrency(row[6])}</td>
         <td style="font-size: 0.78rem; color: var(--text-muted);">${escapeHtml(row[7] || '')}</td>
       </tr>
@@ -9461,14 +11119,20 @@ function changeRawPage(page) {
   if (page < 1 || page > totalPages) return;
   rawCurrentPage = page;
   renderRawTable();
+  const container = document.querySelector('#tab-raw .table-container');
+  if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
   const tableEl = document.getElementById('rawMaterialsTable');
-  if (tableEl) tableEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (tableEl) {
+    const rect = tableEl.getBoundingClientRect();
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    window.scrollTo({ top: Math.max(0, rect.top + scrollTop - 80), behavior: 'smooth' });
+  }
 }
 
 function selectRawVendor(vendor) {
-  selectedRawVendor = vendor;
+  selectedRawVendor = vendor ? normalizeVendorName(vendor) : '';
   const vInput = document.getElementById('rawSearchVendor');
-  if (vInput) vInput.value = vendor;
+  if (vInput) vInput.value = selectedRawVendor;
   rawCurrentPage = 1;
   applyRawFilters();
   renderRawVendorSidebar();
@@ -9477,10 +11141,15 @@ function selectRawVendor(vendor) {
 function renderRawVendorSidebar() {
   const vAmounts = {};
   const vCounts = {};
+  const vRawMap = {};
   for (let i = 0; i < rawData.length; i++) {
-    const v = rawData[i][1];
-    vAmounts[v] = (vAmounts[v] || 0) + (rawData[i][6] || 0);
-    vCounts[v] = (vCounts[v] || 0) + 1;
+    const rawV = rawData[i][1] || '';
+    const normV = normalizeVendorName(rawV);
+    if (!normV) continue;
+    vAmounts[normV] = (vAmounts[normV] || 0) + (rawData[i][6] || 0);
+    vCounts[normV] = (vCounts[normV] || 0) + 1;
+    if (!vRawMap[normV]) vRawMap[normV] = new Set();
+    vRawMap[normV].add(rawV);
   }
 
   const vendors = Object.keys(vAmounts).sort((a, b) => vAmounts[b] - vAmounts[a]);
@@ -9496,8 +11165,15 @@ function renderRawVendorSidebar() {
   </li>`;
 
   vendors.forEach(v => {
+    const rawList = Array.from(vRawMap[v] || [v]);
+    const isMerged = rawList.length > 1;
+    const mergeBadge = isMerged ? `<span style="font-size: 0.68rem; color: #047857; background: #d1fae5; padding: 1px 5px; border-radius: 4px; font-weight: 600; margin-left: 4px;" title="통합된 원본 명칭 (${rawList.length}개): ${rawList.join(', ')}">통합 ${rawList.length}</span>` : '';
+
     html += `<li class="vendor-item ${selectedRawVendor === v ? 'active' : ''}" onclick="selectRawVendor('${escapeHtml(v)}')">
-      <span>${escapeHtml(v)}</span>
+      <span style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+        <span style="overflow: hidden; text-overflow: ellipsis;">${escapeHtml(v)}</span>
+        ${mergeBadge}
+      </span>
       <span class="vendor-badge">${formatCompactCurrency(vAmounts[v])}</span>
     </li>`;
   });
@@ -9514,19 +11190,29 @@ function renderRawVendorSidebar() {
 
     const itemAmts = {};
     for (let i = 0; i < rawData.length; i++) {
-      if (rawData[i][1] === selectedRawVendor) {
-        const itemKey = rawData[i][2] + (rawData[i][8] ? ' [' + rawData[i][8] + ']' : '') + (rawData[i][3] ? ' (' + rawData[i][3] + ')' : '');
-        itemAmts[itemKey] = (itemAmts[itemKey] || 0) + (rawData[i][6] || 0);
+      const rawV = rawData[i][1] || '';
+      const normV = normalizeVendorName(rawV);
+      if (normV === selectedRawVendor || rawV === selectedRawVendor) {
+        const rawItem = rawData[i][2];
+        const rawSpec = rawData[i][3] || '';
+        const itemKey = rawItem + (rawData[i][8] ? ' [' + rawData[i][8] + ']' : '') + (rawSpec ? ' (' + rawSpec + ')' : '');
+        if (!itemAmts[itemKey]) {
+          itemAmts[itemKey] = { amount: 0, item: rawItem, spec: rawSpec, material: rawData[i][8] || '' };
+        }
+        itemAmts[itemKey].amount += (rawData[i][6] || 0);
       }
     }
-    const topItems = Object.keys(itemAmts).sort((a, b) => itemAmts[b] - itemAmts[a]).slice(0, 10);
-    majorList.innerHTML = topItems.map((item, idx) => `
-      <li class="major-item">
-        <span class="major-rank">${idx + 1}</span>
-        <span class="major-name" title="${escapeHtml(item)}">${escapeHtml(item)}</span>
-        <span class="major-amount">${formatCompactCurrency(itemAmts[item])}</span>
-      </li>
-    `).join('');
+    const topItems = Object.keys(itemAmts).sort((a, b) => itemAmts[b].amount - itemAmts[a].amount).slice(0, 10);
+    majorList.innerHTML = topItems.map((k, idx) => {
+      const obj = itemAmts[k];
+      return `
+        <li class="major-item" onclick="openItemDetail('${escapeHtml(selectedRawVendor)}', '${escapeHtml(obj.item)}', '${escapeHtml(obj.spec)}', 'rawmaterials', '${escapeHtml(obj.material || '')}')" style="cursor: pointer;">
+          <span class="major-rank">${idx + 1}</span>
+          <span class="major-name" title="${escapeHtml(k)}">${escapeHtml(k)}</span>
+          <span class="major-amount">${formatCompactCurrency(obj.amount)}</span>
+        </li>
+      `;
+    }).join('');
   } else if (majorSec) {
     majorSec.style.display = 'none';
   }
@@ -9558,10 +11244,13 @@ function switchMobileTab(targetId) {
 }
 
 function setQuickSearch(keyword) {
-  const input = document.getElementById('mainSearchInput');
-  if (input) {
-    input.value = keyword;
-    triggerSearch();
+  const itemInput = document.getElementById('suppliesSearchItem');
+  if (itemInput) {
+    itemInput.value = keyword;
+  }
+  const mainInput = document.getElementById('mainSearchInput');
+  if (mainInput) {
+    mainInput.value = keyword;
   }
   document.querySelectorAll('.chip-btn').forEach(btn => {
     const chipVal = btn.getAttribute('data-chip');
@@ -9571,6 +11260,7 @@ function setQuickSearch(keyword) {
       btn.classList.remove('active');
     }
   });
+  applyFilters();
 }
 
 function stepScrapWeight(type, delta) {
@@ -9946,7 +11636,7 @@ function copyPalletQuoteText() {
     updatePalletCalculator();
   }
   const q = lastPalletQuote;
-  const text = `[나무 파렛트 & 수출박스 견적 산출서]
+  const text = `[박스 CBM 견적 산출서]
 ■ 품목 구분: ${q.boxTypeName}
 ■ 적용 규격: ${q.w} × ${q.l} × ${q.h} mm (공식 여유치수 +100/+100/+220mm 적용)
 ■ 산출 CBM: ${q.cbm} CBM
@@ -9995,7 +11685,7 @@ function resetPalletCalculator() {
   });
 
   onPalletBoxTypeChange();
-  showToast('나무 파렛트 계산기가 초기화되었습니다.', 'info');
+  showToast('박스 CBM계산기가 초기화되었습니다.', 'info');
 }
 
 function renderPalletCbmTable() {
@@ -10085,6 +11775,23 @@ function togglePalletAccordion(id) {
   if (icon) icon.textContent = isHidden ? '▼' : '▶';
 }
 
+function toggleCheonwooQuoteImage() {
+  const container = document.getElementById('cheonwooQuoteImageContainer');
+  if (container) {
+    const isHidden = (container.style.display === 'none');
+    container.style.display = isHidden ? 'block' : 'none';
+  }
+}
+
+function filterCheonwooTimberTable(query) {
+  const q = (query || '').toLowerCase().trim();
+  const rows = document.querySelectorAll('#cheonwooTimberTableBody tr');
+  rows.forEach(tr => {
+    const text = tr.textContent.toLowerCase();
+    tr.style.display = text.includes(q) ? '' : 'none';
+  });
+}
+
 function exportPalletRatesToCSV() {
   if (!window.PALLET_PRICES_DATA) return;
   const rates = window.PALLET_PRICES_DATA.cbmRates;
@@ -10097,7 +11804,7 @@ function exportPalletRatesToCSV() {
     r.cheonwoo_export || '',
     r.cheonwoo_domestic ? (r.yuseong_domestic - r.cheonwoo_domestic) : '천우 협의'
   ]);
-  exportToCSV(headers, rows, `나무파렛트_수출박스_CBM단가표_유성_천우_${new Date().toISOString().substring(0,10)}.csv`);
+  exportToCSV(headers, rows, `박스_CBM단가표_유성_천우_${new Date().toISOString().substring(0,10)}.csv`);
   showToast('CBM 단가표 CSV 파일이 다운로드되었습니다.', 'success');
 }
   </script>
@@ -10121,8 +11828,8 @@ function exportPalletRatesToCSV() {
       <span class="m-nav-label">폐팁시세</span>
     </button>
     <button class="m-nav-item" data-tab="tab-pallet" onclick="switchMobileTab('tab-pallet')">
-      <span class="m-nav-icon">🪵</span>
-      <span class="m-nav-label">파렛트</span>
+      <span class="m-nav-icon">📦</span>
+      <span class="m-nav-label">박스CBM</span>
     </button>
     <button class="m-nav-item" data-tab="tab-trends" onclick="switchMobileTab('tab-trends')">
       <span class="m-nav-icon">📈</span>
