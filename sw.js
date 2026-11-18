@@ -1,7 +1,7 @@
 // ===================================================================
 // (주)에스앤더블류 구매 관리 대시보드 — Service Worker (PWA)
 // ===================================================================
-const CACHE_NAME = 'snw-pwa-v1.1';
+const CACHE_NAME = 'snw-pwa-v1.3';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -12,45 +12,49 @@ const PRECACHE_ASSETS = [
   './icons/icon.svg'
 ];
 
-// Install: Pre-cache App Shell
+// Install: Pre-cache App Shell & force immediate activate
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME).then(cache => {
       return cache.addAll(PRECACHE_ASSETS).catch(err => {
-        console.warn('PWA Pre-cache skipped some assets:', err);
+        console.warn('PWA Pre-cache notice:', err);
       });
-    }).then(() => self.skipWaiting())
+    })
   );
 });
 
-// Activate: Clean up old caches & take control immediately
+// Activate: Clean up all older caches & take control immediately
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(
         cacheNames
           .filter(name => name.startsWith('snw-pwa-') && name !== CACHE_NAME)
-          .map(name => caches.delete(name))
+          .map(name => {
+            console.log('PWA deleting old cache:', name);
+            return caches.delete(name);
+          })
       );
     }).then(() => self.clients.claim())
   );
 });
 
-// Fetch: Network-First with Cache Fallback
-// Ensures latest purchasing data is always delivered when online,
-// while allowing offline launch when mobile network drops.
+// Fetch: Strictly Network-First with Cache Fallback
+// HTML and JavaScript requests always bypass browser disk cache when online.
 self.addEventListener('fetch', event => {
   const req = event.request;
   
-  // Only handle GET requests and http/https schemes
   if (req.method !== 'GET' || !req.url.startsWith('http')) {
     return;
   }
 
+  const isHtml = req.mode === 'navigate' || (req.headers.get('accept') && req.headers.get('accept').includes('text/html'));
+  
   event.respondWith(
-    fetch(req)
+    // Always fetch fresh HTML & code from network
+    fetch(req, isHtml ? { cache: 'no-cache' } : {})
       .then(networkResponse => {
-        // If response is valid, update cache asynchronously
         if (networkResponse && networkResponse.status === 200) {
           const resClone = networkResponse.clone();
           caches.open(CACHE_NAME).then(cache => {
@@ -60,13 +64,12 @@ self.addEventListener('fetch', event => {
         return networkResponse;
       })
       .catch(() => {
-        // Fallback to cache if network fails
+        // Fallback to cache if offline
         return caches.match(req).then(cachedResponse => {
           if (cachedResponse) {
             return cachedResponse;
           }
-          // If HTML request fails, return cached index.html
-          if (req.headers.get('accept') && req.headers.get('accept').includes('text/html')) {
+          if (isHtml) {
             return caches.match('./index.html');
           }
           return new Response('Network offline', { status: 503, statusText: 'Service Unavailable' });
