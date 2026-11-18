@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a8a"/>
+      <stop offset="50%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#1d4ed8"/>
+    </linearGradient>
+    <linearGradient id="boxTop" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="boxLeft" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="boxRight" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="16" stdDeviation="20" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Background rounded rect -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle inner border ring -->
+  <rect x="12" y="12" width="488" height="488" rx="100" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="6"/>
+
+  <!-- 3D Isometric Package Box -->
+  <g transform="translate(0, -10)" filter="url(#shadow)">
+    <!-- Top Face -->
+    <polygon points="256,120 376,184 256,248 136,184" fill="url(#boxTop)"/>
+    <!-- Left Face -->
+    <polygon points="136,184 256,248 256,376 136,312" fill="url(#boxLeft)"/>
+    <!-- Right Face -->
+    <polygon points="256,248 376,184 376,312 256,376" fill="url(#boxRight)"/>
+
+    <!-- Tape Lines -->
+    <polygon points="256,120 270,128 270,240 256,248" fill="#ffffff" opacity="0.35"/>
+    <polygon points="242,128 256,120 256,248 242,240" fill="#ffffff" opacity="0.25"/>
+    <polygon points="256,248 270,240 270,368 256,376" fill="#000000" opacity="0.15"/>
+  </g>
+
+  <!-- Company & App Text -->
+  <text x="256" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif" font-size="44" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="4">S&amp;W 구매</text>
+  <text x="256" y="458" font-family="-apple-system, BlinkMacSystemFont, 'Pretendard', sans-serif" font-size="22" font-weight="700" fill="#93c5fd" text-anchor="middle" letter-spacing="2">DASHBOARD</text>
+</svg>

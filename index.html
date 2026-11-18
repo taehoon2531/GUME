@@ -5,9 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="소모품 대시보드">
+  <meta name="apple-mobile-web-app-title" content="S&W 구매">
+  <meta name="application-name" content="S&W 구매대시보드">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#1e40af">
   <title>소모품 구매 관리 대시보드 | 에스앤더블류 구매부</title>
+  <!-- PWA Web App Manifest & App Icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
   <!-- Pretendard Web Font CDN (가독성 향상을 위한 프리텐다드 서체 적용) -->
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
   <style>
@@ -2962,6 +2969,10 @@ canvas.custom-chart {
         <span class="status-dot"></span>
         <span id="headerTotalCount">45,922건 로드됨</span>
       </div>
+      <!-- PWA 스마트폰/PC 앱 설치 버튼 -->
+      <button class="btn btn-sm" id="pwaInstallBtn" onclick="triggerPwaInstall()" style="display: none; background: #2563eb; color: #fff; border: 1px solid #1d4ed8; font-weight: 700; align-items: center; gap: 4px; border-radius: 6px; padding: 4px 10px; font-size: 0.78rem;" title="스마트폰 / PC 홈 화면에 앱으로 설치">
+        📱 앱 설치
+      </button>
       <button class="btn btn-sm btn-outline" id="darkModeBtn" onclick="toggleDarkMode()">
         🌙 다크모드
       </button>
@@ -5162,6 +5173,37 @@ canvas.custom-chart {
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- PWA INSTALL GUIDE MODAL (스마트폰/PC 앱 설치 안내) -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" id="pwaInstallModal">
+    <div class="modal-card" style="max-width: 440px; padding: 0;">
+      <div class="modal-header" style="padding: 16px 20px; border-bottom: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="display: flex; align-items: center; gap: 8px; font-size: 1.05rem; margin: 0;">
+          <span>📱</span> <span>홈 화면에 앱으로 추가</span>
+        </h3>
+        <button class="modal-close" onclick="closePwaModal()">✕</button>
+      </div>
+      <div class="modal-body" style="padding: 20px;">
+        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px dashed var(--card-border);">
+          <img src="icons/icon-192.png" alt="S&W App Icon" style="width: 54px; height: 54px; border-radius: 14px; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">
+          <div>
+            <div style="font-size: 1.02rem; font-weight: 800; color: var(--text-primary);">(주)에스앤더블류 구매대시보드</div>
+            <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 3px;">브라우저 주소창 없이 전용 앱처럼 바로 실행</div>
+          </div>
+        </div>
+
+        <div id="pwaInstallInstructions" style="font-size: 0.84rem; line-height: 1.6; color: var(--text-primary);">
+          <!-- Dynamic instructions (iOS / Android / Desktop) -->
+        </div>
+      </div>
+      <div style="padding: 12px 20px; border-top: 1px solid var(--card-border); display: flex; justify-content: flex-end; gap: 8px; background: var(--bg-secondary);">
+        <button class="btn btn-sm btn-outline" onclick="closePwaModal()">닫기</button>
+        <button class="btn btn-sm" id="btnPwaAction" onclick="executePwaInstall()" style="background: #2563eb; color: #fff; font-weight: 700; padding: 5px 16px;">앱 바로 설치</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Load pre-compiled data -->
   <script src="data.js"></script>
   <script src="sub_data.js"></script>
@@ -5610,6 +5652,149 @@ function copyDashboardMemo() {
   }
 }
 
+// ==========================================
+// PWA (Progressive Web App) & Mobile Install
+// ==========================================
+let deferredPwaPrompt = null;
+
+function initPwa() {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  const installBtn = document.getElementById('pwaInstallBtn');
+  
+  if (isStandalone) {
+    if (installBtn) installBtn.style.display = 'none';
+    return;
+  }
+
+  // Display install button on header
+  if (installBtn) installBtn.style.display = 'inline-flex';
+
+  // Register Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then(reg => {
+        console.log('PWA ServiceWorker registered:', reg.scope);
+      }).catch(err => {
+        console.warn('PWA ServiceWorker error:', err);
+      });
+    });
+  }
+
+  // Intercept beforeinstallprompt for native prompt trigger
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPwaPrompt = e;
+    if (installBtn) {
+      installBtn.style.display = 'inline-flex';
+      installBtn.title = '스마트폰 / PC 홈 화면에 앱으로 설치';
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPwaPrompt = null;
+    if (installBtn) installBtn.style.display = 'none';
+    showToast('대시보드가 앱으로 성공적으로 설치되었습니다! 🎉', 'success');
+  });
+
+  // Friendly mobile hint after 3.5 seconds (once per session)
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if (isMobile && !sessionStorage.getItem('pwa_tip_shown')) {
+    setTimeout(() => {
+      sessionStorage.setItem('pwa_tip_shown', 'true');
+      showToast('📱 스마트폰 홈 화면에 앱으로 추가하여 편리하게 이용해 보세요! (상단 [📱 앱 설치] 클릭)', 'info');
+    }, 3500);
+  }
+}
+
+function triggerPwaInstall() {
+  if (deferredPwaPrompt) {
+    deferredPwaPrompt.prompt();
+    deferredPwaPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        showToast('앱 설치가 시작되었습니다. 잠시 후 홈 화면에서 확인하세요!', 'success');
+      }
+      deferredPwaPrompt = null;
+    });
+  } else {
+    openPwaModal();
+  }
+}
+
+function openPwaModal() {
+  const modal = document.getElementById('pwaInstallModal');
+  const body = document.getElementById('pwaInstallInstructions');
+  const actionBtn = document.getElementById('btnPwaAction');
+  if (!modal || !body) return;
+
+  const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isAndroid = /Android/i.test(navigator.userAgent);
+
+  if (isIOS) {
+    body.innerHTML = `
+      <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:12px; margin-bottom:12px;">
+        <strong style="color:#1e40af; font-size:0.88rem;">🍎 아이폰 / 아이패드 (Safari)</strong>
+      </div>
+      <ol style="margin: 0; padding-left: 20px; font-size:0.83rem; line-height: 1.8;">
+        <li>사파리 하단 중앙의 <strong>공유 버튼 <span style="font-size:1.1rem;">⎋</span></strong> (네모에 위쪽 화살표)을 터치합니다.</li>
+        <li>아래 메뉴 중 <strong>[홈 화면에 추가 <span style="font-size:1rem;">➕</span>]</strong>를 선택합니다.</li>
+        <li>우측 상단의 <strong>[추가]</strong> 버튼을 누르면 스마트폰 바탕화면에 앱 아이콘이 바로 생성됩니다!</li>
+      </ol>
+    `;
+    if (actionBtn) actionBtn.style.display = 'none';
+  } else if (isAndroid) {
+    body.innerHTML = `
+      <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:12px; margin-bottom:12px;">
+        <strong style="color:#166534; font-size:0.88rem;">🤖 안드로이드 (크롬 / 삼성인터넷)</strong>
+      </div>
+      <ol style="margin: 0; padding-left: 20px; font-size:0.83rem; line-height: 1.8;">
+        <li>브라우저 우측 상단의 <strong>메뉴 버튼 <span style="font-size:1.1rem;">⋮</span></strong>을 터치합니다.</li>
+        <li><strong>[홈 화면에 추가]</strong> 또는 <strong>[앱 설치]</strong>를 선택합니다.</li>
+        <li>화면의 안내에 따라 <strong>[추가/설치]</strong>를 누르면 바탕화면에 앱이 생성됩니다!</li>
+      </ol>
+    `;
+    if (actionBtn) {
+      actionBtn.style.display = 'inline-block';
+      actionBtn.textContent = '앱 바로 설치';
+    }
+  } else {
+    body.innerHTML = `
+      <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:12px; margin-bottom:12px;">
+        <strong style="color:#1e293b; font-size:0.88rem;">💻 PC / 노트북 (Chrome / Edge)</strong>
+      </div>
+      <p style="margin:0 0 8px 0; font-size:0.83rem; line-height:1.6;">
+        브라우저 주소창 우측의 <strong>[앱 설치 아이콘 ⛶]</strong>을 클릭하시거나, 아래 <strong>[앱 바로 설치]</strong> 버튼을 누르면 PC 프로그램처럼 설치하여 실행할 수 있습니다.
+      </p>
+    `;
+    if (actionBtn) {
+      actionBtn.style.display = 'inline-block';
+      actionBtn.textContent = '앱 바로 설치';
+    }
+  }
+
+  modal.classList.add('show');
+}
+
+function closePwaModal() {
+  const modal = document.getElementById('pwaInstallModal');
+  if (modal) modal.classList.remove('show');
+}
+
+function executePwaInstall() {
+  if (deferredPwaPrompt) {
+    deferredPwaPrompt.prompt();
+    deferredPwaPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        showToast('앱 설치가 시작되었습니다! 홈 화면에서 확인하세요.', 'success');
+      }
+      deferredPwaPrompt = null;
+      closePwaModal();
+    });
+  } else {
+    closePwaModal();
+    showToast('브라우저 메뉴(⋮)에서 [홈 화면에 추가]를 눌러주세요.', 'info');
+  }
+}
+
 function triggerAppInit() {
   initApp().catch(err => {
     console.error('Fatal initialization error:', err);
@@ -5663,6 +5848,7 @@ async function initApp() {
   // 3. Load dark mode preference [NEW]
   try { loadDarkModePreference(); } catch (e) { console.error('loadDarkModePreference error:', e); }
   try { initDashboardMemo(); } catch (e) { console.error('initDashboardMemo error:', e); }
+  try { initPwa(); } catch (e) { console.error('initPwa error:', e); }
 
   // 4. Initialize Filters & Views
   try { initDateFilters(); } catch (e) { console.error('initDateFilters error:', e); }
@@ -6723,6 +6909,10 @@ function initModalCloseHandlers() {
       if (editModal && editModal.classList.contains('show')) {
         closeReportEditModal();
       }
+      const pwaModal = document.getElementById('pwaInstallModal');
+      if (pwaModal && pwaModal.classList.contains('show')) {
+        closePwaModal();
+      }
     }
   });
 
@@ -6741,6 +6931,15 @@ function initModalCloseHandlers() {
     editBackdrop.addEventListener('click', (e) => {
       if (e.target === editBackdrop) {
         closeReportEditModal();
+      }
+    });
+  }
+
+  const pwaBackdrop = document.getElementById('pwaInstallModal');
+  if (pwaBackdrop) {
+    pwaBackdrop.addEventListener('click', (e) => {
+      if (e.target === pwaBackdrop) {
+        closePwaModal();
       }
     });
   }
