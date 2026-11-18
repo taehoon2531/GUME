@@ -449,6 +449,18 @@ main {
   box-shadow: 0 4px 16px rgba(0,0,0,0.25);
 }
 
+.stat-card.memo-card {
+  align-items: stretch;
+}
+.stat-card.memo-card:hover {
+  transform: none;
+}
+.stat-card.memo-card:focus-within {
+  transform: none;
+  border-color: #93c5fd;
+  box-shadow: 0 4px 14px rgba(37,99,235,0.12);
+}
+
 .stat-info .stat-label {
   font-size: 0.86rem;
   font-weight: 600;
@@ -3027,8 +3039,9 @@ canvas.custom-chart {
         <span id="categoryActiveIndicator" style="font-size: 0.8rem; color: #1e40af; font-weight: 700;">현재: 📋 소모품 구매 데이터 (45,922건) 분석 중</span>
       </div>
 
-      <!-- 총 거래금액 카드 단독 표출 (원래 기본 너비 290px 유지) -->
-      <div style="display: flex; align-items: center;">
+      <!-- 총 거래금액 카드 & 업무 메모장 (비슷한 크기로 나란히 배치) -->
+      <div style="display: flex; align-items: stretch; gap: 12px; flex-wrap: wrap;">
+        <!-- 1. 총 거래금액 카드 (너비 290px) -->
         <div class="stat-card" style="width: 290px; max-width: 100%; flex: 0 0 290px;">
           <div class="stat-info">
             <div class="stat-label">총 거래금액</div>
@@ -3036,6 +3049,27 @@ canvas.custom-chart {
             <div class="stat-sub" id="kpiTotalAmountSub">전체 누적 매입액</div>
           </div>
           <div class="stat-icon icon-blue" id="kpiTotalIcon">💰</div>
+        </div>
+
+        <!-- 2. 빠른 업무 메모장 (총거래금액과 비슷한 크기: 너비 310px, 일치된 카드 높이) -->
+        <div class="stat-card memo-card" style="width: 310px; max-width: 100%; flex: 0 0 310px; display: flex; flex-direction: column; justify-content: space-between; padding: 0.85rem 1rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 5px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span style="font-size: 0.95rem;">📝</span>
+              <span class="stat-label" style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); margin: 0;">업무 메모장</span>
+              <span id="memoSaveStatus" style="font-size: 0.68rem; color: #10b981; font-weight: 700; opacity: 0; transition: opacity 0.25s ease;">✓ 자동저장</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 4px;">
+              <button type="button" onclick="copyDashboardMemo()" title="메모 복사하기" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 0.72rem; padding: 2px 4px; border-radius: 4px; transition: color 0.15s ease;" onmouseover="this.style.color='#2563eb'" onmouseout="this.style.color='var(--text-muted)'">📋 복사</button>
+              <button type="button" onclick="clearDashboardMemo()" title="메모 전체 비우기" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 0.72rem; padding: 2px 4px; border-radius: 4px; transition: color 0.15s ease;" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--text-muted)'">🧹 비우기</button>
+            </div>
+          </div>
+          <textarea id="dashboardQuickMemo" 
+            placeholder="기억할 업무 메모를 자유롭게 입력하세요 (자동 저장)..." 
+            style="width: 100%; height: 50px; min-height: 48px; resize: vertical; border: 1px solid var(--card-border); border-radius: 6px; padding: 6px 8px; font-size: 0.8rem; font-family: inherit; line-height: 1.4; color: var(--text-primary); background: var(--bg-secondary); outline: none; transition: border-color 0.2s, background-color 0.2s;"
+            onfocus="this.style.borderColor='#2563eb'; this.style.backgroundColor='var(--card-bg)';"
+            onblur="this.style.borderColor='var(--card-border)'; this.style.backgroundColor='var(--bg-secondary)';"
+            oninput="saveDashboardMemo(this.value)"></textarea>
         </div>
       </div>
     </section>
@@ -5502,6 +5536,80 @@ async function clearMasterDataDB() {
   }
 }
 
+// ==========================================
+// Quick Dashboard Notepad (LocalStorage)
+// ==========================================
+function initDashboardMemo() {
+  const memoEl = document.getElementById('dashboardQuickMemo');
+  if (!memoEl) return;
+  try {
+    const saved = localStorage.getItem('dashboard_quick_memo');
+    if (saved !== null) {
+      memoEl.value = saved;
+    }
+  } catch (e) {
+    console.error('Failed to load memo:', e);
+  }
+}
+
+let _memoSaveTimeout = null;
+function saveDashboardMemo(val) {
+  try {
+    localStorage.setItem('dashboard_quick_memo', val);
+    const statusEl = document.getElementById('memoSaveStatus');
+    if (statusEl) {
+      statusEl.textContent = '✓ 저장됨';
+      statusEl.style.opacity = '1';
+      if (_memoSaveTimeout) clearTimeout(_memoSaveTimeout);
+      _memoSaveTimeout = setTimeout(() => {
+        statusEl.style.opacity = '0';
+      }, 1500);
+    }
+  } catch (e) {
+    console.error('Failed to save memo:', e);
+  }
+}
+
+function clearDashboardMemo() {
+  const memoEl = document.getElementById('dashboardQuickMemo');
+  if (!memoEl) return;
+  if (!memoEl.value.trim()) return;
+  if (confirm('작성 중인 업무 메모를 모두 지우시겠습니까?')) {
+    memoEl.value = '';
+    saveDashboardMemo('');
+    const statusEl = document.getElementById('memoSaveStatus');
+    if (statusEl) {
+      statusEl.textContent = '🧹 삭제됨';
+      statusEl.style.opacity = '1';
+      setTimeout(() => {
+        statusEl.textContent = '✓ 저장됨';
+        statusEl.style.opacity = '0';
+      }, 1500);
+    }
+  }
+}
+
+function copyDashboardMemo() {
+  const memoEl = document.getElementById('dashboardQuickMemo');
+  if (!memoEl || !memoEl.value.trim()) {
+    showToast('복사할 메모 내용이 없습니다.', 'warning');
+    return;
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(memoEl.value)
+      .then(() => showToast('📋 메모가 클립보드에 복사되었습니다!', 'success'))
+      .catch(() => {
+        memoEl.select();
+        document.execCommand('copy');
+        showToast('📋 메모가 클립보드에 복사되었습니다!', 'success');
+      });
+  } else {
+    memoEl.select();
+    document.execCommand('copy');
+    showToast('📋 메모가 클립보드에 복사되었습니다!', 'success');
+  }
+}
+
 function triggerAppInit() {
   initApp().catch(err => {
     console.error('Fatal initialization error:', err);
@@ -5554,6 +5662,7 @@ async function initApp() {
 
   // 3. Load dark mode preference [NEW]
   try { loadDarkModePreference(); } catch (e) { console.error('loadDarkModePreference error:', e); }
+  try { initDashboardMemo(); } catch (e) { console.error('initDashboardMemo error:', e); }
 
   // 4. Initialize Filters & Views
   try { initDateFilters(); } catch (e) { console.error('initDateFilters error:', e); }
