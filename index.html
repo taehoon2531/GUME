@@ -6133,7 +6133,7 @@ function initPwa() {
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=1.9').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=2.0').then(reg => {
         console.log('PWA ServiceWorker registered:', reg.scope);
         reg.update();
         reg.addEventListener('updatefound', () => {
@@ -6467,16 +6467,6 @@ function openCurrentBankDocNewTab() {
 function downloadCurrentBankDoc() {
   if (!currentBankDocTarget) return;
   const encodedPath = encodeURI(`통장사본/${currentBankDocTarget.fileName}`);
-  const a = document.createElement('a');
-  a.href = encodedPath;
-  a.download = currentBankDocTarget.fileName;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  showToast(`'${currentBankDocTarget.fileName}' 다운로드를 시작합니다.`, 'info');
-}
-  if (!currentBankDocTarget) return;
-  const encodedPath = `통장사본/${encodeURIComponent(currentBankDocTarget.fileName)}`;
   const a = document.createElement('a');
   a.href = encodedPath;
   a.download = currentBankDocTarget.fileName;
