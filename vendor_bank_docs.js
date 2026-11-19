@@ -271,6 +271,15 @@ window.VENDOR_BANK_DOCS = {
     type: "pdf",
     size: "239 KB",
     rawVendor: "유신산업, (주)유신산업"
+  },
+  "제일연마": {
+    vendor: "제일연마",
+    fileName: "제일연마 기업은행 통장사본.jpg",
+    path: "통장사본/제일연마 기업은행 통장사본.jpg",
+    ext: "jpg",
+    type: "image",
+    size: "3.7 MB",
+    rawVendor: "제일연마, ㈜제일연마, ㈜제일연마부산직매소, 제일연마 부산직매소"
   }
 };
 
