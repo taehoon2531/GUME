@@ -1,4 +1,4 @@
-﻿# Simple HTTP Static Server for Windows PowerShell
+# Simple HTTP Static Server for Windows PowerShell
 param(
     [int]$Port = 8080
 )
