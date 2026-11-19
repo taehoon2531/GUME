@@ -5083,7 +5083,12 @@ canvas.custom-chart {
                 <option value="부자재">🧱 부자재</option>
                 <option value="원자재">🏭 원자재</option>
               </select>
-              <input type="text" id="mgmtSearchInput" placeholder="거래처 검색..." style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.84rem;" oninput="renderVendorMgmtTable()">
+              <select id="mgmtManagerSelect" style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.84rem; font-weight: 600;" onchange="renderVendorMgmtTable()">
+                <option value="all" selected>👤 전체 사내담당자</option>
+                <option value="김태훈">👤 김태훈 담당</option>
+                <option value="김정훈">👤 김정훈 담당</option>
+              </select>
+              <input type="text" id="mgmtSearchInput" placeholder="거래처/담당자/연락처/주소 검색..." style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.84rem; min-width: 220px;" oninput="renderVendorMgmtTable()">
               <button class="btn btn-outline" onclick="openAllBankDocsModal()" style="background: #f0fdf4; color: #166534; border-color: #86efac; font-weight: 700;">📁 통장사본 보관함 (<span id="bankDocTotalBadge">31</span>)</button>
               <button class="btn btn-outline" onclick="exportVendorsToCSV()">📥 거래처 목록 저장</button>
             </div>
@@ -5093,11 +5098,12 @@ canvas.custom-chart {
             <table>
               <thead>
                 <tr>
-                  <th style="min-width: 170px;">업체명 (취급구분)</th>
-                  <th>담당자</th>
+                  <th style="min-width: 160px;">업체명 (취급구분)</th>
+                  <th>담당자 / 이메일</th>
                   <th>연락처</th>
+                  <th class="text-center" style="width: 95px;">사내담당</th>
                   <th class="text-center" style="width: 105px;">통장사본</th>
-                  <th>비고</th>
+                  <th>주소 및 비고</th>
                   <th class="text-right">누적 매입액 (통합)</th>
                   <th class="text-center" style="width: 120px;">관리</th>
                 </tr>
@@ -5162,13 +5168,28 @@ canvas.custom-chart {
             </div>
 
             <div class="form-group">
-              <label style="font-size: 0.82rem;">연락처</label>
+              <label style="font-size: 0.82rem;">연락처 (휴대폰 / 사무실)</label>
               <input type="text" id="editFormContactPhone" placeholder="예: 010-1234-5678 / 055-xxx-xxxx">
             </div>
 
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px;">
+              <div class="form-group">
+                <label style="font-size: 0.82rem;">이메일</label>
+                <input type="email" id="editFormEmail" placeholder="예: vendor@email.com">
+              </div>
+              <div class="form-group">
+                <label style="font-size: 0.82rem;">사내 담당자</label>
+                <select id="editFormManager" style="width:100%; padding:7px 10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.85rem;">
+                  <option value="">-- 선택안함 --</option>
+                  <option value="김태훈">김태훈</option>
+                  <option value="김정훈">김정훈</option>
+                </select>
+              </div>
+            </div>
+
             <div class="form-group">
-              <label style="font-size: 0.82rem;">비고</label>
-              <textarea id="editFormRemarks" rows="3" placeholder="거래 조건, 계좌번호, 취급 주요 품목 등"></textarea>
+              <label style="font-size: 0.82rem;">주소 및 비고</label>
+              <textarea id="editFormRemarks" rows="2" placeholder="도로명 주소, 취급 주요 품목 등"></textarea>
             </div>
 
             <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -5196,13 +5217,28 @@ canvas.custom-chart {
             </div>
 
             <div class="form-group">
-              <label style="font-size: 0.82rem;">연락처</label>
+              <label style="font-size: 0.82rem;">연락처 (휴대폰 / 사무실)</label>
               <input type="text" id="regFormContactPhone" placeholder="예: 010-9876-5432">
             </div>
 
+            <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 8px;">
+              <div class="form-group">
+                <label style="font-size: 0.82rem;">이메일</label>
+                <input type="email" id="regFormEmail" placeholder="예: vendor@email.com">
+              </div>
+              <div class="form-group">
+                <label style="font-size: 0.82rem;">사내 담당자</label>
+                <select id="regFormManager" style="width:100%; padding:7px 10px; border-radius:6px; border:1px solid #cbd5e1; font-size:0.85rem;">
+                  <option value="">-- 선택안함 --</option>
+                  <option value="김태훈">김태훈</option>
+                  <option value="김정훈">김정훈</option>
+                </select>
+              </div>
+            </div>
+
             <div class="form-group">
-              <label style="font-size: 0.82rem;">비고</label>
-              <textarea id="regFormRemarks" rows="3" placeholder="거래 조건, 계좌번호, 취급 주요 품목 등"></textarea>
+              <label style="font-size: 0.82rem;">주소 및 비고</label>
+              <textarea id="regFormRemarks" rows="2" placeholder="도로명 주소, 취급 주요 품목 등"></textarea>
             </div>
 
             <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -5671,6 +5707,7 @@ canvas.custom-chart {
   <script src="scrap_data.js?v=20261118"></script>
   <script src="pallet_data.js"></script>
   <script src="vendor_bank_docs.js"></script>
+  <script src="vendor_master_data.js"></script>
 
   <!-- Main Application Script -->
   <script>
@@ -6133,7 +6170,7 @@ function initPwa() {
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.5').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=2.6').then(reg => {
         console.log('PWA ServiceWorker registered:', reg.scope);
         reg.update();
         reg.addEventListener('updatefound', () => {
@@ -6321,7 +6358,14 @@ function openBankDocModal(vendorName) {
   const modal = document.getElementById('bankDocModal');
   
   if (titleEl) titleEl.textContent = `📄 [통장사본] ${doc.vendor}`;
-  if (subEl) subEl.textContent = `파일명: ${doc.fileName} | 규격: ${doc.ext.toUpperCase()} (${doc.size})`;
+  const mInfo = typeof getVendorMasterInfo === 'function' ? getVendorMasterInfo(vendorName) : null;
+  let subText = `파일명: ${doc.fileName} | 규격: ${doc.ext.toUpperCase()} (${doc.size})`;
+  if (mInfo) {
+    if (mInfo.contactPerson) subText += ` | 담당자: ${mInfo.contactPerson}`;
+    if (mInfo.mobilePhone) subText += ` (${mInfo.mobilePhone})`;
+    if (mInfo.manager) subText += ` | 사내담당: ${mInfo.manager}`;
+  }
+  if (subEl) subEl.textContent = subText;
   
   if (bodyEl) {
     bodyEl.innerHTML = '';
@@ -6538,6 +6582,8 @@ function renderAllBankDocsGrid(entries) {
     
     const extColor = doc.ext === 'pdf' ? '#ef4444' : '#0284c7';
     const extBg = doc.ext === 'pdf' ? '#fee2e2' : '#e0f2fe';
+    const mInfo = typeof getVendorMasterInfo === 'function' ? getVendorMasterInfo(doc.vendor) : null;
+    const contactText = mInfo && mInfo.contactPerson ? `👤 ${escapeHtml(mInfo.contactPerson)}${mInfo.mobilePhone ? ' (' + escapeHtml(mInfo.mobilePhone) + ')' : ''}` : '';
     
     card.innerHTML = `
       <div>
@@ -6551,6 +6597,7 @@ function renderAllBankDocsGrid(entries) {
         <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
           파일크기: ${doc.size}
         </div>
+        ${contactText ? `<div style="font-size: 0.72rem; color: #2563eb; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${contactText}</div>` : ''}
       </div>
       <div style="display: flex; gap: 6px; border-top: 1px solid var(--card-border, #f1f5f9); padding-top: 8px; margin-top: 4px;">
         <button class="btn btn-sm btn-outline" style="flex: 1; font-weight: 700; color: #166534; border-color: #86efac; background: #f0fdf4; padding: 4px;" onclick="openBankDocModal('${escapeHtml(doc.vendor)}')">👁️ 열람</button>
@@ -9794,10 +9841,6 @@ function loadStoredVendors() {
     }
   });
 
-  if (contactsModified) {
-    saveVendorsToStorage();
-  }
-
   // Ensure all vendors from all 3 datasets exist in vendorContacts
   const allDatasets = [
     (allData && allData.length > 0) ? allData : (window.INITIAL_SUPPLIES_DATA || []),
@@ -9817,9 +9860,63 @@ function loadStoredVendors() {
 
   set.forEach(v => {
     if (!vendorContacts[v]) {
-      vendorContacts[v] = { contact: '', phone: '', remarks: '' };
+      vendorContacts[v] = { contact: '', phone: '', remarks: '', email: '', manager: '', category: '' };
     }
   });
+
+  // 4. Populate / Enrich from VENDOR_MASTER_DATA (84개사 마스터 데이터)
+  if (window.VENDOR_MASTER_DATA && Array.isArray(window.VENDOR_MASTER_DATA)) {
+    window.VENDOR_MASTER_DATA.forEach(item => {
+      if (!item || !item.vendor) return;
+      const canon = typeof normalizeVendorName === 'function' ? normalizeVendorName(item.vendor) : item.vendor.trim();
+      let phoneStr = item.mobilePhone || '';
+      if (item.officePhone) {
+        phoneStr = phoneStr ? `${phoneStr} (사무: ${item.officePhone})` : item.officePhone;
+      }
+
+      if (!vendorContacts[canon]) {
+        vendorContacts[canon] = {
+          contact: item.contactPerson || '',
+          phone: phoneStr,
+          remarks: item.addressRemarks || '',
+          email: item.email || '',
+          manager: item.manager || '',
+          category: item.category || ''
+        };
+        contactsModified = true;
+      } else {
+        // If existing record has empty fields, enrich with master data
+        if ((!vendorContacts[canon].contact || vendorContacts[canon].contact.trim() === '') && item.contactPerson) {
+          vendorContacts[canon].contact = item.contactPerson;
+          contactsModified = true;
+        }
+        if ((!vendorContacts[canon].phone || vendorContacts[canon].phone.trim() === '') && phoneStr) {
+          vendorContacts[canon].phone = phoneStr;
+          contactsModified = true;
+        }
+        if ((!vendorContacts[canon].remarks || vendorContacts[canon].remarks.trim() === '') && item.addressRemarks) {
+          vendorContacts[canon].remarks = item.addressRemarks;
+          contactsModified = true;
+        }
+        if (!vendorContacts[canon].email && item.email) {
+          vendorContacts[canon].email = item.email;
+          contactsModified = true;
+        }
+        if (!vendorContacts[canon].manager && item.manager) {
+          vendorContacts[canon].manager = item.manager;
+          contactsModified = true;
+        }
+        if (!vendorContacts[canon].category && item.category) {
+          vendorContacts[canon].category = item.category;
+          contactsModified = true;
+        }
+      }
+    });
+  }
+
+  if (contactsModified) {
+    saveVendorsToStorage();
+  }
 }
 
 function saveVendorsToStorage() {
@@ -9875,9 +9972,25 @@ function renderVendorMgmtTable() {
 
   let list = Object.keys(vendorContacts).sort((a, b) => (vTotals[b] || 0) - (vTotals[a] || 0));
 
+  const mgrFilterEl = document.getElementById('mgmtManagerSelect');
+  const mgrFilter = mgrFilterEl ? mgrFilterEl.value : 'all';
+
   // Filter by category
   if (catFilter !== 'all') {
-    list = list.filter(v => vCategories[v] && vCategories[v].has(catFilter));
+    list = list.filter(v => {
+      if (vCategories[v] && vCategories[v].has(catFilter)) return true;
+      const info = vendorContacts[v] || {};
+      if (info.category && info.category.includes(catFilter)) return true;
+      return false;
+    });
+  }
+
+  // Filter by manager
+  if (mgrFilter !== 'all') {
+    list = list.filter(v => {
+      const info = vendorContacts[v] || {};
+      return info.manager === mgrFilter;
+    });
   }
 
   // Filter by search query
@@ -9889,6 +10002,8 @@ function renderVendorMgmtTable() {
              (info.contact && info.contact.toLowerCase().includes(query)) ||
              (info.phone && info.phone.includes(query)) ||
              (info.remarks && info.remarks.toLowerCase().includes(query)) ||
+             (info.email && info.email.toLowerCase().includes(query)) ||
+             (info.manager && info.manager.toLowerCase().includes(query)) ||
              rawList.toLowerCase().includes(query);
     });
   }
@@ -9898,7 +10013,18 @@ function renderVendorMgmtTable() {
 
   list.forEach(v => {
     const info = vendorContacts[v] || { contact: '', phone: '', remarks: '' };
-    const cats = vCategories[v] ? Array.from(vCategories[v]) : ['소모품'];
+    let cats = vCategories[v] ? Array.from(vCategories[v]) : [];
+    if (cats.length === 0) {
+      if (info.category) {
+        if (info.category.includes('원자재')) cats.push('원자재');
+        else if (info.category.includes('부자재')) cats.push('부자재');
+        else if (info.category.includes('소모')) cats.push('소모품');
+        else cats.push(info.category);
+      } else {
+        cats.push('소모품');
+      }
+    }
+
     const catBadgesHtml = cats.map(c => {
       let bStyle = 'background:#e2e8f0; color:#334155;';
       if (c === '소모품') bStyle = 'background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe;';
@@ -9921,6 +10047,21 @@ function renderVendorMgmtTable() {
       <td class="text-center" style="color:#cbd5e1; font-size:0.75rem;">-</td>
     `;
 
+    const managerBadge = info.manager ? `
+      <span class="badge" style="background:${info.manager === '김태훈' ? '#eff6ff' : '#fef2f2'}; color:${info.manager === '김태훈' ? '#1e40af' : '#991b1b'}; border:1px solid ${info.manager === '김태훈' ? '#bfdbfe' : '#fecaca'}; font-size:0.75rem; font-weight:700; padding:2px 6px; border-radius:4px; white-space:nowrap;">
+        👤 ${escapeHtml(info.manager)}
+      </span>
+    ` : `<span style="color:#cbd5e1; font-size:0.75rem;">-</span>`;
+
+    const contactDisplay = `
+      <div>${info.contact ? `<strong style="color:var(--text-primary); font-size:0.88rem;">${escapeHtml(info.contact)}</strong>` : '<span style="color:#aaa;">-</span>'}</div>
+      ${info.email ? `<div style="font-size:0.75rem; margin-top:2px;"><a href="mailto:${escapeHtml(info.email)}" style="color:#2563eb; text-decoration:none;" title="이메일 발송">✉️ ${escapeHtml(info.email)}</a></div>` : ''}
+    `;
+
+    const phoneDisplay = info.phone ? `
+      <span style="font-size:0.84rem; color:var(--text-secondary);">${escapeHtml(info.phone)}</span>
+    ` : `<span style="color:#aaa;">-</span>`;
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>
@@ -9930,10 +10071,11 @@ function renderVendorMgmtTable() {
           <div style="margin-left: 4px; display:inline-flex; gap:2px;">${catBadgesHtml}</div>
         </div>
       </td>
-      <td>${info.contact ? escapeHtml(info.contact) : '<span style="color:#aaa;">-</span>'}</td>
-      <td>${info.phone ? escapeHtml(info.phone) : '<span style="color:#aaa;">-</span>'}</td>
+      <td>${contactDisplay}</td>
+      <td>${phoneDisplay}</td>
+      <td class="text-center">${managerBadge}</td>
       ${bankCell}
-      <td style="color: var(--slate-600);">${info.remarks ? escapeHtml(info.remarks) : ''}</td>
+      <td style="color: var(--slate-600); font-size:0.82rem; max-width:240px; word-break:break-word;" title="${escapeHtml(info.remarks || '')}">${info.remarks ? escapeHtml(info.remarks) : '<span style="color:#aaa;">-</span>'}</td>
       <td class="text-right" style="font-weight: 700; color: #1e3a8a; font-size:0.92rem;">${formatCurrency(vTotals[v] || 0)}</td>
       <td class="text-center" style="white-space: nowrap;">
         <button class="btn btn-sm btn-outline" onclick="editVendor('${escapeHtml(v)}')">수정</button>
@@ -10045,6 +10187,8 @@ function loadVendorIntoEditFields(v) {
   const nameEl = document.getElementById('editFormVendorName');
   const contactEl = document.getElementById('editFormContactPerson');
   const phoneEl = document.getElementById('editFormContactPhone');
+  const emailEl = document.getElementById('editFormEmail');
+  const mgrEl = document.getElementById('editFormManager');
   const remarksEl = document.getElementById('editFormRemarks');
   const statusEl = document.getElementById('editVendorBankDocStatus');
   const textEl = document.getElementById('editVendorBankDocText');
@@ -10055,16 +10199,20 @@ function loadVendorIntoEditFields(v) {
     if (nameEl) nameEl.value = '';
     if (contactEl) contactEl.value = '';
     if (phoneEl) phoneEl.value = '';
+    if (emailEl) emailEl.value = '';
+    if (mgrEl) mgrEl.value = '';
     if (remarksEl) remarksEl.value = '';
     if (statusEl) statusEl.style.display = 'none';
     return;
   }
 
-  const info = vendorContacts[v] || { contact: '', phone: '', remarks: '' };
+  const info = vendorContacts[v] || { contact: '', phone: '', remarks: '', email: '', manager: '', category: '' };
   if (origEl) origEl.value = v;
   if (nameEl) nameEl.value = v;
   if (contactEl) contactEl.value = info.contact || '';
   if (phoneEl) phoneEl.value = info.phone || '';
+  if (emailEl) emailEl.value = info.email || '';
+  if (mgrEl) mgrEl.value = info.manager || '';
   if (remarksEl) remarksEl.value = info.remarks || '';
 
   // Bank Doc status display
@@ -10133,7 +10281,12 @@ function submitVendorUpdate() {
 
   const contact = (document.getElementById('editFormContactPerson')?.value || '').trim();
   const phone = (document.getElementById('editFormContactPhone')?.value || '').trim();
+  const email = (document.getElementById('editFormEmail')?.value || '').trim();
+  const manager = (document.getElementById('editFormManager')?.value || '').trim();
   const remarks = (document.getElementById('editFormRemarks')?.value || '').trim();
+
+  const prevInfo = vendorContacts[origName] || vendorContacts[newName] || {};
+  const category = prevInfo.category || '';
 
   // If renaming to an existing vendor name (different from origName)
   if (origName && newName !== origName && vendorContacts[newName]) {
@@ -10156,7 +10309,7 @@ function submitVendorUpdate() {
     }
   }
 
-  vendorContacts[newName] = { contact, phone, remarks };
+  vendorContacts[newName] = { contact, phone, remarks, email, manager, category };
   saveVendorsToStorage();
 
   if (origEl) origEl.value = newName;
@@ -10197,9 +10350,11 @@ function submitVendorRegister() {
 
   const contact = (document.getElementById('regFormContactPerson')?.value || '').trim();
   const phone = (document.getElementById('regFormContactPhone')?.value || '').trim();
+  const email = (document.getElementById('regFormEmail')?.value || '').trim();
+  const manager = (document.getElementById('regFormManager')?.value || '').trim();
   const remarks = (document.getElementById('regFormRemarks')?.value || '').trim();
 
-  vendorContacts[name] = { contact, phone, remarks };
+  vendorContacts[name] = { contact, phone, remarks, email, manager, category: '' };
   saveVendorsToStorage();
   resetRegisterForm();
   renderVendorMgmtTable();
@@ -10211,6 +10366,8 @@ function resetRegisterForm() {
   if (document.getElementById('regFormVendorName')) document.getElementById('regFormVendorName').value = '';
   if (document.getElementById('regFormContactPerson')) document.getElementById('regFormContactPerson').value = '';
   if (document.getElementById('regFormContactPhone')) document.getElementById('regFormContactPhone').value = '';
+  if (document.getElementById('regFormEmail')) document.getElementById('regFormEmail').value = '';
+  if (document.getElementById('regFormManager')) document.getElementById('regFormManager').value = '';
   if (document.getElementById('regFormRemarks')) document.getElementById('regFormRemarks').value = '';
 }
 
@@ -10738,7 +10895,7 @@ function exportReportToCSV() {
 
 function exportVendorsToCSV() {
   ensureMaterialsLoaded();
-  const headers = ['업체명', '취급구분', '담당자', '연락처', '비고', '누적매입액'];
+  const headers = ['업체명', '취급구분', '거래처 담당자', '연락처', '이메일', '사내담당', '주소 및 비고', '누적 매입액'];
   const allDatasets = [
     { name: '소모품', data: (allData && allData.length > 0) ? allData : (window.INITIAL_SUPPLIES_DATA || []) },
     { name: '부자재', data: (subData && subData.length > 0) ? subData : (window.INITIAL_SUB_MATERIALS_DATA || []) },
@@ -10759,8 +10916,12 @@ function exportVendorsToCSV() {
 
   const rows = Object.keys(vendorContacts).sort().map(v => {
     const info = vendorContacts[v] || {};
-    const cats = vCategories[v] ? Array.from(vCategories[v]).join('/') : '소모품';
-    return [v, cats, info.contact || '', info.phone || '', info.remarks || '', vTotals[v] || 0];
+    let cats = vCategories[v] ? Array.from(vCategories[v]).join('/') : '';
+    if (!cats) {
+      if (info.category) cats = info.category;
+      else cats = '소모품';
+    }
+    return [v, cats, info.contact || '', info.phone || '', info.email || '', info.manager || '', info.remarks || '', vTotals[v] || 0];
   });
   exportToCSV(headers, rows, `거래처목록_통합_${new Date().toISOString().substring(0,10)}.csv`);
   showToast('통합 거래처 목록 CSV 파일이 다운로드되었습니다.', 'success');
