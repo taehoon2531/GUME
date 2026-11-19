@@ -253,6 +253,15 @@ window.VENDOR_BANK_DOCS = {
     type: "pdf",
     size: "354 KB",
     rawVendor: "케이디세이프티(안전), 케이디세이프티"
+  },
+  "삼양연마": {
+    vendor: "삼양연마",
+    fileName: "삼양연마 통장사본.jpg",
+    path: "통장사본/삼양연마 통장사본.jpg",
+    ext: "jpg",
+    type: "image",
+    size: "1.5 MB",
+    rawVendor: "삼양연마, 삼양연마B&S"
   }
 };
 
