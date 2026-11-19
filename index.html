@@ -3994,7 +3994,8 @@ canvas.custom-chart {
               <span>📄 거래처별 자재 구매현황 (표준 양식) 미리보기</span>
               <span id="reportCustomBadge" style="display: none; font-size: 0.75rem; background: #fef3c7; color: #b45309; padding: 2px 8px; border-radius: 4px; font-weight: 700; border: 1px solid #fde68a;">✏️ 편집 적용중</span>
             </div>
-            <div style="display: flex; gap: 8px;">
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="btn btn-outline" id="btnVendorBankDoc" onclick="openCurrentVendorBankDoc()" style="display: none; background: #f0fdf4; color: #15803d; border-color: #86efac; font-weight: 700;">📄 통장사본 보기/인쇄</button>
               <button class="btn btn-outline" id="btnEditClosingReport" onclick="openReportEditModal()" style="color: var(--primary); border-color: var(--primary); font-weight: 700;">✏️ 명세서 내역 수정 / 엑셀 보기</button>
               <button class="btn btn-outline" onclick="exportReportToCSV()">📥 명세서 엑셀 저장</button>
               <button class="btn btn-primary" onclick="printReport()">🖨️ 인쇄하기 / PDF 다운로드</button>
@@ -5083,6 +5084,7 @@ canvas.custom-chart {
                 <option value="원자재">🏭 원자재</option>
               </select>
               <input type="text" id="mgmtSearchInput" placeholder="거래처 검색..." style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.84rem;" oninput="renderVendorMgmtTable()">
+              <button class="btn btn-outline" onclick="openAllBankDocsModal()" style="background: #f0fdf4; color: #166534; border-color: #86efac; font-weight: 700;">📁 통장사본 보관함 (<span id="bankDocTotalBadge">26</span>)</button>
               <button class="btn btn-outline" onclick="exportVendorsToCSV()">📥 거래처 목록 저장</button>
             </div>
           </div>
@@ -5094,6 +5096,7 @@ canvas.custom-chart {
                   <th style="min-width: 170px;">업체명 (취급구분)</th>
                   <th>담당자</th>
                   <th>연락처</th>
+                  <th class="text-center" style="width: 105px;">통장사본</th>
                   <th>비고</th>
                   <th class="text-right">누적 매입액 (통합)</th>
                   <th class="text-center" style="width: 120px;">관리</th>
@@ -5137,6 +5140,10 @@ canvas.custom-chart {
               <select id="editVendorSelect" style="width: 100%; padding: 7px 10px; border-radius: 6px; border: 1.5px solid #3b82f6; font-size: 0.88rem; font-weight: 600; background: #fff;" onchange="onVendorEditSelectChange()">
                 <option value="">-- 수정할 거래처를 선택하세요 --</option>
               </select>
+              <div id="editVendorBankDocStatus" style="display: none; margin-top: 8px; padding: 8px 10px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; font-size: 0.8rem; align-items: center; justify-content: space-between;">
+                <span style="color: #166534; font-weight: 600;" id="editVendorBankDocText">📄 통장사본 등록됨</span>
+                <button type="button" class="btn btn-sm btn-outline" id="btnEditVendorBankDocView" style="color: #166534; border-color: #86efac; background: #fff; font-weight: 700; padding: 2px 8px;">👁️ 열람 / 인쇄</button>
+              </div>
             </div>
 
             <input type="hidden" id="editVendorOriginalName">
@@ -5596,12 +5603,74 @@ canvas.custom-chart {
     </div>
   </div>
 
+  <!-- ========================================== -->
+  <!-- VENDOR BANKBOOK VIEWER MODAL (통장사본 개별 열람/인쇄) -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" id="bankDocModal">
+    <div class="modal-card" style="max-width: 980px; max-height: 94vh;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 12px 18px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.3rem;">📄</span>
+          <div>
+            <h3 id="bankDocModalTitle" style="margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">거래처 통장사본</h3>
+            <p id="bankDocModalSub" style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-muted);"></p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <button class="btn btn-sm btn-outline" id="btnBankDocPrint" onclick="printCurrentBankDoc()" style="font-weight: 700; color: #166534; border-color: #86efac; background: #f0fdf4;">🖨️ 인쇄/PDF</button>
+          <button class="btn btn-sm btn-outline" id="btnBankDocNewTab" onclick="openCurrentBankDocNewTab()" style="font-weight: 600;">🔗 새 창 열기</button>
+          <button class="btn btn-sm btn-outline" id="btnBankDocDownload" onclick="downloadCurrentBankDoc()" style="font-weight: 600;">📥 다운로드</button>
+          <button class="modal-close" onclick="closeBankDocModal()" style="font-size: 1.2rem; cursor: pointer; padding: 4px 8px; border: none; background: none;">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" id="bankDocModalBody" style="padding: 12px; background: #0f172a; display: flex; align-items: center; justify-content: center; min-height: 480px; max-height: 76vh; overflow: auto; position: relative;">
+        <!-- Injected img or iframe -->
+      </div>
+      <div style="padding: 10px 18px; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary); font-size: 0.8rem; color: var(--text-muted);">
+        <span>💡 월마감 제출 시 거래명세표와 함께 인쇄하거나 별도 결재 서류로 첨부할 수 있습니다.</span>
+        <button class="btn btn-sm btn-outline" onclick="closeBankDocModal()">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- ALL VENDOR BANKBOOKS ARCHIVE MODAL (통장사본 전체 보관함) -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" id="allBankDocsModal">
+    <div class="modal-card" style="max-width: 960px; max-height: 90vh;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 14px 20px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.3rem;">📁</span>
+          <div>
+            <h3 style="margin: 0; font-size: 1.08rem; font-weight: 700; color: var(--text-primary);">거래처 통장사본 보관함 (<span id="allBankDocsCount">0</span>개사)</h3>
+            <p style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-muted);">월마감 제출 및 계좌 확인용 거래처 통장사본 통합 색인</p>
+          </div>
+        </div>
+        <button class="modal-close" onclick="closeAllBankDocsModal()" style="font-size: 1.2rem; cursor: pointer; padding: 4px 8px; border: none; background: none;">✕</button>
+      </div>
+      <div style="padding: 12px 20px; border-bottom: 1px solid var(--card-border); display: flex; gap: 10px; background: var(--bg-secondary); align-items: center;">
+        <input type="text" id="allBankDocsSearchInput" placeholder="🔍 업체명 또는 파일명 검색..." style="flex: 1; padding: 7px 12px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.85rem;" oninput="filterAllBankDocsList()">
+        <span style="font-size: 0.82rem; color: var(--text-muted); white-space: nowrap;">총 26개사 보관중</span>
+      </div>
+      <div class="modal-body" style="padding: 16px; max-height: 62vh; overflow-y: auto;">
+        <div id="allBankDocsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">
+          <!-- Injected Vendor Cards -->
+        </div>
+      </div>
+      <div style="padding: 12px 20px; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary); font-size: 0.8rem; color: var(--text-muted);">
+        <span>💡 파일 보관 폴더: <code>바탕화면 &gt; 소모품 대시보드 &gt; 통장사본</code></span>
+        <button class="btn btn-sm btn-outline" onclick="closeAllBankDocsModal()">닫기</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Load pre-compiled data -->
   <script src="data.js"></script>
   <script src="sub_data.js"></script>
   <script src="raw_data.js"></script>
   <script src="scrap_data.js?v=20261118"></script>
   <script src="pallet_data.js"></script>
+  <script src="vendor_bank_docs.js"></script>
 
   <!-- Main Application Script -->
   <script>
@@ -6064,7 +6133,7 @@ function initPwa() {
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=1.4').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=1.8').then(reg => {
         console.log('PWA ServiceWorker registered:', reg.scope);
         reg.update();
         reg.addEventListener('updatefound', () => {
@@ -6231,6 +6300,223 @@ function executePwaInstall() {
     closePwaModal();
     showToast('브라우저 메뉴(⋮)에서 [홈 화면에 추가]를 눌러주세요.', 'info');
   }
+}
+
+// ==========================================
+// 거래처 통장사본 뷰어 & 보관함 (Bankbook Viewer & Archive)
+// ==========================================
+let currentBankDocTarget = null;
+
+function openBankDocModal(vendorName) {
+  const doc = typeof getVendorBankDoc === 'function' ? getVendorBankDoc(vendorName) : null;
+  if (!doc) {
+    showToast(`'${vendorName}'의 등록된 통장사본이 없습니다.`, 'warning');
+    return;
+  }
+  currentBankDocTarget = doc;
+  
+  const titleEl = document.getElementById('bankDocModalTitle');
+  const subEl = document.getElementById('bankDocModalSub');
+  const bodyEl = document.getElementById('bankDocModalBody');
+  const modal = document.getElementById('bankDocModal');
+  
+  if (titleEl) titleEl.textContent = `📄 [통장사본] ${doc.vendor}`;
+  if (subEl) subEl.textContent = `파일명: ${doc.fileName} | 규격: ${doc.ext.toUpperCase()} (${doc.size})`;
+  
+  if (bodyEl) {
+    bodyEl.innerHTML = '';
+    const encodedPath = `통장사본/${encodeURIComponent(doc.fileName)}`;
+    
+    if (doc.type === 'pdf') {
+      const iframe = document.createElement('iframe');
+      iframe.src = encodedPath;
+      iframe.style.cssText = 'width: 100%; height: 75vh; border: none; border-radius: 6px; background: #ffffff;';
+      iframe.title = `${doc.vendor} 통장사본 PDF`;
+      bodyEl.appendChild(iframe);
+    } else {
+      const img = document.createElement('img');
+      img.src = encodedPath;
+      img.alt = `${doc.vendor} 통장사본`;
+      img.style.cssText = 'max-width: 100%; max-height: 75vh; object-fit: contain; border-radius: 6px; background: #ffffff; box-shadow: 0 4px 16px rgba(0,0,0,0.4);';
+      bodyEl.appendChild(img);
+    }
+  }
+  
+  if (modal) modal.classList.add('show');
+}
+
+function closeBankDocModal() {
+  const modal = document.getElementById('bankDocModal');
+  if (modal) modal.classList.remove('show');
+  const bodyEl = document.getElementById('bankDocModalBody');
+  if (bodyEl) bodyEl.innerHTML = '';
+  currentBankDocTarget = null;
+}
+
+function openCurrentVendorBankDoc() {
+  if (!currentClosingVendor) {
+    showToast('먼저 마감 대상 거래처를 선택해주세요.', 'warning');
+    return;
+  }
+  openBankDocModal(currentClosingVendor);
+}
+
+function printCurrentBankDoc() {
+  if (!currentBankDocTarget) return;
+  const doc = currentBankDocTarget;
+  const encodedPath = `통장사본/${encodeURIComponent(doc.fileName)}`;
+  
+  if (doc.type === 'pdf') {
+    const win = window.open(encodedPath, '_blank');
+    if (win) {
+      win.focus();
+      setTimeout(() => {
+        try { win.print(); } catch (e) {}
+      }, 700);
+    }
+  } else {
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+      showToast('팝업 차단이 감지되었습니다. 팝업을 허용해주세요.', 'warning');
+      return;
+    }
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>[통장사본] ${escapeHtml(doc.vendor)}</title>
+        <style>
+          @page { size: A4 portrait; margin: 10mm; }
+          body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; }
+          .header { width: 100%; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+          .title { font-size: 16pt; font-weight: 800; color: #0f172a; }
+          .meta { font-size: 9pt; color: #64748b; }
+          .doc-container { width: 100%; display: flex; justify-content: center; align-items: center; flex: 1; }
+          img { max-width: 100%; max-height: 85vh; object-fit: contain; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div class="title">📄 거래처 통장사본 — ${escapeHtml(doc.vendor)}</div>
+          <div class="meta">월마감 제출 증빙 서류 | 출력일: ${new Date().toISOString().substring(0, 10)}</div>
+        </div>
+        <div class="doc-container">
+          <img src="${encodedPath}" onload="window.print();" />
+        </div>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
+  }
+}
+
+function openCurrentBankDocNewTab() {
+  if (!currentBankDocTarget) return;
+  const encodedPath = `통장사본/${encodeURIComponent(currentBankDocTarget.fileName)}`;
+  window.open(encodedPath, '_blank');
+}
+
+function downloadCurrentBankDoc() {
+  if (!currentBankDocTarget) return;
+  const encodedPath = `통장사본/${encodeURIComponent(currentBankDocTarget.fileName)}`;
+  const a = document.createElement('a');
+  a.href = encodedPath;
+  a.download = currentBankDocTarget.fileName;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  showToast(`'${currentBankDocTarget.fileName}' 다운로드를 시작합니다.`, 'info');
+}
+
+function openAllBankDocsModal() {
+  const modal = document.getElementById('allBankDocsModal');
+  const countEl = document.getElementById('allBankDocsCount');
+  const searchInput = document.getElementById('allBankDocsSearchInput');
+  
+  if (searchInput) searchInput.value = '';
+  
+  if (!window.VENDOR_BANK_DOCS) {
+    showToast('통장사본 데이터를 불러올 수 없습니다.', 'warning');
+    return;
+  }
+  
+  const entries = Object.values(window.VENDOR_BANK_DOCS);
+  if (countEl) countEl.textContent = entries.length;
+  
+  renderAllBankDocsGrid(entries);
+  if (modal) modal.classList.add('show');
+}
+
+function closeAllBankDocsModal() {
+  const modal = document.getElementById('allBankDocsModal');
+  if (modal) modal.classList.remove('show');
+}
+
+function filterAllBankDocsList() {
+  const query = (document.getElementById('allBankDocsSearchInput')?.value || '').toLowerCase().trim();
+  if (!window.VENDOR_BANK_DOCS) return;
+  
+  const entries = Object.values(window.VENDOR_BANK_DOCS);
+  const filtered = query ? entries.filter(d => 
+    d.vendor.toLowerCase().includes(query) || 
+    d.fileName.toLowerCase().includes(query) ||
+    d.ext.toLowerCase().includes(query)
+  ) : entries;
+  
+  renderAllBankDocsGrid(filtered);
+}
+
+function renderAllBankDocsGrid(entries) {
+  const gridEl = document.getElementById('allBankDocsGrid');
+  if (!gridEl) return;
+  
+  gridEl.innerHTML = '';
+  
+  if (!entries || entries.length === 0) {
+    gridEl.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px 16px; color: var(--text-muted); font-size: 0.9rem;">
+        일치하는 거래처 통장사본이 없습니다.
+      </div>`;
+    return;
+  }
+  
+  entries.forEach(doc => {
+    const card = document.createElement('div');
+    card.style.cssText = 'background: var(--card-bg, #fff); border: 1px solid var(--card-border, #e2e8f0); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); transition: transform 0.15s, box-shadow 0.15s;';
+    card.onmouseenter = () => { card.style.transform = 'translateY(-2px)'; card.style.boxShadow = '0 4px 10px rgba(0,0,0,0.08)'; };
+    card.onmouseleave = () => { card.style.transform = 'translateY(0)'; card.style.boxShadow = '0 1px 3px rgba(0,0,0,0.05)'; };
+    
+    const extColor = doc.ext === 'pdf' ? '#ef4444' : '#0284c7';
+    const extBg = doc.ext === 'pdf' ? '#fee2e2' : '#e0f2fe';
+    
+    card.innerHTML = `
+      <div>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+          <strong style="font-size: 0.98rem; color: var(--text-primary);">${escapeHtml(doc.vendor)}</strong>
+          <span style="font-size: 0.72rem; font-weight: 700; color: ${extColor}; background: ${extBg}; padding: 1px 6px; border-radius: 4px;">${doc.ext.toUpperCase()}</span>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(doc.fileName)}">
+          📄 ${escapeHtml(doc.fileName)}
+        </div>
+        <div style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 2px;">
+          파일크기: ${doc.size}
+        </div>
+      </div>
+      <div style="display: flex; gap: 6px; border-top: 1px solid var(--card-border, #f1f5f9); padding-top: 8px; margin-top: 4px;">
+        <button class="btn btn-sm btn-outline" style="flex: 1; font-weight: 700; color: #166534; border-color: #86efac; background: #f0fdf4; padding: 4px;" onclick="openBankDocModal('${escapeHtml(doc.vendor)}')">👁️ 열람</button>
+        <button class="btn btn-sm btn-outline" style="flex: 1; font-weight: 600; padding: 4px;" onclick="printBankDocByVendor('${escapeHtml(doc.vendor)}')">🖨️ 인쇄</button>
+      </div>
+    `;
+    gridEl.appendChild(card);
+  });
+}
+
+function printBankDocByVendor(v) {
+  openBankDocModal(v);
+  setTimeout(() => {
+    printCurrentBankDoc();
+  }, 400);
 }
 
 function triggerAppInit() {
@@ -8880,6 +9166,8 @@ function renderClosingView() {
     const rawList = Array.from(monthlyRawMap[v] || [v]);
     const isMerged = rawList.length > 1;
     const mergeBadge = isMerged ? `<span style="font-size: 0.68rem; color: #4338ca; background: #e0e7ff; padding: 1px 5px; border-radius: 4px; font-weight: 600; margin-left: 4px;" title="통합된 원본 명칭 (${rawList.length}개): ${rawList.join(', ')}">통합 ${rawList.length}</span>` : '';
+    const hasBankDoc = typeof getVendorBankDoc === 'function' ? getVendorBankDoc(v) : null;
+    const bankBadge = hasBankDoc ? `<span title="통장사본 등록됨 (${hasBankDoc.ext.toUpperCase()})" onclick="event.stopPropagation(); openBankDocModal('${escapeHtml(v)}')" style="cursor: pointer; background: #dcfce7; color: #166534; border: 1px solid #86efac; font-size: 0.68rem; padding: 1px 4px; border-radius: 3px; margin-left: 4px; font-weight: 600;">통장📄</span>` : '';
 
     const li = document.createElement('li');
     li.className = 'vendor-item' + (currentClosingVendor === v ? ' active' : '');
@@ -8887,6 +9175,7 @@ function renderClosingView() {
       <span style="display: flex; align-items: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
         <span style="overflow: hidden; text-overflow: ellipsis;">${escapeHtml(v)}</span>
         ${mergeBadge}
+        ${bankBadge}
       </span>
       <span class="vendor-badge">${formatCompactCurrency(monthlyVendors[v])}</span>
     `;
@@ -9195,6 +9484,19 @@ function saveAndApplyReportEdits() {
 
 function renderPrintableReport() {
   document.getElementById('reportVendorName').textContent = currentClosingVendor || '전체 거래처';
+
+  // Update Vendor Bankbook copy button
+  const bankDoc = typeof getVendorBankDoc === 'function' ? getVendorBankDoc(currentClosingVendor) : null;
+  const bankDocBtn = document.getElementById('btnVendorBankDoc');
+  if (bankDocBtn) {
+    if (bankDoc) {
+      bankDocBtn.style.display = 'inline-flex';
+      bankDocBtn.innerHTML = `📄 통장사본 (${bankDoc.ext.toUpperCase()})`;
+      bankDocBtn.title = `${currentClosingVendor} 통장사본 (${bankDoc.fileName}) 열람 및 인쇄`;
+    } else {
+      bankDocBtn.style.display = 'none';
+    }
+  }
   
   const ym = currentClosingMonth;
   if (ym) {
@@ -9532,6 +9834,17 @@ function renderVendorMgmtTable() {
     const rawList = vRawNames[v] ? Array.from(vRawNames[v]) : [v];
     const mergeBadge = rawList.length > 1 ? `<span class="badge" style="background:#e0e7ff; color:#3730a3; font-size:0.68rem; padding:1px 4px; border-radius:3px; margin-left:4px;" title="통합된 표기 (${rawList.length}개): ${rawList.join(', ')}">통합 ${rawList.length}</span>` : '';
 
+    const bankDoc = typeof getVendorBankDoc === 'function' ? getVendorBankDoc(v) : null;
+    const bankCell = bankDoc ? `
+      <td class="text-center" style="white-space: nowrap;">
+        <button class="btn btn-sm" onclick="openBankDocModal('${escapeHtml(v)}')" style="background:#dcfce7; color:#166534; border:1px solid #86efac; font-weight:700; padding:2px 7px; border-radius:4px; font-size:0.75rem;" title="${escapeHtml(bankDoc.fileName)} (${bankDoc.size})">
+          📄 사본 (${bankDoc.ext.toUpperCase()})
+        </button>
+      </td>
+    ` : `
+      <td class="text-center" style="color:#cbd5e1; font-size:0.75rem;">-</td>
+    `;
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td>
@@ -9543,6 +9856,7 @@ function renderVendorMgmtTable() {
       </td>
       <td>${info.contact ? escapeHtml(info.contact) : '<span style="color:#aaa;">-</span>'}</td>
       <td>${info.phone ? escapeHtml(info.phone) : '<span style="color:#aaa;">-</span>'}</td>
+      ${bankCell}
       <td style="color: var(--slate-600);">${info.remarks ? escapeHtml(info.remarks) : ''}</td>
       <td class="text-right" style="font-weight: 700; color: #1e3a8a; font-size:0.92rem;">${formatCurrency(vTotals[v] || 0)}</td>
       <td class="text-center" style="white-space: nowrap;">
@@ -9650,6 +9964,9 @@ function loadVendorIntoEditFields(v) {
   const contactEl = document.getElementById('editFormContactPerson');
   const phoneEl = document.getElementById('editFormContactPhone');
   const remarksEl = document.getElementById('editFormRemarks');
+  const statusEl = document.getElementById('editVendorBankDocStatus');
+  const textEl = document.getElementById('editVendorBankDocText');
+  const btnEl = document.getElementById('btnEditVendorBankDocView');
 
   if (!v) {
     if (origEl) origEl.value = '';
@@ -9657,6 +9974,7 @@ function loadVendorIntoEditFields(v) {
     if (contactEl) contactEl.value = '';
     if (phoneEl) phoneEl.value = '';
     if (remarksEl) remarksEl.value = '';
+    if (statusEl) statusEl.style.display = 'none';
     return;
   }
 
@@ -9666,6 +9984,18 @@ function loadVendorIntoEditFields(v) {
   if (contactEl) contactEl.value = info.contact || '';
   if (phoneEl) phoneEl.value = info.phone || '';
   if (remarksEl) remarksEl.value = info.remarks || '';
+
+  // Bank Doc status display
+  const bankDoc = typeof getVendorBankDoc === 'function' ? getVendorBankDoc(v) : null;
+  if (statusEl) {
+    if (bankDoc) {
+      statusEl.style.display = 'flex';
+      if (textEl) textEl.innerHTML = `📄 <strong>통장사본:</strong> ${escapeHtml(bankDoc.fileName)} (${bankDoc.size})`;
+      if (btnEl) btnEl.onclick = () => openBankDocModal(v);
+    } else {
+      statusEl.style.display = 'none';
+    }
+  }
 }
 
 function onVendorEditSelectChange() {

@@ -1,4 +1,4 @@
-# Simple HTTP Static Server for Windows PowerShell
+﻿# Simple HTTP Static Server for Windows PowerShell
 param(
     [int]$Port = 8080
 )
@@ -33,6 +33,7 @@ $mimeTypes = @{
     ".gif"  = "image/gif"
     ".svg"  = "image/svg+xml"
     ".ico"  = "image/x-icon"
+    ".pdf"  = "application/pdf"
 }
 
 $root = $PSScriptRoot

@@ -81,7 +81,8 @@ public class LanDashboardServer {
         { ".txt",  "text/plain; charset=utf-8" },
         { ".woff", "font/woff" },
         { ".woff2","font/woff2" },
-        { ".ttf",  "font/ttf" }
+        { ".ttf",  "font/ttf" },
+        { ".pdf",  "application/pdf" }
     };
 
     public bool Start(string rootDir, int port) {
