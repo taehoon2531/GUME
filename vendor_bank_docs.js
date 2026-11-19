@@ -262,6 +262,15 @@ window.VENDOR_BANK_DOCS = {
     type: "image",
     size: "1.5 MB",
     rawVendor: "삼양연마, 삼양연마B&S"
+  },
+  "유신산업": {
+    vendor: "유신산업",
+    fileName: "유신산업 기업은행통장사본.pdf",
+    path: "통장사본/유신산업 기업은행통장사본.pdf",
+    ext: "pdf",
+    type: "pdf",
+    size: "239 KB",
+    rawVendor: "유신산업, (주)유신산업"
   }
 };
 
