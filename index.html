@@ -3093,14 +3093,174 @@ canvas.custom-chart {
 .pallet-addon-item:hover {
   background: var(--primary-bg);
 }
-@media (max-width: 600px) {
+/* ─── Wooden Pallet & Box Calculator Mobile & Table Optimizations ─── */
+#accCbmTable {
+  max-height: 460px;
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x pan-y !important;
+  border-radius: 0 0 8px 8px;
+}
+#accCbmTable table {
+  width: 100%;
+  min-width: 720px !important;
+  border-collapse: collapse;
+  white-space: nowrap !important;
+}
+#accCbmTable thead th {
+  white-space: nowrap !important;
+  position: sticky;
+  top: 0;
+  background: var(--slate-100);
+  z-index: 2;
+  padding: 10px 14px;
+}
+#accCbmTable thead th:first-child {
+  position: sticky;
+  left: 0;
+  top: 0;
+  background: var(--slate-100);
+  z-index: 4;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.06);
+}
+#palletCbmTableBody td {
+  padding: 8px 12px;
+  white-space: nowrap !important;
+}
+#palletCbmTableBody td:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--card-bg);
+  z-index: 1;
+  font-weight: 700;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.06);
+}
+[data-theme="dark"] #accCbmTable thead th {
+  background: var(--slate-800);
+}
+[data-theme="dark"] #accCbmTable thead th:first-child {
+  background: var(--slate-800);
+}
+[data-theme="dark"] #palletCbmTableBody td:first-child {
+  background: var(--card-bg);
+}
+#palletCbmTableBody tr:hover td:first-child {
+  background: var(--slate-100);
+}
+[data-theme="dark"] #palletCbmTableBody tr:hover td:first-child {
+  background: var(--slate-800);
+}
+
+.cbm-diff-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.cbm-diff-badge.winner-cheonwoo {
+  color: #065f46;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+}
+.cbm-diff-badge.winner-yuseong {
+  color: #1e40af;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+}
+.cbm-diff-badge.same {
+  color: var(--text-muted);
+  background: var(--slate-100);
+}
+[data-theme="dark"] .cbm-diff-badge.winner-cheonwoo {
+  background: rgba(6, 95, 70, 0.25);
+  border-color: #059669;
+  color: #6ee7b7;
+}
+[data-theme="dark"] .cbm-diff-badge.winner-yuseong {
+  background: rgba(30, 64, 175, 0.25);
+  border-color: #2563eb;
+  color: #93c5fd;
+}
+
+.pallet-scroll-hint-bar {
+  display: none;
+  padding: 8px 12px;
+  background: #eff6ff;
+  color: #1e40af;
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-bottom: 1px solid #bfdbfe;
+  align-items: center;
+  justify-content: space-between;
+}
+[data-theme="dark"] .pallet-scroll-hint-bar {
+  background: rgba(30, 64, 175, 0.15);
+  color: #93c5fd;
+  border-color: rgba(30, 64, 175, 0.3);
+}
+
+.vendor-swipe-hint {
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+  padding: 4px 6px;
+  margin-bottom: 6px;
+}
+
+@media (max-width: 768px) {
+  .pallet-scroll-hint-bar {
+    display: flex !important;
+  }
+  .vendor-swipe-hint {
+    display: flex !important;
+  }
   #palletStandardDimBlock > div:first-child {
     grid-template-columns: repeat(2, 1fr) !important;
   }
   .pallet-grid {
     grid-template-columns: 1fr !important;
   }
+  #palletCompareWinnerBanner {
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+  #palletCompareWinnerBanner > div:first-child {
+    width: 100% !important;
+  }
+  #palletCompareWinnerBanner button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+  /* Vendor Cards Grid on Mobile: Smooth Horizontal Swipe */
   #palletVendorCardsGrid {
+    display: flex !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    scroll-snap-type: x mandatory !important;
+    gap: 12px !important;
+    padding-bottom: 8px !important;
+    touch-action: pan-x pan-y !important;
+    grid-template-columns: none !important;
+  }
+  #palletVendorCardsGrid > .pallet-vendor-card {
+    flex: 0 0 calc(100% - 28px) !important;
+    min-width: 270px !important;
+    max-width: 360px !important;
+    scroll-snap-align: start !important;
+    box-sizing: border-box !important;
+  }
+  #palletVendorCardsGrid.single-mode > .pallet-vendor-card {
+    flex: 1 0 100% !important;
+    max-width: 100% !important;
+  }
+  .plywood-grid {
     grid-template-columns: 1fr !important;
   }
 }
@@ -4359,7 +4519,7 @@ canvas.custom-chart {
               <div style="display: flex; align-items: center; gap: 10px;">
                 <span style="font-size: 1.6rem;">🏆</span>
                 <div>
-                  <div id="palletWinnerTitle" style="font-size: 0.95rem; font-weight: 800;">
+                  <div id="palletWinnerTitle" style="font-size: 0.95rem; font-weight: 800; word-break: keep-all;">
                     천우수출포장이 15,829원 더 저렴합니다!
                   </div>
                   <div id="palletWinnerDesc" style="font-size: 0.78rem; opacity: 0.9; margin-top: 2px;">
@@ -4370,6 +4530,12 @@ canvas.custom-chart {
               <button class="btn btn-sm btn-outline" onclick="copyPalletQuoteText()" style="background: white; border-color: #10b981; color: #065f46; font-weight: 700; white-space: nowrap;">
                 📋 견적 복사
               </button>
+            </div>
+
+            <!-- Mobile Swipe Hint for Vendor Cards -->
+            <div class="vendor-swipe-hint">
+              <span>👉 좌우로 스와이프하여 유성 / 천우 견적 카드를 비교할 수 있습니다</span>
+              <span style="font-weight: 700; color: var(--primary);">↔ 스와이프</span>
             </div>
 
             <!-- Vendor Cards Grid (유성 vs 천우) -->
@@ -4385,25 +4551,25 @@ canvas.custom-chart {
                 <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; margin-bottom: 8px;">
                   <div style="display: flex; justify-content: space-between;">
                     <span style="color: var(--text-muted);">기준 단가:</span>
-                    <b id="valYuseongBasePrice" style="font-family: monospace;">₩74,390</b>
+                    <b id="valYuseongBasePrice" style="font-family: monospace; white-space: nowrap;">₩74,390</b>
                   </div>
                   <div style="display: flex; justify-content: space-between;">
                     <span style="color: var(--text-muted);">할증/옵션:</span>
-                    <span id="valYuseongSurcharge" style="font-family: monospace;">+₩0</span>
+                    <span id="valYuseongSurcharge" style="font-family: monospace; white-space: nowrap;">+₩0</span>
                   </div>
                   <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--card-border); padding-top: 4px;">
                     <span style="color: var(--text-secondary); font-weight: 600;">공급가액:</span>
-                    <b id="valYuseongSupplyPrice" style="color: var(--primary); font-family: monospace;">₩74,390</b>
+                    <b id="valYuseongSupplyPrice" style="color: var(--primary); font-family: monospace; white-space: nowrap;">₩74,390</b>
                   </div>
                   <div style="display: flex; justify-content: space-between;">
                     <span style="color: var(--text-muted);">부가세 (10%):</span>
-                    <span id="valYuseongVat" style="font-family: monospace;">₩7,439</span>
+                    <span id="valYuseongVat" style="font-family: monospace; white-space: nowrap;">₩7,439</span>
                   </div>
                 </div>
 
-                <div style="border-top: 1.5px solid var(--card-border); padding-top: 6px; display: flex; justify-content: space-between; align-items: baseline;">
-                  <span style="font-size: 0.78rem; font-weight: 800; color: var(--text-primary);">총 합계:</span>
-                  <b id="valYuseongTotal" style="font-size: 1.25rem; font-weight: 900; color: #1e3a8a; font-family: monospace;">₩81,829</b>
+                <div style="border-top: 1.5px solid var(--card-border); padding-top: 6px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+                  <span style="font-size: 0.78rem; font-weight: 800; color: var(--text-primary); white-space: nowrap;">총 합계:</span>
+                  <b id="valYuseongTotal" style="font-size: 1.25rem; font-weight: 900; color: #1e3a8a; font-family: monospace; white-space: nowrap;">₩81,829</b>
                 </div>
               </div>
 
@@ -4417,25 +4583,25 @@ canvas.custom-chart {
                 <div style="display: flex; flex-direction: column; gap: 4px; font-size: 0.8rem; margin-bottom: 8px;">
                   <div style="display: flex; justify-content: space-between;">
                     <span style="color: var(--text-muted);">기준 단가:</span>
-                    <b id="valCheonwooBasePrice" style="font-family: monospace;">₩60,000</b>
+                    <b id="valCheonwooBasePrice" style="font-family: monospace; white-space: nowrap;">₩60,000</b>
                   </div>
                   <div style="display: flex; justify-content: space-between;">
                     <span style="color: var(--text-muted);">할증/옵션:</span>
-                    <span id="valCheonwooSurcharge" style="font-family: monospace;">+₩0</span>
+                    <span id="valCheonwooSurcharge" style="font-family: monospace; white-space: nowrap;">+₩0</span>
                   </div>
                   <div style="display: flex; justify-content: space-between; border-top: 1px dashed var(--card-border); padding-top: 4px;">
                     <span style="color: var(--text-secondary); font-weight: 600;">공급가액:</span>
-                    <b id="valCheonwooSupplyPrice" style="color: #059669; font-family: monospace;">₩60,000</b>
+                    <b id="valCheonwooSupplyPrice" style="color: #059669; font-family: monospace; white-space: nowrap;">₩60,000</b>
                   </div>
                   <div style="display: flex; justify-content: space-between;">
                     <span style="color: var(--text-muted);">부가세 (10%):</span>
-                    <span id="valCheonwooVat" style="font-family: monospace;">₩6,000</span>
+                    <span id="valCheonwooVat" style="font-family: monospace; white-space: nowrap;">₩6,000</span>
                   </div>
                 </div>
 
-                <div style="border-top: 1.5px solid var(--card-border); padding-top: 6px; display: flex; justify-content: space-between; align-items: baseline;">
-                  <span style="font-size: 0.78rem; font-weight: 800; color: var(--text-primary);">총 합계:</span>
-                  <b id="valCheonwooTotal" style="font-size: 1.25rem; font-weight: 900; color: #059669; font-family: monospace;">₩66,000</b>
+                <div style="border-top: 1.5px solid var(--card-border); padding-top: 6px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px;">
+                  <span style="font-size: 0.78rem; font-weight: 800; color: var(--text-primary); white-space: nowrap;">총 합계:</span>
+                  <b id="valCheonwooTotal" style="font-size: 1.25rem; font-weight: 900; color: #059669; font-family: monospace; white-space: nowrap;">₩66,000</b>
                 </div>
                 <div id="cheonwooOverNotice" style="display: none; font-size: 0.72rem; color: #d97706; margin-top: 4px;">
                   ※ 2.0 CBM 초과 규격: 별도 협의 단가 적용
@@ -4473,16 +4639,23 @@ canvas.custom-chart {
                 <span id="iconAccCbmTable" style="font-size: 0.9rem; color: var(--text-muted); transition: transform 0.2s;">▼</span>
               </div>
             </div>
-            <div id="accCbmTable" style="max-height: 420px; overflow-y: auto; padding: 0;">
-              <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+
+            <!-- Mobile Horizontal Swipe Hint Bar -->
+            <div class="pallet-scroll-hint-bar">
+              <span>👉 표를 좌우로 드래그하면 두 업체의 상세 금액과 저렴한 업체를 확인할 수 있습니다.</span>
+              <span style="font-size: 0.85rem; font-weight: 700;">↔ 스크롤</span>
+            </div>
+
+            <div id="accCbmTable" style="max-height: 440px; overflow-y: auto; overflow-x: auto; -webkit-overflow-scrolling: touch; padding: 0;">
+              <table class="data-table" style="width: 100%; min-width: 720px; border-collapse: collapse; font-size: 0.8rem; white-space: nowrap;">
                 <thead style="position: sticky; top: 0; background: var(--slate-100); z-index: 2;">
                   <tr>
-                    <th style="width: 80px; text-align: center;">CBM</th>
-                    <th style="text-align: right; color: #1e3a8a;">유성 내수용</th>
-                    <th style="text-align: right; color: #1e3a8a;">유성 수출용</th>
-                    <th style="text-align: right; color: #065f46;">천우 내수용</th>
-                    <th style="text-align: right; color: #065f46;">천우 수출용</th>
-                    <th style="text-align: center; width: 140px;">가격 비교 (내수 기준)</th>
+                    <th style="width: 75px; min-width: 75px; text-align: center; position: sticky; left: 0; background: var(--slate-100); z-index: 4; border-right: 1px solid var(--card-border);">CBM</th>
+                    <th style="min-width: 110px; text-align: right; color: #1e3a8a;">유성 내수용</th>
+                    <th style="min-width: 110px; text-align: right; color: #1e3a8a;">유성 수출용</th>
+                    <th style="min-width: 110px; text-align: right; color: #065f46;">천우 내수용</th>
+                    <th style="min-width: 110px; text-align: right; color: #065f46;">천우 수출용</th>
+                    <th style="min-width: 170px; text-align: center;">어디업체가 더 저렴한지 (내수)</th>
                   </tr>
                 </thead>
                 <tbody id="palletCbmTableBody"></tbody>
@@ -4499,29 +4672,31 @@ canvas.custom-chart {
               <span id="iconAccPlywoodTable" style="font-size: 0.9rem; color: var(--text-muted); transition: transform 0.2s;">▶</span>
             </div>
             <div id="accPlywoodTable" style="display: none; padding: 1.25rem;">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;" class="plywood-grid">
                 <div>
                   <h4 style="font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);">
                     🗂️ 칸막이 합판 기준 단가표 (합판 7T 및 공임비용 포함)
                   </h4>
-                  <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.78rem;">
-                    <thead>
-                      <tr>
-                        <th>구분</th>
-                        <th style="text-align: right;">단가 (원)</th>
-                        <th>비고</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr><td>4칸 이하</td><td style="text-align: right; font-weight: 700;">4,000</td><td>합판 7T 비용포함</td></tr>
-                      <tr><td>8칸 이하</td><td style="text-align: right; font-weight: 700;">9,000</td><td>칸막이 공임비용 포함</td></tr>
-                      <tr><td>12칸 이하</td><td style="text-align: right; font-weight: 700;">24,000</td><td></td></tr>
-                      <tr><td>18칸 이하</td><td style="text-align: right; font-weight: 700;">29,000</td><td></td></tr>
-                      <tr><td>36칸 이하</td><td style="text-align: right; font-weight: 700;">39,000</td><td></td></tr>
-                      <tr><td>50칸 이하</td><td style="text-align: right; font-weight: 700;">49,000</td><td></td></tr>
-                      <tr><td>50칸 초과</td><td style="text-align: right; font-weight: 700;">90,000</td><td>특대형 칸막이</td></tr>
-                    </tbody>
-                  </table>
+                  <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                    <table class="data-table" style="width: 100%; min-width: 280px; border-collapse: collapse; font-size: 0.78rem;">
+                      <thead>
+                        <tr>
+                          <th>구분</th>
+                          <th style="text-align: right;">단가 (원)</th>
+                          <th>비고</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr><td>4칸 이하</td><td style="text-align: right; font-weight: 700;">4,000</td><td>합판 7T 비용포함</td></tr>
+                        <tr><td>8칸 이하</td><td style="text-align: right; font-weight: 700;">9,000</td><td>칸막이 공임비용 포함</td></tr>
+                        <tr><td>12칸 이하</td><td style="text-align: right; font-weight: 700;">24,000</td><td></td></tr>
+                        <tr><td>18칸 이하</td><td style="text-align: right; font-weight: 700;">29,000</td><td></td></tr>
+                        <tr><td>36칸 이하</td><td style="text-align: right; font-weight: 700;">39,000</td><td></td></tr>
+                        <tr><td>50칸 이하</td><td style="text-align: right; font-weight: 700;">49,000</td><td></td></tr>
+                        <tr><td>50칸 초과</td><td style="text-align: right; font-weight: 700;">90,000</td><td>특대형 칸막이</td></tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
                 <div>
                   <h4 style="font-size: 0.88rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary);">
@@ -4554,26 +4729,28 @@ canvas.custom-chart {
               <span id="iconAccSurchargeTable" style="font-size: 0.9rem; color: var(--text-muted); transition: transform 0.2s;">▶</span>
             </div>
             <div id="accSurchargeTable" style="display: none; padding: 1.25rem;">
-              <table class="data-table" style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
-                <thead>
-                  <tr>
-                    <th>구분 / 항목</th>
-                    <th>단가 / 할증 기준</th>
-                    <th>상세 설명</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr><td>기타 각재 및 팔레트</td><td><b>종전 단가에서 19% 인상</b></td><td>특이 사양 일체의 것은 충전단가 19% 인상된 가격 적용</td></tr>
-                  <tr><td>MAN 수출박스 (중량포장)</td><td><b>+4,000원 추가</b></td><td>기존 단가에서 4천원 추가 (1500×1500 이상 4천원)</td></tr>
-                  <tr><td>원통코어 박스</td><td><b>+15,000원 추가</b></td><td>원통 코어 형태 지지 구조 제작비용</td></tr>
-                  <tr><td>특수형 판체박스</td><td><b>25,000원</b></td><td>700 × 520 × 300 mm 규격</td></tr>
-                  <tr><td>유기명 판체박스</td><td><b>30,000원</b></td><td>750 × 520 × 330 mm 규격</td></tr>
-                  <tr><td>지게차 4M 가로 1면</td><td><b>+5,000원 추가</b></td><td>CBM 단가 + 개당 5,000원 추가</td></tr>
-                  <tr><td>지게차 4M 가로·세로 양면</td><td><b>+10,000원 추가</b></td><td>CBM 단가 + 개당 10,000원 추가</td></tr>
-                  <tr><td>대차 포장</td><td><b>CBM당 25,000원</b></td><td>체적당 단가 적용</td></tr>
-                  <tr><td>철대 파렛트</td><td><b>CBM당 22,000원</b></td><td>체적당 단가 적용</td></tr>
-                </tbody>
-              </table>
+              <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                <table class="data-table" style="width: 100%; min-width: 580px; border-collapse: collapse; font-size: 0.8rem; white-space: nowrap;">
+                  <thead>
+                    <tr>
+                      <th>구분 / 항목</th>
+                      <th>단가 / 할증 기준</th>
+                      <th>상세 설명</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr><td>기타 각재 및 팔레트</td><td><b>종전 단가에서 19% 인상</b></td><td>특이 사양 일체의 것은 충전단가 19% 인상된 가격 적용</td></tr>
+                    <tr><td>MAN 수출박스 (중량포장)</td><td><b>+4,000원 추가</b></td><td>기존 단가에서 4천원 추가 (1500×1500 이상 4천원)</td></tr>
+                    <tr><td>원통코어 박스</td><td><b>+15,000원 추가</b></td><td>원통 코어 형태 지지 구조 제작비용</td></tr>
+                    <tr><td>특수형 판체박스</td><td><b>25,000원</b></td><td>700 × 520 × 300 mm 규격</td></tr>
+                    <tr><td>유기명 판체박스</td><td><b>30,000원</b></td><td>750 × 520 × 330 mm 규격</td></tr>
+                    <tr><td>지게차 4M 가로 1면</td><td><b>+5,000원 추가</b></td><td>CBM 단가 + 개당 5,000원 추가</td></tr>
+                    <tr><td>지게차 4M 가로·세로 양면</td><td><b>+10,000원 추가</b></td><td>CBM 단가 + 개당 10,000원 추가</td></tr>
+                    <tr><td>대차 포장</td><td><b>CBM당 25,000원</b></td><td>체적당 단가 적용</td></tr>
+                    <tr><td>철대 파렛트</td><td><b>CBM당 22,000원</b></td><td>체적당 단가 적용</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
@@ -11902,19 +12079,32 @@ function setPalletVendorMode(mode) {
   const cardYuseong = document.getElementById('cardVendorYuseong');
   const cardCheonwoo = document.getElementById('cardVendorCheonwoo');
   const banner = document.getElementById('palletCompareWinnerBanner');
+  const swipeHint = document.querySelector('.vendor-swipe-hint');
+  const grid = document.getElementById('palletVendorCardsGrid');
+
+  if (grid) {
+    if (mode === 'compare') {
+      grid.classList.remove('single-mode');
+    } else {
+      grid.classList.add('single-mode');
+    }
+  }
 
   if (mode === 'compare') {
     if (cardYuseong) cardYuseong.style.display = 'block';
     if (cardCheonwoo) cardCheonwoo.style.display = 'block';
     if (banner) banner.style.display = 'flex';
+    if (swipeHint) swipeHint.style.display = '';
   } else if (mode === 'yuseong') {
     if (cardYuseong) cardYuseong.style.display = 'block';
     if (cardCheonwoo) cardCheonwoo.style.display = 'none';
     if (banner) banner.style.display = 'none';
+    if (swipeHint) swipeHint.style.display = 'none';
   } else if (mode === 'cheonwoo') {
     if (cardYuseong) cardYuseong.style.display = 'none';
     if (cardCheonwoo) cardCheonwoo.style.display = 'block';
     if (banner) banner.style.display = 'none';
+    if (swipeHint) swipeHint.style.display = 'none';
   }
 }
 
@@ -12291,24 +12481,24 @@ function renderPalletCbmTable() {
     if (r.cheonwoo_domestic) {
       const diff = r.yuseong_domestic - r.cheonwoo_domestic;
       if (diff > 0) {
-        diffBadge = `<span style="color:#059669; font-weight:700;">천우 ▼${formatNumber(diff)}원 저렴</span>`;
+        diffBadge = `<span class="cbm-diff-badge winner-cheonwoo">천우 ▼${formatNumber(diff)}원 저렴</span>`;
       } else if (diff < 0) {
-        diffBadge = `<span style="color:#2563eb; font-weight:700;">유성 ▼${formatNumber(Math.abs(diff))}원 저렴</span>`;
+        diffBadge = `<span class="cbm-diff-badge winner-yuseong">유성 ▼${formatNumber(Math.abs(diff))}원 저렴</span>`;
       } else {
-        diffBadge = `<span style="color:var(--text-muted);">동일</span>`;
+        diffBadge = `<span class="cbm-diff-badge same">동일 (-)</span>`;
       }
     } else {
-      diffBadge = `<span style="color:#d97706; font-size:0.72rem;">천우 협의요망</span>`;
+      diffBadge = `<span style="color:#d97706; font-size:0.72rem; padding: 2px 6px; background: #fef3c7; border-radius: 4px; font-weight: 600;">천우 협의요망</span>`;
     }
 
     html += `
       <tr id="cbm_row_${cbmStr.replace('.', '_')}" style="cursor: pointer;" onclick="applyPalletCbmDirect(${r.cbm})">
         <td style="text-align: center; font-weight: 700; font-family: monospace;">${cbmStr}</td>
-        <td style="text-align: right; font-family: monospace;">${formatNumber(r.yuseong_domestic)}</td>
-        <td style="text-align: right; font-family: monospace;">${formatNumber(r.yuseong_export)}</td>
-        <td style="text-align: right; font-family: monospace;">${r.cheonwoo_domestic ? formatNumber(r.cheonwoo_domestic) : '-'}</td>
-        <td style="text-align: right; font-family: monospace;">${r.cheonwoo_export ? formatNumber(r.cheonwoo_export) : '-'}</td>
-        <td style="text-align: center; font-size: 0.76rem;">${diffBadge}</td>
+        <td style="text-align: right; font-family: monospace; font-weight: 600; color: #1e3a8a;">${formatNumber(r.yuseong_domestic)}원</td>
+        <td style="text-align: right; font-family: monospace; color: var(--text-secondary);">${formatNumber(r.yuseong_export)}원</td>
+        <td style="text-align: right; font-family: monospace; font-weight: 600; color: #065f46;">${r.cheonwoo_domestic ? formatNumber(r.cheonwoo_domestic) + '원' : '-'}</td>
+        <td style="text-align: right; font-family: monospace; color: var(--text-secondary);">${r.cheonwoo_export ? formatNumber(r.cheonwoo_export) + '원' : '-'}</td>
+        <td style="text-align: center;">${diffBadge}</td>
       </tr>
     `;
   });
