@@ -1,4 +1,4 @@
-﻿// Scrap Metal Price History from allmetal.co.kr
+// Scrap Metal Price History from allmetal.co.kr
 window.SCRAP_PRICES_DATA = [
     {
         "id":  14,
