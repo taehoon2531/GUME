@@ -235,6 +235,24 @@ window.VENDOR_BANK_DOCS = {
     type: "pdf",
     size: "74 KB",
     rawVendor: "협신산업가스㈜, 협신산업가스"
+  },
+  "델타기계": {
+    vendor: "델타기계",
+    fileName: "델타기계 통장사본.jpg",
+    path: "통장사본/델타기계 통장사본.jpg",
+    ext: "jpg",
+    type: "image",
+    size: "2.7 MB",
+    rawVendor: "델타기계주식회사, 델타기계"
+  },
+  "케이디세이프티": {
+    vendor: "케이디세이프티",
+    fileName: "케이디세이프티 기업은행 통장사본.pdf",
+    path: "통장사본/케이디세이프티 기업은행 통장사본.pdf",
+    ext: "pdf",
+    type: "pdf",
+    size: "354 KB",
+    rawVendor: "케이디세이프티(안전), 케이디세이프티"
   }
 };
 
