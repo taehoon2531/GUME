@@ -5604,39 +5604,9 @@ canvas.custom-chart {
   </div>
 
   <!-- ========================================== -->
-  <!-- VENDOR BANKBOOK VIEWER MODAL (통장사본 개별 열람/인쇄) -->
-  <!-- ========================================== -->
-  <div class="modal-backdrop" id="bankDocModal">
-    <div class="modal-card" style="max-width: 980px; max-height: 94vh;">
-      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 12px 18px; flex-wrap: wrap; gap: 8px;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 1.3rem;">📄</span>
-          <div>
-            <h3 id="bankDocModalTitle" style="margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">거래처 통장사본</h3>
-            <p id="bankDocModalSub" style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-muted);"></p>
-          </div>
-        </div>
-        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-          <button class="btn btn-sm btn-outline" id="btnBankDocPrint" onclick="printCurrentBankDoc()" style="font-weight: 700; color: #166534; border-color: #86efac; background: #f0fdf4;">🖨️ 인쇄/PDF</button>
-          <button class="btn btn-sm btn-outline" id="btnBankDocNewTab" onclick="openCurrentBankDocNewTab()" style="font-weight: 600;">🔗 새 창 열기</button>
-          <button class="btn btn-sm btn-outline" id="btnBankDocDownload" onclick="downloadCurrentBankDoc()" style="font-weight: 600;">📥 다운로드</button>
-          <button class="modal-close" onclick="closeBankDocModal()" style="font-size: 1.2rem; cursor: pointer; padding: 4px 8px; border: none; background: none;">✕</button>
-        </div>
-      </div>
-      <div class="modal-body" id="bankDocModalBody" style="padding: 12px; background: #0f172a; display: flex; align-items: center; justify-content: center; min-height: 480px; max-height: 76vh; overflow: auto; position: relative;">
-        <!-- Injected img or iframe -->
-      </div>
-      <div style="padding: 10px 18px; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary); font-size: 0.8rem; color: var(--text-muted);">
-        <span>💡 월마감 제출 시 거래명세표와 함께 인쇄하거나 별도 결재 서류로 첨부할 수 있습니다.</span>
-        <button class="btn btn-sm btn-outline" onclick="closeBankDocModal()">닫기</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================== -->
   <!-- ALL VENDOR BANKBOOKS ARCHIVE MODAL (통장사본 전체 보관함) -->
   <!-- ========================================== -->
-  <div class="modal-backdrop" id="allBankDocsModal">
+  <div class="modal-backdrop" id="allBankDocsModal" style="z-index: 300 !important;">
     <div class="modal-card" style="max-width: 960px; max-height: 90vh;">
       <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 14px 20px;">
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -5660,6 +5630,36 @@ canvas.custom-chart {
       <div style="padding: 12px 20px; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary); font-size: 0.8rem; color: var(--text-muted);">
         <span>💡 파일 보관 폴더: <code>바탕화면 &gt; 소모품 대시보드 &gt; 통장사본</code></span>
         <button class="btn btn-sm btn-outline" onclick="closeAllBankDocsModal()">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- VENDOR BANKBOOK VIEWER MODAL (통장사본 개별 열람/인쇄) -->
+  <!-- ========================================== -->
+  <div class="modal-backdrop" id="bankDocModal" style="z-index: 500 !important;">
+    <div class="modal-card" style="max-width: 980px; max-height: 94vh;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding: 12px 18px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.3rem;">📄</span>
+          <div>
+            <h3 id="bankDocModalTitle" style="margin: 0; font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">거래처 통장사본</h3>
+            <p id="bankDocModalSub" style="margin: 2px 0 0; font-size: 0.78rem; color: var(--text-muted);"></p>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+          <button class="btn btn-sm btn-outline" id="btnBankDocPrint" onclick="printCurrentBankDoc()" style="font-weight: 700; color: #166534; border-color: #86efac; background: #f0fdf4;">🖨️ 인쇄/PDF</button>
+          <button class="btn btn-sm btn-outline" id="btnBankDocNewTab" onclick="openCurrentBankDocNewTab()" style="font-weight: 600;">🔗 새 창 열기</button>
+          <button class="btn btn-sm btn-outline" id="btnBankDocDownload" onclick="downloadCurrentBankDoc()" style="font-weight: 600;">📥 다운로드</button>
+          <button class="modal-close" onclick="closeBankDocModal()" style="font-size: 1.2rem; cursor: pointer; padding: 4px 8px; border: none; background: none;">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" id="bankDocModalBody" style="padding: 12px; background: #0f172a; display: flex; align-items: center; justify-content: center; min-height: 480px; max-height: 76vh; overflow: auto; position: relative;">
+        <!-- Injected img or iframe -->
+      </div>
+      <div style="padding: 10px 18px; border-top: 1px solid var(--card-border); display: flex; justify-content: space-between; align-items: center; background: var(--bg-secondary); font-size: 0.8rem; color: var(--text-muted);">
+        <span>💡 월마감 제출 시 거래명세표와 함께 인쇄하거나 별도 결재 서류로 첨부할 수 있습니다.</span>
+        <button class="btn btn-sm btn-outline" onclick="closeBankDocModal()">닫기</button>
       </div>
     </div>
   </div>
@@ -6133,7 +6133,7 @@ function initPwa() {
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.0').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=2.1').then(reg => {
         console.log('PWA ServiceWorker registered:', reg.scope);
         reg.update();
         reg.addEventListener('updatefound', () => {
@@ -7685,6 +7685,15 @@ function initModalCloseHandlers() {
       if (pwaModal && pwaModal.classList.contains('show')) {
         closePwaModal();
       }
+      const bankModal = document.getElementById('bankDocModal');
+      if (bankModal && bankModal.classList.contains('show')) {
+        closeBankDocModal();
+        return;
+      }
+      const allBankModal = document.getElementById('allBankDocsModal');
+      if (allBankModal && allBankModal.classList.contains('show')) {
+        closeAllBankDocsModal();
+      }
     }
   });
 
@@ -7712,6 +7721,24 @@ function initModalCloseHandlers() {
     pwaBackdrop.addEventListener('click', (e) => {
       if (e.target === pwaBackdrop) {
         closePwaModal();
+      }
+    });
+  }
+
+  const bankBackdrop = document.getElementById('bankDocModal');
+  if (bankBackdrop) {
+    bankBackdrop.addEventListener('click', (e) => {
+      if (e.target === bankBackdrop) {
+        closeBankDocModal();
+      }
+    });
+  }
+
+  const allBankBackdrop = document.getElementById('allBankDocsModal');
+  if (allBankBackdrop) {
+    allBankBackdrop.addEventListener('click', (e) => {
+      if (e.target === allBankBackdrop) {
+        closeAllBankDocsModal();
       }
     });
   }
