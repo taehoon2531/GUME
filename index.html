@@ -5969,7 +5969,12 @@ const VENDOR_CANONICAL_EXPLICIT = {
   // 한국종합상사
   '한국종합상사': '한국종합상사',
   '한국종합상사(구 부원기업)': '한국종합상사',
-  '부원기업': '한국종합상사'
+  '부원기업': '한국종합상사',
+
+  // 금강파렛트
+  '금강파렛트': '금강파렛트',
+  '(주)금강파렛트': '금강파렛트',
+  '금강파렛트(주)': '금강파렛트'
 };
 
 function normalizeVendorName(raw) {
@@ -6217,7 +6222,7 @@ function initPwa() {
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=3.1').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=3.2').then(reg => {
         console.log('PWA ServiceWorker registered:', reg.scope);
         reg.update();
         reg.addEventListener('updatefound', () => {

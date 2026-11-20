@@ -22,12 +22,12 @@ window.VENDOR_BANK_DOCS = {
   },
   "금강파렛트": {
     vendor: "금강파렛트",
-    fileName: "금강파렛트 통장사본 .jpg",
-    path: "통장사본/금강파렛트 통장사본 .jpg",
+    fileName: "금강파렛트 기업은행통장사본.jpg",
+    path: "통장사본/금강파렛트 기업은행통장사본.jpg",
     ext: "jpg",
     type: "image",
-    size: "4.2 MB",
-    rawVendor: "금강파렛트"
+    size: "1.0 MB",
+    rawVendor: "금강파렛트, (주)금강파렛트, 금강파렛트(주)"
   },
   "동광주물": {
     vendor: "동광주물",
