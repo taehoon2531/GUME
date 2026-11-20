@@ -5089,7 +5089,7 @@ canvas.custom-chart {
                 <option value="김정훈">👤 김정훈 담당</option>
               </select>
               <input type="text" id="mgmtSearchInput" placeholder="거래처/담당자/연락처/주소 검색..." style="padding: 6px 10px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.84rem; min-width: 220px;" oninput="renderVendorMgmtTable()">
-              <button class="btn btn-outline" onclick="openAllBankDocsModal()" style="background: #f0fdf4; color: #166534; border-color: #86efac; font-weight: 700;">📁 통장사본 보관함 (<span id="bankDocTotalBadge">32</span>)</button>
+              <button class="btn btn-outline" onclick="openAllBankDocsModal()" style="background: #f0fdf4; color: #166534; border-color: #86efac; font-weight: 700;">📁 통장사본 보관함 (<span id="bankDocTotalBadge">33</span>)</button>
               <button class="btn btn-outline" onclick="exportVendorsToCSV()">📥 거래처 목록 저장</button>
             </div>
           </div>
@@ -5115,9 +5115,6 @@ canvas.custom-chart {
                   </th>
                   <th onclick="setVendorSort('remarks')" style="cursor: pointer; user-select: none;" title="주소/비고 있는 순서대로 정렬">
                     주소 및 비고 <span id="sortIcon_remarks" style="font-size: 0.72rem; color: #94a3b8;">↕</span>
-                  </th>
-                  <th onclick="setVendorSort('total')" class="text-right" style="cursor: pointer; user-select: none;" title="누적 매입액순 정렬">
-                    누적 매입액 (통합) <span id="sortIcon_total" style="font-size: 0.72rem; color: #2563eb;">▼</span>
                   </th>
                   <th class="text-center" style="width: 120px;">관리</th>
                 </tr>
@@ -5156,10 +5153,9 @@ canvas.custom-chart {
                 <h3 id="quickVendorName" style="font-size: 1.05rem; font-weight: 800; color: #1e3a8a; margin: 0;">-</h3>
                 <span id="quickVendorCategoryBadge" class="badge" style="font-size: 0.72rem; padding: 2px 7px;">소모품</span>
               </div>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.8rem; color: #334155;">
-                <div>💰 <strong>누적 매입:</strong> <span id="quickVendorTotal" style="color: #1e3a8a; font-weight: 700;">₩0</span></div>
+              <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: #334155;">
                 <div>👤 <strong>사내담당:</strong> <span id="quickVendorManager" style="font-weight: 700;">-</span></div>
-                <div style="grid-column: span 2; margin-top: 2px;">📄 <strong>통장사본:</strong> <span id="quickVendorBankDoc">-</span></div>
+                <div>📄 <strong>통장사본:</strong> <span id="quickVendorBankDoc">-</span></div>
               </div>
             </div>
 
@@ -5683,7 +5679,7 @@ canvas.custom-chart {
       </div>
       <div style="padding: 12px 20px; border-bottom: 1px solid var(--card-border); display: flex; gap: 10px; background: var(--bg-secondary); align-items: center;">
         <input type="text" id="allBankDocsSearchInput" placeholder="🔍 업체명 또는 파일명 검색..." style="flex: 1; padding: 7px 12px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.85rem;" oninput="filterAllBankDocsList()">
-        <span style="font-size: 0.82rem; color: var(--text-muted); white-space: nowrap;">총 <span id="allBankDocsTotalCount">32</span>개사 보관중</span>
+        <span style="font-size: 0.82rem; color: var(--text-muted); white-space: nowrap;">총 <span id="allBankDocsTotalCount">33</span>개사 보관중</span>
       </div>
       <div class="modal-body" style="padding: 16px; max-height: 62vh; overflow-y: auto;">
         <div id="allBankDocsGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px;">
@@ -5735,6 +5731,7 @@ canvas.custom-chart {
   <script src="pallet_data.js"></script>
   <script src="vendor_bank_docs.js"></script>
   <script src="vendor_master_data.js"></script>
+  <script src="pdf.min.js"></script>
 
   <!-- Main Application Script -->
   <script>
@@ -5831,6 +5828,7 @@ const VENDOR_CANONICAL_EXPLICIT = {
   '동원테크(주)': '동원테크',
 
   // 원자케미칼상사
+  '원자케미칼': '원자케미칼상사',
   '원자케미칼상사': '원자케미칼상사',
   '㈜원자케미칼상사': '원자케미칼상사',
   '(주)원자케미칼상사': '원자케미칼상사',
@@ -6197,7 +6195,7 @@ function initPwa() {
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.8').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=2.9').then(reg => {
         console.log('PWA ServiceWorker registered:', reg.scope);
         reg.update();
         reg.addEventListener('updatefound', () => {
@@ -6485,13 +6483,115 @@ function printCurrentBankDoc() {
   const encodedPath = encodeURI(`통장사본/${doc.fileName}`);
   
   if (doc.type === 'pdf') {
-    const win = window.open(encodedPath, '_blank');
-    if (win) {
-      win.focus();
-      setTimeout(() => {
-        try { win.print(); } catch (e) {}
-      }, 700);
+    const printWin = window.open('', '_blank');
+    if (!printWin) {
+      showToast('팝업 차단이 감지되었습니다. 팝업을 허용해주세요.', 'warning');
+      return;
     }
+    printWin.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>[통장사본] ${escapeHtml(doc.vendor)} 준비중...</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 90vh; color: #475569; }
+          .spinner { font-size: 2.2rem; margin-bottom: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="spinner">⏳</div>
+        <div style="font-size: 1.15rem; font-weight: 700; color: #1e3a8a;">'${escapeHtml(doc.vendor)}' 통장사본 인쇄 양식 생성 중...</div>
+        <div style="font-size: 0.85rem; color: #64748b; margin-top: 6px;">문서를 고해상도로 렌더링하고 있습니다. 잠시만 기다려주세요.</div>
+      </body>
+      </html>
+    `);
+    printWin.document.close();
+
+    (async () => {
+      try {
+        if (!window.pdfjsLib) throw new Error('pdfjsLib is not loaded');
+        pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.min.js';
+
+        const loadingTask = pdfjsLib.getDocument(encodedPath);
+        const pdf = await loadingTask.promise;
+        const numPages = pdf.numPages || 1;
+        const pageImages = [];
+
+        for (let pageNum = 1; pageNum <= numPages; pageNum++) {
+          const page = await pdf.getPage(pageNum);
+          // Scale 2.2 for crisp high-resolution print output
+          const viewport = page.getViewport({ scale: 2.2 });
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const ctx = canvas.getContext('2d');
+          
+          await page.render({
+            canvasContext: ctx,
+            viewport: viewport
+          }).promise;
+          
+          pageImages.push(canvas.toDataURL('image/png'));
+        }
+
+        const pagesHtml = pageImages.map((src, idx) => `
+          <div class="print-page" style="${idx > 0 ? 'page-break-before: always; margin-top: 24px;' : ''}">
+            <div class="header">
+              <div class="title">📄 거래처 통장사본 — ${escapeHtml(doc.vendor)}</div>
+              <div class="meta">월마감 제출 증빙 서류 | 출력일: ${new Date().toISOString().substring(0, 10)}${numPages > 1 ? ` (${idx + 1}/${numPages})` : ''}</div>
+            </div>
+            <div class="doc-container">
+              <img src="${src}" />
+            </div>
+          </div>
+        `).join('');
+
+        printWin.document.open();
+        printWin.document.write(`
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="utf-8">
+            <title>[통장사본] ${escapeHtml(doc.vendor)}</title>
+            <style>
+              @page { size: A4 portrait; margin: 10mm; }
+              * { box-sizing: border-box; }
+              body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; background: #fff; }
+              .print-page { width: 100%; display: flex; flex-direction: column; align-items: center; }
+              .header { width: 100%; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+              .title { font-size: 16pt; font-weight: 800; color: #0f172a; }
+              .meta { font-size: 9pt; color: #64748b; }
+              .doc-container { width: 100%; display: flex; justify-content: center; align-items: center; }
+              img { max-width: 100%; max-height: 85vh; object-fit: contain; }
+              @media print {
+                body { padding: 0; }
+                .header { margin-bottom: 12px; }
+              }
+            </style>
+          </head>
+          <body>
+            ${pagesHtml}
+            <script>
+              window.onload = function() {
+                setTimeout(function() {
+                  window.focus();
+                  window.print();
+                }, 300);
+              };
+            <\/script>
+          </body>
+          </html>
+        `);
+        printWin.document.close();
+      } catch (err) {
+        console.warn('PDF.js print render failed, falling back to direct print:', err);
+        printWin.location.href = encodedPath;
+        setTimeout(() => {
+          try { printWin.print(); } catch (e) {}
+        }, 700);
+      }
+    })();
   } else {
     const printWin = window.open('', '_blank');
     if (!printWin) {
@@ -6506,12 +6606,17 @@ function printCurrentBankDoc() {
         <title>[통장사본] ${escapeHtml(doc.vendor)}</title>
         <style>
           @page { size: A4 portrait; margin: 10mm; }
-          body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; }
+          * { box-sizing: border-box; }
+          body { margin: 0; padding: 16px; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; display: flex; flex-direction: column; align-items: center; background: #fff; }
           .header { width: 100%; border-bottom: 2px solid #0f172a; padding-bottom: 8px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
           .title { font-size: 16pt; font-weight: 800; color: #0f172a; }
           .meta { font-size: 9pt; color: #64748b; }
           .doc-container { width: 100%; display: flex; justify-content: center; align-items: center; flex: 1; }
           img { max-width: 100%; max-height: 85vh; object-fit: contain; }
+          @media print {
+            body { padding: 0; }
+            .header { margin-bottom: 12px; }
+          }
         </style>
       </head>
       <body>
@@ -9954,15 +10059,15 @@ function saveVendorsToStorage() {
   }
 }
 
-let vendorSortCol = 'total';
-let vendorSortAsc = false;
+let vendorSortCol = 'vendor';
+let vendorSortAsc = true;
 
 function setVendorSort(col) {
   if (vendorSortCol === col) {
     vendorSortAsc = !vendorSortAsc;
   } else {
     vendorSortCol = col;
-    vendorSortAsc = (col === 'vendor') ? true : false;
+    vendorSortAsc = true;
   }
   renderVendorMgmtTable();
 }
@@ -10003,8 +10108,6 @@ function renderVendorMgmtTable() {
     });
   });
 
-  window.__vTotalsCache = vTotals;
-
   // Ensure all vendors in vTotals exist in vendorContacts
   Object.keys(vTotals).forEach(v => {
     if (!vendorContacts[v]) {
@@ -10012,10 +10115,10 @@ function renderVendorMgmtTable() {
     }
   });
 
-  let list = Object.keys(vendorContacts);
+  let list = Object.keys(vendorContacts).sort((a, b) => (vTotals[b] || 0) - (vTotals[a] || 0));
 
   // Update table header sort icons
-  ['vendor', 'contact', 'phone', 'manager', 'bankdoc', 'remarks', 'total'].forEach(col => {
+  ['vendor', 'contact', 'phone', 'manager', 'bankdoc', 'remarks'].forEach(col => {
     const iconEl = document.getElementById(`sortIcon_${col}`);
     if (iconEl) {
       if (vendorSortCol === col) {
@@ -10071,12 +10174,6 @@ function renderVendorMgmtTable() {
     const infoA = vendorContacts[a] || {};
     const infoB = vendorContacts[b] || {};
 
-    if (vendorSortCol === 'total') {
-      const totA = vTotals[a] || 0;
-      const totB = vTotals[b] || 0;
-      return vendorSortAsc ? (totA - totB) : (totB - totA);
-    }
-
     if (vendorSortCol === 'vendor') {
       return vendorSortAsc ? a.localeCompare(b, 'ko') : b.localeCompare(a, 'ko');
     }
@@ -10089,7 +10186,7 @@ function renderVendorMgmtTable() {
       // 데이터가 있는 업체가 무조건 위로 먼저 옴!
       if (hasA && !hasB) return -1;
       if (!hasA && hasB) return 1;
-      if (!hasA && !hasB) return (vTotals[b] || 0) - (vTotals[a] || 0);
+      if (!hasA && !hasB) return a.localeCompare(b, 'ko');
       return vendorSortAsc ? valB.localeCompare(valA, 'ko') : valA.localeCompare(valB, 'ko');
     }
 
@@ -10101,7 +10198,7 @@ function renderVendorMgmtTable() {
       // 데이터가 있는 업체가 무조건 위로 먼저 옴!
       if (hasA && !hasB) return -1;
       if (!hasA && hasB) return 1;
-      if (!hasA && !hasB) return (vTotals[b] || 0) - (vTotals[a] || 0);
+      if (!hasA && !hasB) return a.localeCompare(b, 'ko');
       return vendorSortAsc ? valB.localeCompare(valA, 'ko') : valA.localeCompare(valB, 'ko');
     }
 
@@ -10112,7 +10209,7 @@ function renderVendorMgmtTable() {
       const hasB = valB.length > 0;
       if (hasA && !hasB) return -1;
       if (!hasA && hasB) return 1;
-      if (!hasA && !hasB) return (vTotals[b] || 0) - (vTotals[a] || 0);
+      if (!hasA && !hasB) return a.localeCompare(b, 'ko');
       return vendorSortAsc ? valB.localeCompare(valA, 'ko') : valA.localeCompare(valB, 'ko');
     }
 
@@ -10123,7 +10220,7 @@ function renderVendorMgmtTable() {
       const hasB = !!docB;
       if (hasA && !hasB) return -1;
       if (!hasA && hasB) return 1;
-      return (vTotals[b] || 0) - (vTotals[a] || 0);
+      return a.localeCompare(b, 'ko');
     }
 
     if (vendorSortCol === 'remarks') {
@@ -10133,11 +10230,11 @@ function renderVendorMgmtTable() {
       const hasB = valB.length > 0;
       if (hasA && !hasB) return -1;
       if (!hasA && hasB) return 1;
-      if (!hasA && !hasB) return (vTotals[b] || 0) - (vTotals[a] || 0);
+      if (!hasA && !hasB) return a.localeCompare(b, 'ko');
       return vendorSortAsc ? valB.localeCompare(valA, 'ko') : valA.localeCompare(valB, 'ko');
     }
 
-    return (vTotals[b] || 0) - (vTotals[a] || 0);
+    return a.localeCompare(b, 'ko');
   });
 
   const countEl = document.getElementById('mgmtVendorCount');
@@ -10237,7 +10334,6 @@ function renderVendorMgmtTable() {
       <td class="text-center">${managerBadge}</td>
       ${bankCell}
       <td style="color: var(--slate-600); font-size:0.82rem; max-width:240px; word-break:break-word;" title="${escapeHtml(info.remarks || '')}">${info.remarks ? escapeHtml(info.remarks) : '<span style="color:#aaa;">-</span>'}</td>
-      <td class="text-right" style="font-weight: 700; color: #1e3a8a; font-size:0.92rem;">${formatCurrency(vTotals[v] || 0)}</td>
       <td class="text-center" style="white-space: nowrap;">
         <button class="btn btn-sm btn-outline" onclick="editVendor('${escapeHtml(v)}')">수정</button>
         <button class="btn btn-sm btn-outline" style="color: var(--danger); border-color: #fca5a5; margin-left: 4px;" onclick="deleteVendor('${escapeHtml(v)}')">삭제</button>
@@ -10358,7 +10454,6 @@ function loadVendorIntoEditFields(v) {
   const quickCard = document.getElementById('vendorQuickSummaryCard');
   const qName = document.getElementById('quickVendorName');
   const qCat = document.getElementById('quickVendorCategoryBadge');
-  const qTotal = document.getElementById('quickVendorTotal');
   const qMgr = document.getElementById('quickVendorManager');
   const qDoc = document.getElementById('quickVendorBankDoc');
 
@@ -10388,13 +10483,10 @@ function loadVendorIntoEditFields(v) {
   if (mgrEl) mgrEl.value = info.manager || '';
   if (remarksEl) remarksEl.value = info.remarks || '';
 
-  // Quick summary card display
+  // Quick summary card display (No 누적 매입 line as requested!)
   if (quickCard) {
     quickCard.style.display = 'block';
     if (qName) qName.textContent = v;
-    
-    const tot = (window.__vTotalsCache && window.__vTotalsCache[v]) ? window.__vTotalsCache[v] : 0;
-    if (qTotal) qTotal.textContent = formatCurrency(tot);
 
     if (qMgr) {
       if (info.manager) {

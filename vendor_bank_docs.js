@@ -289,6 +289,15 @@ window.VENDOR_BANK_DOCS = {
     type: "pdf",
     size: "434 KB",
     rawVendor: "우영산업, 우영산업㈜, 우영산업(주), 우영산업㈜ 부산지점, 우영산업 부산지점"
+  },
+  "원자케미칼상사": {
+    vendor: "원자케미칼상사",
+    fileName: "원자케미칼 기업은행.jpg",
+    path: "통장사본/원자케미칼 기업은행.jpg",
+    ext: "jpg",
+    type: "image",
+    size: "718 KB",
+    rawVendor: "원자케미칼상사, ㈜원자케미칼상사, (주)원자케미칼상사, 원자케미칼"
   }
 };
 
