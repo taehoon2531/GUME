@@ -280,6 +280,15 @@ window.VENDOR_BANK_DOCS = {
     type: "image",
     size: "3.7 MB",
     rawVendor: "제일연마, ㈜제일연마, ㈜제일연마부산직매소, 제일연마 부산직매소"
+  },
+  "우영산업": {
+    vendor: "우영산업",
+    fileName: "우영산업(부산지점)기업은행 통장사본.pdf",
+    path: "통장사본/우영산업(부산지점)기업은행 통장사본.pdf",
+    ext: "pdf",
+    type: "pdf",
+    size: "434 KB",
+    rawVendor: "우영산업, 우영산업㈜, 우영산업(주), 우영산업㈜ 부산지점, 우영산업 부산지점"
   }
 };
 
