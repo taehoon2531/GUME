@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -1938,6 +1938,62 @@ canvas.custom-chart {
     display: block !important;
   }
 
+  body.printing-suborder #tab-closing {
+    display: none !important;
+  }
+
+  body.printing-suborder #tab-suborder {
+    display: block !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0 !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    visibility: visible !important;
+  }
+
+  body.printing-suborder .suborder-top-bar,
+  body.printing-suborder .suborder-form-column,
+  body.printing-suborder .mobile-bottom-nav,
+  body.printing-suborder .category-switcher-bar,
+  body.printing-suborder .stats-grid {
+    display: none !important;
+  }
+
+  body.printing-suborder .suborder-layout {
+    display: block !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.printing-suborder .suborder-preview-column {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body.printing-suborder #subOrderPrintArea {
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  body.printing-suborder #subOrderPaperPreview,
+  body.printing-suborder #subOrderPaperPreview * {
+    visibility: visible !important;
+  }
+
+  body.printing-suborder #subOrderPaperPreview {
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
   .report-paper-container {
     padding: 0 !important;
     background: white !important;
@@ -3376,6 +3432,10 @@ canvas.custom-chart {
         <span class="nav-tab-icon">🧱</span>
         <span class="nav-tab-text">부자재 검색 &amp; 상세</span>
       </button>
+      <button class="nav-tab" data-tab="tab-suborder" title="부재료 발주서 작성">
+        <span class="nav-tab-icon">📝</span>
+        <span class="nav-tab-text">부재료 발주서</span>
+      </button>
       <button class="nav-tab" data-tab="tab-raw" title="원자재 검색 & 상세">
         <span class="nav-tab-icon">🏭</span>
         <span class="nav-tab-text">원자재 검색 &amp; 상세</span>
@@ -3722,6 +3782,209 @@ canvas.custom-chart {
             </table>
           </div>
           <div class="pagination" id="subPagination"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================== -->
+    <!-- TAB: 부재료 발주서 작성기 -->
+    <!-- ========================================== -->
+    <section id="tab-suborder" class="tab-content">
+      <!-- Top Action Bar -->
+      <div class="suborder-top-bar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; background: var(--card-bg); border: 1px solid var(--card-border); padding: 14px 18px; border-radius: 12px; box-shadow: var(--card-shadow);">
+        <div>
+          <h2 style="margin: 0 0 4px 0; font-size: 1.25rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+            <span>📝</span> 부재료 발주서 작성기
+            <span class="badge" style="background: rgba(37, 99, 235, 0.15); color: #3b82f6; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; font-weight: 700;">사내 표준 양식</span>
+          </h2>
+          <p style="margin: 0; font-size: 0.82rem; color: var(--text-secondary);">
+            엑셀 파일을 찾을 필요 없이 거래처를 선택하고, 과거 빈출 품목 추천을 받아 30초 만에 정식 발주서를 생성합니다.
+          </p>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <button class="btn btn-sm btn-primary" onclick="printSubOrder()" style="display: flex; align-items: center; gap: 6px; font-weight: 700; padding: 6px 14px;">
+            <span>🖨️</span> 인쇄 / PDF 저장
+          </button>
+          <button class="btn btn-sm" onclick="downloadSubOrderExcel()" style="display: flex; align-items: center; gap: 6px; background: #16a34a; color: #fff; font-weight: 700; padding: 6px 14px; border: none;">
+            <span>📥</span> 엑셀 다운로드
+          </button>
+          <button class="btn btn-sm btn-outline" onclick="copySubOrderText()" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px;">
+            <span>📋</span> 표 텍스트 복사
+          </button>
+          <button class="btn btn-sm btn-outline" onclick="openSubOrderEmail()" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px;">
+            <span>✉️</span> 메일 작성
+          </button>
+          <button class="btn btn-sm btn-outline" onclick="saveSubOrderToHistory()" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px; color: #3b82f6; border-color: rgba(59, 130, 246, 0.4);">
+            <span>💾</span> 발주서 저장
+          </button>
+          <button class="btn btn-sm btn-outline" onclick="showSubOrderHistoryModal()" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px;">
+            <span>📂</span> 발주 이력
+          </button>
+          <button class="btn btn-sm btn-outline" onclick="resetSubOrderForm()" style="padding: 6px 10px; color: #94a3b8;" title="작성 초기화">
+            <span>🔄</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Split Layout (Form Panel + Live Paper Preview) -->
+      <div class="suborder-layout" style="display: grid; grid-template-columns: minmax(440px, 480px) 1fr; gap: 20px; align-items: start;">
+        
+        <!-- Left: Form Input Panel -->
+        <div class="suborder-form-column" style="display: flex; flex-direction: column; gap: 16px;">
+          
+          <!-- Card 1: 거래처 및 발주 기본 정보 -->
+          <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; box-shadow: var(--card-shadow);">
+            <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+              <span style="display: flex; align-items: center; gap: 6px;">🏢 1. 거래처 및 발주 기본 정보</span>
+              <span id="subOrderVendorCategoryBadge" style="font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; background: rgba(59, 130, 246, 0.15); color: #3b82f6; font-weight: 600;">와셔 / 체결류</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <div>
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">공급 거래처 선택 *</label>
+                <select id="subOrderVendorSelect" onchange="onSubOrderVendorChange(this.value)" style="width: 100%; padding: 8px 10px; font-size: 0.88rem; font-weight: 700; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+                  <!-- Dynamic options from SUB_ORDER_VENDORS -->
+                </select>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">발주번호</label>
+                  <input type="text" id="subOrderPoNo" oninput="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; font-family: monospace; font-weight: 700; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+                </div>
+                <div>
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">발주일자</label>
+                  <input type="date" id="subOrderDate" onchange="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+                </div>
+              </div>
+
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div>
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">납기일자</label>
+                  <input type="date" id="subOrderDueDate" onchange="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+                </div>
+                <div>
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">납품장소</label>
+                  <select id="subOrderDeliveryLoc" onchange="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+                    <option value="본사 출하반">본사 출하반</option>
+                    <option value="본사 가공공장">본사 가공공장</option>
+                    <option value="녹산공장">녹산공장</option>
+                    <option value="구평공장">구평공장</option>
+                    <option value="산업 출하반">산업 출하반</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- 수신처 세부 (접이식 정보) -->
+              <details style="margin-top: 4px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color, #334155); border-radius: 6px; padding: 6px 10px;">
+                <summary style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); cursor: pointer;">🔍 수신처 / 발신처 연락처 세부 수정</summary>
+                <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px; font-size: 0.8rem;">
+                  <div style="font-weight: 700; color: #3b82f6;">[수신처 상세]</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    <input type="text" id="subOrderRecvCompany" placeholder="수신 상호" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <input type="text" id="subOrderRecvPerson" placeholder="담당자 (대표/담당)" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                  </div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    <input type="text" id="subOrderRecvPhone" placeholder="전화번호" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <input type="text" id="subOrderRecvFax" placeholder="FAX" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                  </div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    <input type="text" id="subOrderRecvMobile" placeholder="휴대폰 (H.P)" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <input type="email" id="subOrderRecvEmail" placeholder="이메일" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                  </div>
+
+                  <div style="font-weight: 700; color: #10b981; margin-top: 6px;">[발신처 상세 (에스앤더블류)]</div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    <input type="text" id="subOrderSenderCompany" value="(주)에스앤더블류" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <input type="text" id="subOrderSenderManager" value="김태훈 주임" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                  </div>
+                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                    <input type="text" id="subOrderSenderPhone" value="051-209-2229" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <input type="text" id="subOrderSenderFax" value="051-205-7417" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                  </div>
+                  <input type="text" id="subOrderSenderMobile" value="010-6645-9311" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);" placeholder="발신자 휴대폰">
+                </div>
+              </details>
+            </div>
+          </div>
+
+          <!-- Card 2: 발주 품목 작성 -->
+          <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; box-shadow: var(--card-shadow);">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">📦 2. 발주 품목 목록</span>
+              <button class="btn btn-sm btn-primary" onclick="addSubOrderItem()" style="font-size: 0.76rem; padding: 4px 10px; font-weight: 700;">+ 품목 행 추가</button>
+            </div>
+
+            <!-- Quick Add Chips -->
+            <div style="margin-bottom: 10px;">
+              <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">⚡ 해당 거래처 빈출 추천 품목 (클릭 시 즉시 추가):</div>
+              <div id="subOrderQuickChips" style="display: flex; gap: 5px; flex-wrap: wrap;">
+                <!-- Dynamic Chips -->
+              </div>
+            </div>
+
+            <!-- Items Table in Form -->
+            <div style="overflow-x: auto; max-height: 380px; overflow-y: auto; border: 1px solid var(--border-color, #334155); border-radius: 6px;">
+              <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
+                <thead style="background: rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 2;">
+                  <tr style="border-bottom: 1px solid var(--border-color, #334155); height: 28px;">
+                    <th style="padding: 4px; text-align: center; width: 36px;">순</th>
+                    <th style="padding: 4px; text-align: left;">품명 *</th>
+                    <th style="padding: 4px; text-align: left; width: 85px;">재질/표면</th>
+                    <th style="padding: 4px; text-align: left; width: 95px;">규격 *</th>
+                    <th style="padding: 4px; text-align: center; width: 45px;">단위</th>
+                    <th style="padding: 4px; text-align: right; width: 65px;">수량 *</th>
+                    <th style="padding: 4px; text-align: right; width: 75px;">단가</th>
+                    <th style="padding: 4px; text-align: left; width: 85px;">비고</th>
+                    <th style="padding: 4px; text-align: center; width: 36px;">삭제</th>
+                  </tr>
+                </thead>
+                <tbody id="subOrderFormTableBody">
+                  <!-- Dynamic Item Rows -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Bottom Notes -->
+            <div style="margin-top: 12px;">
+              <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">특기 사항 (발주서 하단 기재)</label>
+              <textarea id="subOrderTermsNotes" oninput="updateSubOrderPreview()" rows="2" style="width: 100%; padding: 6px 10px; font-size: 0.82rem; line-height: 1.4; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc); resize: vertical;">1. 납기 준수 요망  2. 검사성적서 및 밀시트 동봉 요망  3. 불량 발생 시 즉시 통보 요망</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: A4 Paper Preview Column -->
+        <div class="suborder-preview-column" style="display: flex; flex-direction: column; align-items: center;">
+          <div style="width: 100%; display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary); display: flex; align-items: gap: 6px;">
+              <span>📄</span> 실시간 인쇄 미리보기 (A4 정식 서식)
+            </span>
+            <span style="font-size: 0.75rem; color: #10b981; font-weight: 600;">● 실시간 동기화 중</span>
+          </div>
+
+          <div id="subOrderPrintArea" style="width: 100%; display: flex; justify-content: center;">
+            <div id="subOrderPaperPreview" class="sub-order-paper" style="background: #ffffff; color: #0f172a; width: 100%; max-width: 800px; padding: 28px 32px; border-radius: 4px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25); border: 1px solid #cbd5e1; box-sizing: border-box; font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;">
+              <!-- Dynamic Real-time PO Paper Content -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Modal -->
+      <div id="subOrderHistoryModal" class="modal-backdrop" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: var(--card-bg, #1e293b); border: 1px solid var(--card-border, #334155); border-radius: 12px; width: 90%; max-width: 760px; max-height: 85vh; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+          <div style="display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--border-color, #334155);">
+            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+              <span>📂</span> 저장된 부재료 발주서 이력
+            </h3>
+            <button class="btn btn-sm btn-outline" onclick="closeSubOrderHistoryModal()" style="padding: 2px 8px; font-size: 1rem;">✕</button>
+          </div>
+          <div id="subOrderHistoryModalBody" style="padding: 16px 20px; overflow-y: auto; flex: 1;">
+            <!-- Dynamic History List -->
+          </div>
+          <div style="padding: 10px 20px; border-top: 1px solid var(--border-color, #334155); display: flex; justify-content: flex-end;">
+            <button class="btn btn-sm btn-outline" onclick="closeSubOrderHistoryModal()">닫기</button>
+          </div>
         </div>
       </div>
     </section>
@@ -5748,6 +6011,7 @@ canvas.custom-chart {
   <script src="data/pallet_data.js"></script>
   <script src="data/vendor_bank_docs.js"></script>
   <script src="data/vendor_master_data.js"></script>
+  <script src="data/sub_order_master.js"></script>
   <script src="lib/pdf.min.js"></script>
 
   <!-- Main Application Script -->
@@ -6930,6 +7194,8 @@ function initNavTabs() {
         renderPalletView();
       } else if (target === 'tab-vendors') {
         renderVendorMgmtTable();
+      } else if (target === 'tab-suborder') {
+        if (typeof initSubOrderView === 'function') initSubOrderView();
       }
     });
   });
@@ -11720,7 +11986,6 @@ function printPivotReport() {
     (chartImgSrc ? '<div class="chart-box"><img src="' + chartImgSrc + '" alt="매입추이 그래프" /></div>' : '') +
     '<div class="section-title">📋 월별 크로스탭 피벗 테이블</div>' +
     tableHtml +
-    '<script>window.onload = function() { setTimeout(function() { window.print(); }, 400); };<\/script>' +
     '</body></html>';
 
   printWin.document.write(printHtml);
@@ -12285,6 +12550,7 @@ function drawScrapTrendChart() {
     const hPt = scrapChartPoints[scrapChartHoveredIndex];
     ctx.save();
     // Vertical dashed crosshair
+    ctx.beginPath();
     ctx.beginPath();
     ctx.setLineDash([4, 4]);
     ctx.strokeStyle = isDark ? '#94a3b8' : '#64748b';
@@ -14017,6 +14283,10 @@ function exportPalletRatesToCSV() {
     <button class="m-nav-item" data-tab="tab-sub" onclick="switchMobileTab('tab-sub')">
       <span class="m-nav-icon">🧱</span>
       <span class="m-nav-label">부자재</span>
+    </button>
+    <button class="m-nav-item" data-tab="tab-suborder" onclick="switchMobileTab('tab-suborder')">
+      <span class="m-nav-icon">📝</span>
+      <span class="m-nav-label">발주서</span>
     </button>
     <button class="m-nav-item" data-tab="tab-raw" onclick="switchMobileTab('tab-raw')">
       <span class="m-nav-icon">🏭</span>
