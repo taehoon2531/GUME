@@ -3855,13 +3855,27 @@ canvas.custom-chart {
               <button type="button" class="pivot-cat-btn" data-cat="rawmaterials" onclick="selectPivotCategory('rawmaterials')">🏭 원자재</button>
             </div>
             <input type="hidden" id="pivotCategorySelect" value="all">
-            <select id="pivotPeriodSelect" style="padding: 6px 12px; border-radius: 6px; border: 1px solid var(--slate-300); font-size: 0.84rem;" onchange="renderPivotView()">
-              <option value="12">최근 12개월</option>
-              <option value="24" selected>최근 24개월 (2년)</option>
-              <option value="36">최근 36개월 (3년)</option>
-              <option value="999">전체 기간</option>
+            <select id="pivotPeriodSelect" style="padding: 6px 10px; border-radius: 6px; border: 1.5px solid #3b82f6; font-size: 0.84rem; font-weight: 700; background: #fff;" onchange="renderPivotView()" title="분석할 해당년도 또는 기간 선택">
+              <optgroup label="📅 해당년도 분석 (1년 단위)">
+                <option value="year_2026" selected>📅 2026년 (당해년도)</option>
+                <option value="year_2025">📅 2025년</option>
+                <option value="year_2024">📅 2024년</option>
+                <option value="year_2023">📅 2023년</option>
+                <option value="year_2022">📅 2022년</option>
+                <option value="year_2021">📅 2021년</option>
+              </optgroup>
+              <optgroup label="⏱️ 누적 기간 분석">
+                <option value="12">최근 12개월</option>
+                <option value="24">최근 24개월 (2년)</option>
+                <option value="36">최근 36개월 (3년)</option>
+                <option value="999">전체 기간</option>
+              </optgroup>
             </select>
-            <button class="btn btn-outline" onclick="exportPivotToCSV()">📥 피벗 엑셀 저장</button>
+            <select id="pivotVendorSelect" style="padding: 6px 10px; border-radius: 6px; border: 1.5px solid #6366f1; font-size: 0.84rem; font-weight: 700; background: #fff; min-width: 170px;" onchange="onPivotVendorSelectChange(this.value)" title="분석할 업체 선택 (클릭 시 그래프 즉시 변경)">
+              <option value="">🏢 전체 거래처 (합산)</option>
+            </select>
+            <button class="btn btn-primary" onclick="exportPivotToExcelWithChart()" style="font-weight: 700; background: #166534; border-color: #166534; color: #ffffff;" title="현재 화면의 그래프와 피벗 표가 모두 포함된 엑셀 파일 저장">📥 피벗 엑셀 저장 (그래프 포함)</button>
+            <button class="btn btn-outline" onclick="exportPivotToCSV()" style="font-size: 0.78rem; padding: 6px 9px;" title="순수 데이터 CSV 파일 저장">CSV</button>
           </div>
         </div>
 
@@ -5113,7 +5127,7 @@ canvas.custom-chart {
                   <th onclick="setVendorSort('bankdoc')" class="text-center" style="width: 105px; cursor: pointer; user-select: none;" title="통장사본 등록순 정렬">
                     통장사본 <span id="sortIcon_bankdoc" style="font-size: 0.72rem; color: #94a3b8;">↕</span>
                   </th>
-                  <th onclick="setVendorSort('remarks')" style="cursor: pointer; user-select: none;" title="주소/비고 있는 순서대로 정렬">
+                  <th onclick="setVendorSort('remarks')" style="min-width: 280px; cursor: pointer; user-select: none;" title="주소/비고 있는 순서대로 정렬">
                     주소 및 비고 <span id="sortIcon_remarks" style="font-size: 0.72rem; color: #94a3b8;">↕</span>
                   </th>
                   <th class="text-center" style="width: 120px;">관리</th>
@@ -5156,6 +5170,7 @@ canvas.custom-chart {
               <div style="display: flex; flex-direction: column; gap: 6px; font-size: 0.82rem; color: #334155;">
                 <div>👤 <strong>사내담당:</strong> <span id="quickVendorManager" style="font-weight: 700;">-</span></div>
                 <div>📄 <strong>통장사본:</strong> <span id="quickVendorBankDoc">-</span></div>
+                <div style="line-height: 1.4; margin-top: 2px;">📍 <strong>주소/비고:</strong> <span id="quickVendorAddress" style="color: #1e293b; font-weight: 600;">-</span></div>
               </div>
             </div>
 
@@ -6195,7 +6210,7 @@ function initPwa() {
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.9').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=3.0').then(reg => {
         console.log('PWA ServiceWorker registered:', reg.scope);
         reg.update();
         reg.addEventListener('updatefound', () => {
@@ -8451,7 +8466,18 @@ function toggleTrendVendor(vendorName) {
 
 function resetTrendVendor() {
   currentTrendVendor = '';
+  const vSelect = document.getElementById('pivotVendorSelect');
+  if (vSelect) vSelect.value = '';
   renderPivotView();
+}
+
+function onPivotVendorSelectChange(val) {
+  currentTrendVendor = val ? normalizeVendorName(val) : '';
+  renderPivotView();
+  const chartEl = document.getElementById('monthlyTrendChart');
+  if (chartEl) {
+    chartEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
 }
 
 function ensureMaterialsLoaded() {
@@ -8520,7 +8546,9 @@ function renderPivotView() {
   ensureMaterialsLoaded();
   const catEl = document.getElementById('pivotCategorySelect');
   const cat = catEl ? catEl.value : 'all';
-  const periodMonths = parseInt(document.getElementById('pivotPeriodSelect').value, 10);
+  const periodSelect = document.getElementById('pivotPeriodSelect');
+  const periodVal = periodSelect ? periodSelect.value : 'year_2026';
+  const periodText = periodSelect ? periodSelect.options[periodSelect.selectedIndex].text : '2026년';
   const currentDataset = getPivotDataset(cat);
   
   if (currentTrendVendor) {
@@ -8563,7 +8591,17 @@ function renderPivotView() {
 
   // Sort months descending (latest month first)
   const sortedMonths = Array.from(allMonthsSet).sort().reverse();
-  const displayMonths = periodMonths >= 999 ? sortedMonths : sortedMonths.slice(0, periodMonths);
+  let displayMonths = [];
+  if (periodVal.startsWith('year_')) {
+    const targetYear = periodVal.replace('year_', '');
+    displayMonths = sortedMonths.filter(m => m.startsWith(targetYear));
+    if (displayMonths.length === 0) {
+      displayMonths = sortedMonths.slice(0, 12);
+    }
+  } else {
+    const periodMonths = parseInt(periodVal, 10);
+    displayMonths = periodMonths >= 999 ? sortedMonths : sortedMonths.slice(0, periodMonths);
+  }
 
   // Calculate period total for each vendor across displayMonths
   const vendorPeriodTotals = {};
@@ -8693,20 +8731,31 @@ function renderPivotView() {
     const rawNames = canonicalRawNamesMap[currentTrendVendor] ? Array.from(canonicalRawNamesMap[currentTrendVendor]) : [currentTrendVendor];
     const mergeInfo = rawNames.length > 1 ? ` (${rawNames.join(', ')} 등 ${rawNames.length}개 명칭 통합)` : '';
 
-    if (trendTitleEl) trendTitleEl.textContent = `📅 [${currentTrendVendor}] 월별 매입금액 추이`;
+    if (trendTitleEl) trendTitleEl.textContent = `📅 [${currentTrendVendor}] ${periodText} 월별 매입금액 추이`;
     if (trendBadgeEl) {
       trendBadgeEl.textContent = `🏢 ${currentTrendVendor}${rawNames.length > 1 ? ' (' + rawNames.length + '개 통합)' : ''}`;
       trendBadgeEl.style.display = 'inline-block';
     }
     if (resetBtnEl) resetBtnEl.style.display = 'inline-block';
-    if (topTitleEl) topTitleEl.textContent = `📦 [${currentTrendVendor}] 매입 상위 TOP 5 품목`;
-    if (guideVendorEl) guideVendorEl.textContent = `현재: [${currentTrendVendor}] 단독 분석 중${mergeInfo} · ${catLabel}`;
+    if (topTitleEl) topTitleEl.textContent = `📦 [${currentTrendVendor}] ${periodText} 매입 상위 TOP 5 품목`;
+    if (guideVendorEl) guideVendorEl.textContent = `현재: [${currentTrendVendor}] 단독 분석 중${mergeInfo} · ${catLabel} (${periodText})`;
   } else {
-    if (trendTitleEl) trendTitleEl.textContent = `📅 [${catLabel}] 월별 총 매입금액 추이`;
+    if (trendTitleEl) trendTitleEl.textContent = `📅 [${catLabel}] ${periodText} 월별 총 매입금액 추이`;
     if (trendBadgeEl) trendBadgeEl.style.display = 'none';
     if (resetBtnEl) resetBtnEl.style.display = 'none';
-    if (topTitleEl) topTitleEl.textContent = '🏆 최근 1년 매입 상위 TOP 5 거래처';
-    if (guideVendorEl) guideVendorEl.textContent = `현재: ${catLabel} 합산 (유사 명칭 자동 통합 분석)`;
+    if (topTitleEl) topTitleEl.textContent = `🏆 ${periodText} 매입 상위 TOP 5 거래처`;
+    if (guideVendorEl) guideVendorEl.textContent = `현재: ${catLabel} 합산 (${periodText} 유사 명칭 자동 통합 분석)`;
+  }
+
+  // Update Pivot Vendor Dropdown
+  const pivotVendorSelectEl = document.getElementById('pivotVendorSelect');
+  if (pivotVendorSelectEl) {
+    const curVal = currentTrendVendor || '';
+    let opts = '<option value="">🏢 전체 거래처 (합산)</option>';
+    sortedVendors.forEach(v => {
+      opts += `<option value="${escapeHtml(v)}"${v === curVal ? ' selected' : ''}>🏢 ${escapeHtml(v)}</option>`;
+    });
+    pivotVendorSelectEl.innerHTML = opts;
   }
 
   // 6. Draw Trend Chart (Single Vendor or All Vendors)
@@ -10333,7 +10382,7 @@ function renderVendorMgmtTable() {
       <td>${phoneDisplay}</td>
       <td class="text-center">${managerBadge}</td>
       ${bankCell}
-      <td style="color: var(--slate-600); font-size:0.82rem; max-width:240px; word-break:break-word;" title="${escapeHtml(info.remarks || '')}">${info.remarks ? escapeHtml(info.remarks) : '<span style="color:#aaa;">-</span>'}</td>
+      <td style="color: var(--slate-700); font-size: 0.84rem; white-space: normal; word-break: keep-all; min-width: 280px; line-height: 1.45;" title="${escapeHtml(info.remarks || '')}">${info.remarks ? escapeHtml(info.remarks) : '<span style="color:#aaa;">-</span>'}</td>
       <td class="text-center" style="white-space: nowrap;">
         <button class="btn btn-sm btn-outline" onclick="editVendor('${escapeHtml(v)}')">수정</button>
         <button class="btn btn-sm btn-outline" style="color: var(--danger); border-color: #fca5a5; margin-left: 4px;" onclick="deleteVendor('${escapeHtml(v)}')">삭제</button>
@@ -10456,6 +10505,7 @@ function loadVendorIntoEditFields(v) {
   const qCat = document.getElementById('quickVendorCategoryBadge');
   const qMgr = document.getElementById('quickVendorManager');
   const qDoc = document.getElementById('quickVendorBankDoc');
+  const qAddr = document.getElementById('quickVendorAddress');
 
   if (!v) {
     if (origEl) origEl.value = '';
@@ -10467,6 +10517,7 @@ function loadVendorIntoEditFields(v) {
     if (remarksEl) remarksEl.value = '';
     if (statusEl) statusEl.style.display = 'none';
     if (quickCard) quickCard.style.display = 'none';
+    if (qAddr) qAddr.textContent = '-';
     document.querySelectorAll('#vendorMgmtTableBody tr').forEach(tr => {
       tr.style.backgroundColor = '';
       tr.style.boxShadow = '';
@@ -10513,6 +10564,10 @@ function loadVendorIntoEditFields(v) {
       } else {
         qDoc.innerHTML = '<span style="color:#94a3b8;">미등록</span>';
       }
+    }
+
+    if (qAddr) {
+      qAddr.textContent = (info.remarks && info.remarks.trim()) ? info.remarks.trim() : '미등록 (비고/주소 없음)';
     }
   }
 
@@ -11243,7 +11298,9 @@ function exportPivotToCSV() {
   ensureMaterialsLoaded();
   const catEl = document.getElementById('pivotCategorySelect');
   const cat = catEl ? catEl.value : 'all';
-  const periodMonths = parseInt(document.getElementById('pivotPeriodSelect').value, 10);
+  const periodSelect = document.getElementById('pivotPeriodSelect');
+  const periodVal = periodSelect ? periodSelect.value : 'year_2026';
+  const periodText = periodSelect ? periodSelect.options[periodSelect.selectedIndex].text : '2026년';
   const currentDataset = getPivotDataset(cat);
 
   const vendorMonthMap = {};
@@ -11265,7 +11322,14 @@ function exportPivotToCSV() {
   }
 
   const sortedMonths = Array.from(allMonthsSet).sort().reverse();
-  const displayMonths = periodMonths >= 999 ? sortedMonths : sortedMonths.slice(0, periodMonths);
+  let displayMonths = [];
+  if (periodVal.startsWith('year_')) {
+    const y = periodVal.replace('year_', '');
+    displayMonths = sortedMonths.filter(m => m.startsWith(y));
+  } else {
+    const pMonths = parseInt(periodVal, 10);
+    displayMonths = pMonths >= 999 ? sortedMonths : sortedMonths.slice(0, pMonths);
+  }
   const headers = ['업체명(유사명칭통합)', ...displayMonths, '기간 합계'];
 
   const rows = Array.from(vendorSet).sort().map(v => {
@@ -11282,8 +11346,183 @@ function exportPivotToCSV() {
 
   const catNames = { all: '전체통합', consumables: '소모품', submaterials: '부자재', rawmaterials: '원자재' };
   const catName = catNames[cat] || '통합';
-  exportToCSV(headers, rows, `거래처별매입추이_${catName}_${new Date().toISOString().substring(0,10)}.csv`);
-  showToast(`[${catName}] 매입추이 CSV 파일이 다운로드되었습니다.`, 'success');
+  const cleanPeriod = periodText.replace(/[^0-9a-zA-Z가-힣]/g, '');
+  exportToCSV(headers, rows, `거래처별매입추이_${catName}_${cleanPeriod}_${new Date().toISOString().substring(0,10)}.csv`);
+  showToast(`[${catName} / ${periodText}] 매입추이 CSV 파일이 다운로드되었습니다.`, 'success');
+}
+
+function exportPivotToExcelWithChart() {
+  ensureMaterialsLoaded();
+  const catEl = document.getElementById('pivotCategorySelect');
+  const cat = catEl ? catEl.value : 'all';
+  const periodSelect = document.getElementById('pivotPeriodSelect');
+  const periodVal = periodSelect ? periodSelect.value : 'year_2026';
+  const periodText = periodSelect ? periodSelect.options[periodSelect.selectedIndex].text : '2026년';
+  const currentDataset = getPivotDataset(cat);
+
+  const catNames = { all: '전체통합', consumables: '소모품', submaterials: '부자재', rawmaterials: '원자재' };
+  const catLabel = catNames[cat] || '통합';
+  const vendorLabel = currentTrendVendor ? `[${currentTrendVendor}]` : '전체 거래처 합산';
+
+  // 1. Capture trend chart canvas image as base64
+  let chartImageHtml = '';
+  const canvas = document.getElementById('monthlyTrendChart');
+  if (canvas) {
+    try {
+      const imgDataUrl = canvas.toDataURL('image/png');
+      chartImageHtml = `
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-size: 13pt; color: #1e3a8a; margin-bottom: 6px;">📈 ${escapeHtml(vendorLabel)} ${escapeHtml(periodText)} 월별 매입금액 추이 그래프</h3>
+          <img src="${imgDataUrl}" width="800" height="230" style="border: 1px solid #cbd5e1; border-radius: 6px;" />
+        </div>
+      `;
+    } catch (e) {
+      console.warn('Chart capture failed for Excel export:', e);
+    }
+  }
+
+  // 2. Gather data matching current period
+  const vendorMonthMap = {};
+  const allMonthsSet = new Set();
+  const vendorSet = new Set();
+
+  for (let i = 0; i < currentDataset.length; i++) {
+    const row = currentDataset[i];
+    const d = row[0];
+    const rawV = row[1];
+    const amt = row[6];
+    if (!d || !rawV || amt <= 0) continue;
+
+    const v = normalizeVendorName(rawV);
+    const ym = d.substring(0, 7);
+    allMonthsSet.add(ym);
+    vendorSet.add(v);
+    vendorMonthMap[v + '|' + ym] = (vendorMonthMap[v + '|' + ym] || 0) + amt;
+  }
+
+  const sortedMonths = Array.from(allMonthsSet).sort().reverse();
+  let displayMonths = [];
+  if (periodVal.startsWith('year_')) {
+    const y = periodVal.replace('year_', '');
+    displayMonths = sortedMonths.filter(m => m.startsWith(y));
+  } else {
+    const pMonths = parseInt(periodVal, 10);
+    displayMonths = pMonths >= 999 ? sortedMonths : sortedMonths.slice(0, pMonths);
+  }
+
+  const monthHeaders = displayMonths;
+
+  let vendorsToExport = Array.from(vendorSet);
+  if (currentTrendVendor) {
+    vendorsToExport = [currentTrendVendor, ...vendorsToExport.filter(v => v !== currentTrendVendor)];
+  } else {
+    vendorsToExport.sort((a, b) => {
+      let sumA = 0, sumB = 0;
+      monthHeaders.forEach(m => {
+        sumA += (vendorMonthMap[a + '|' + m] || 0);
+        sumB += (vendorMonthMap[b + '|' + m] || 0);
+      });
+      return sumB - sumA;
+    });
+  }
+
+  const colTotals = {};
+  let grandTotal = 0;
+  monthHeaders.forEach(m => {
+    let mSum = 0;
+    vendorsToExport.forEach(v => {
+      mSum += (vendorMonthMap[v + '|' + m] || 0);
+    });
+    colTotals[m] = mSum;
+    grandTotal += mSum;
+  });
+
+  let rowsHtml = '';
+  vendorsToExport.forEach(v => {
+    let rowSum = 0;
+    const isTarget = (v === currentTrendVendor);
+    let cells = '';
+    monthHeaders.forEach(m => {
+      const val = vendorMonthMap[v + '|' + m] || 0;
+      rowSum += val;
+      cells += `<td style="text-align: right; border: 1px solid #cbd5e1; padding: 6px 10px; ${isTarget ? 'background: #eff6ff; font-weight: bold;' : ''}">${val > 0 ? formatNumber(val) : '-'}</td>`;
+    });
+
+    rowsHtml += `
+      <tr style="${isTarget ? 'background: #eff6ff;' : ''}">
+        <td style="border: 1px solid #cbd5e1; padding: 6px 10px; font-weight: bold; ${isTarget ? 'color: #1e40af;' : ''}">${escapeHtml(v)}${isTarget ? ' (선택업체)' : ''}</td>
+        ${cells}
+        <td style="text-align: right; border: 1px solid #cbd5e1; padding: 6px 10px; font-weight: bold; background: #f8fafc;">${formatNumber(rowSum)}</td>
+      </tr>
+    `;
+  });
+
+  let totalsRow = '<tr style="background: #e2e8f0; font-weight: bold;"><td style="border: 1px solid #cbd5e1; padding: 8px 10px; text-align: center;">월별 합계</td>';
+  monthHeaders.forEach(m => {
+    totalsRow += `<td style="text-align: right; border: 1px solid #cbd5e1; padding: 8px 10px;">${formatNumber(colTotals[m] || 0)}</td>`;
+  });
+  totalsRow += `<td style="text-align: right; border: 1px solid #cbd5e1; padding: 8px 10px; color: #1e3a8a;">${formatNumber(grandTotal)}</td></tr>`;
+
+  const excelHtml = `
+    <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+    <head>
+      <meta charset="utf-8">
+      <!--[if gte mso 9]>
+      <xml>
+        <x:ExcelWorkbook>
+          <x:ExcelWorksheets>
+            <x:ExcelWorksheet>
+              <x:Name>거래처별매입추이</x:Name>
+              <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
+            </x:ExcelWorksheet>
+          </x:ExcelWorksheets>
+        </x:ExcelWorkbook>
+      </xml>
+      <![endif]-->
+      <style>
+        body { font-family: 맑은 고딕, Malgun Gothic, sans-serif; font-size: 10pt; }
+        table { border-collapse: collapse; margin-top: 10px; }
+        th { background: #3730a3; color: #ffffff; border: 1px solid #6366f1; padding: 8px 12px; font-size: 10pt; text-align: center; }
+        td { border: 1px solid #cbd5e1; padding: 6px 10px; font-size: 9.5pt; }
+      </style>
+    </head>
+    <body>
+      <h2 style="color: #1e3a8a; margin-bottom: 4px;">📊 거래처별 매입추이 피벗 분석 (${escapeHtml(periodText)})</h2>
+      <div style="font-size: 9pt; color: #475569; margin-bottom: 16px;">
+        구분: <strong>${escapeHtml(catLabel)}</strong> | 분석 대상: <strong>${escapeHtml(vendorLabel)}</strong> | 출력일시: ${new Date().toLocaleString('ko-KR')}
+      </div>
+      
+      ${chartImageHtml}
+
+      <h3 style="font-size: 12pt; color: #1e293b; margin-top: 18px; margin-bottom: 6px;">📋 월별 크로스탭 피벗 테이블</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="min-width: 160px;">업체명</th>
+            ${monthHeaders.map(m => `<th style="min-width: 95px;">${m}</th>`).join('')}
+            <th style="min-width: 115px; background: #1e40af;">기간 합계</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+          ${totalsRow}
+        </tbody>
+      </table>
+    </body>
+    </html>
+  `;
+
+  const blob = new Blob([excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+  const cleanPeriod = periodText.replace(/[^0-9a-zA-Z가-힣]/g, '');
+  const filename = `거래처별매입추이_${catLabel}_${cleanPeriod}_${currentTrendVendor || '전체'}_${new Date().toISOString().substring(0,10)}.xls`;
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  showToast(`[${periodText}] 그래프가 포함된 엑셀 파일이 다운로드되었습니다.`, 'success');
 }
 
 function exportToCSV(headers, rows, filename) {
