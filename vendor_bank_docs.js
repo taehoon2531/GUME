@@ -298,6 +298,24 @@ window.VENDOR_BANK_DOCS = {
     type: "image",
     size: "718 KB",
     rawVendor: "원자케미칼상사, ㈜원자케미칼상사, (주)원자케미칼상사, 원자케미칼"
+  },
+  "한국종합상사": {
+    vendor: "한국종합상사",
+    fileName: "한국종합상사 IBK 기업통장사본.pdf",
+    path: "통장사본/한국종합상사 IBK 기업통장사본.pdf",
+    ext: "pdf",
+    type: "pdf",
+    size: "318 KB",
+    rawVendor: "한국종합상사, 한국종합상사(구 부원기업), 부원기업"
+  },
+  "한국종합상사(구 부원기업)": {
+    vendor: "한국종합상사(구 부원기업)",
+    fileName: "한국종합상사 IBK 기업통장사본.pdf",
+    path: "통장사본/한국종합상사 IBK 기업통장사본.pdf",
+    ext: "pdf",
+    type: "pdf",
+    size: "318 KB",
+    rawVendor: "한국종합상사, 한국종합상사(구 부원기업), 부원기업"
   }
 };
 
