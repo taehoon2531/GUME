@@ -5098,13 +5098,27 @@ canvas.custom-chart {
             <table>
               <thead>
                 <tr>
-                  <th style="min-width: 160px;">업체명 (취급구분)</th>
-                  <th>담당자 / 이메일</th>
-                  <th>연락처</th>
-                  <th class="text-center" style="width: 95px;">사내담당</th>
-                  <th class="text-center" style="width: 105px;">통장사본</th>
-                  <th>주소 및 비고</th>
-                  <th class="text-right">누적 매입액 (통합)</th>
+                  <th onclick="setVendorSort('vendor')" style="min-width: 160px; cursor: pointer; user-select: none;" title="업체명순 정렬">
+                    업체명 (취급구분) <span id="sortIcon_vendor" style="font-size: 0.72rem; color: #94a3b8;">↕</span>
+                  </th>
+                  <th onclick="setVendorSort('contact')" style="cursor: pointer; user-select: none;" title="담당자 있는 순서대로 정렬 (데이터 우선)">
+                    담당자 / 이메일 <span id="sortIcon_contact" style="font-size: 0.72rem; color: #94a3b8;">↕</span>
+                  </th>
+                  <th onclick="setVendorSort('phone')" style="cursor: pointer; user-select: none;" title="연락처 있는 순서대로 정렬 (데이터 우선)">
+                    연락처 <span id="sortIcon_phone" style="font-size: 0.72rem; color: #94a3b8;">↕</span>
+                  </th>
+                  <th onclick="setVendorSort('manager')" class="text-center" style="width: 95px; cursor: pointer; user-select: none;" title="사내담당자순 정렬">
+                    사내담당 <span id="sortIcon_manager" style="font-size: 0.72rem; color: #94a3b8;">↕</span>
+                  </th>
+                  <th onclick="setVendorSort('bankdoc')" class="text-center" style="width: 105px; cursor: pointer; user-select: none;" title="통장사본 등록순 정렬">
+                    통장사본 <span id="sortIcon_bankdoc" style="font-size: 0.72rem; color: #94a3b8;">↕</span>
+                  </th>
+                  <th onclick="setVendorSort('remarks')" style="cursor: pointer; user-select: none;" title="주소/비고 있는 순서대로 정렬">
+                    주소 및 비고 <span id="sortIcon_remarks" style="font-size: 0.72rem; color: #94a3b8;">↕</span>
+                  </th>
+                  <th onclick="setVendorSort('total')" class="text-right" style="cursor: pointer; user-select: none;" title="누적 매입액순 정렬">
+                    누적 매입액 (통합) <span id="sortIcon_total" style="font-size: 0.72rem; color: #2563eb;">▼</span>
+                  </th>
                   <th class="text-center" style="width: 120px;">관리</th>
                 </tr>
               </thead>
@@ -5133,7 +5147,20 @@ canvas.custom-chart {
           <!-- ============================================== -->
           <div id="vendorEditSection">
             <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; padding: 8px 10px; margin-bottom: 10px; font-size: 0.78rem; color: #1e40af; line-height: 1.4;">
-              💡 <strong>수정칸 안내:</strong> 좌측 표의 <strong>[수정]</strong> 버튼을 누르거나, 아래 드롭다운에서 업체를 직접 선택하여 수정하세요.
+              💡 <strong>수정칸 안내:</strong> 좌측 표에서 <strong>거래처 행을 클릭</strong>하면 해당 업체의 정보가 즉시 이곳에 표시 및 자동 입력됩니다.
+            </div>
+
+            <!-- Selected Vendor Quick Info Card -->
+            <div id="vendorQuickSummaryCard" style="display: none; background: #ffffff; border: 1.5px solid #bfdbfe; border-radius: 8px; padding: 12px 14px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(37,99,235,0.08);">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed #cbd5e1; padding-bottom: 6px;">
+                <h3 id="quickVendorName" style="font-size: 1.05rem; font-weight: 800; color: #1e3a8a; margin: 0;">-</h3>
+                <span id="quickVendorCategoryBadge" class="badge" style="font-size: 0.72rem; padding: 2px 7px;">소모품</span>
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 0.8rem; color: #334155;">
+                <div>💰 <strong>누적 매입:</strong> <span id="quickVendorTotal" style="color: #1e3a8a; font-weight: 700;">₩0</span></div>
+                <div>👤 <strong>사내담당:</strong> <span id="quickVendorManager" style="font-weight: 700;">-</span></div>
+                <div style="grid-column: span 2; margin-top: 2px;">📄 <strong>통장사본:</strong> <span id="quickVendorBankDoc">-</span></div>
+              </div>
             </div>
 
             <div class="form-group">
@@ -6170,7 +6197,7 @@ function initPwa() {
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=2.6').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=2.7').then(reg => {
         console.log('PWA ServiceWorker registered:', reg.scope);
         reg.update();
         reg.addEventListener('updatefound', () => {
@@ -9927,6 +9954,19 @@ function saveVendorsToStorage() {
   }
 }
 
+let vendorSortCol = 'total';
+let vendorSortAsc = false;
+
+function setVendorSort(col) {
+  if (vendorSortCol === col) {
+    vendorSortAsc = !vendorSortAsc;
+  } else {
+    vendorSortCol = col;
+    vendorSortAsc = (col === 'vendor') ? true : false;
+  }
+  renderVendorMgmtTable();
+}
+
 function renderVendorMgmtTable() {
   ensureMaterialsLoaded();
   const searchInput = document.getElementById('mgmtSearchInput');
@@ -9963,6 +10003,8 @@ function renderVendorMgmtTable() {
     });
   });
 
+  window.__vTotalsCache = vTotals;
+
   // Ensure all vendors in vTotals exist in vendorContacts
   Object.keys(vTotals).forEach(v => {
     if (!vendorContacts[v]) {
@@ -9970,7 +10012,23 @@ function renderVendorMgmtTable() {
     }
   });
 
-  let list = Object.keys(vendorContacts).sort((a, b) => (vTotals[b] || 0) - (vTotals[a] || 0));
+  let list = Object.keys(vendorContacts);
+
+  // Update table header sort icons
+  ['vendor', 'contact', 'phone', 'manager', 'bankdoc', 'remarks', 'total'].forEach(col => {
+    const iconEl = document.getElementById(`sortIcon_${col}`);
+    if (iconEl) {
+      if (vendorSortCol === col) {
+        iconEl.textContent = vendorSortAsc ? ' ▲' : ' ▼';
+        iconEl.style.color = '#2563eb';
+        iconEl.style.fontWeight = '900';
+      } else {
+        iconEl.textContent = ' ↕';
+        iconEl.style.color = '#94a3b8';
+        iconEl.style.fontWeight = 'normal';
+      }
+    }
+  });
 
   const mgrFilterEl = document.getElementById('mgmtManagerSelect');
   const mgrFilter = mgrFilterEl ? mgrFilterEl.value : 'all';
@@ -10008,8 +10066,84 @@ function renderVendorMgmtTable() {
     });
   }
 
+  // Multi-column sorting with "data present comes first"
+  list.sort((a, b) => {
+    const infoA = vendorContacts[a] || {};
+    const infoB = vendorContacts[b] || {};
+
+    if (vendorSortCol === 'total') {
+      const totA = vTotals[a] || 0;
+      const totB = vTotals[b] || 0;
+      return vendorSortAsc ? (totA - totB) : (totB - totA);
+    }
+
+    if (vendorSortCol === 'vendor') {
+      return vendorSortAsc ? a.localeCompare(b, 'ko') : b.localeCompare(a, 'ko');
+    }
+
+    if (vendorSortCol === 'contact') {
+      const valA = (infoA.contact || '').trim();
+      const valB = (infoB.contact || '').trim();
+      const hasA = valA.length > 0;
+      const hasB = valB.length > 0;
+      // 데이터가 있는 업체가 무조건 위로 먼저 옴!
+      if (hasA && !hasB) return -1;
+      if (!hasA && hasB) return 1;
+      if (!hasA && !hasB) return (vTotals[b] || 0) - (vTotals[a] || 0);
+      return vendorSortAsc ? valB.localeCompare(valA, 'ko') : valA.localeCompare(valB, 'ko');
+    }
+
+    if (vendorSortCol === 'phone') {
+      const valA = (infoA.phone || '').trim();
+      const valB = (infoB.phone || '').trim();
+      const hasA = valA.length > 0;
+      const hasB = valB.length > 0;
+      // 데이터가 있는 업체가 무조건 위로 먼저 옴!
+      if (hasA && !hasB) return -1;
+      if (!hasA && hasB) return 1;
+      if (!hasA && !hasB) return (vTotals[b] || 0) - (vTotals[a] || 0);
+      return vendorSortAsc ? valB.localeCompare(valA, 'ko') : valA.localeCompare(valB, 'ko');
+    }
+
+    if (vendorSortCol === 'manager') {
+      const valA = (infoA.manager || '').trim();
+      const valB = (infoB.manager || '').trim();
+      const hasA = valA.length > 0;
+      const hasB = valB.length > 0;
+      if (hasA && !hasB) return -1;
+      if (!hasA && hasB) return 1;
+      if (!hasA && !hasB) return (vTotals[b] || 0) - (vTotals[a] || 0);
+      return vendorSortAsc ? valB.localeCompare(valA, 'ko') : valA.localeCompare(valB, 'ko');
+    }
+
+    if (vendorSortCol === 'bankdoc') {
+      const docA = typeof getVendorBankDoc === 'function' ? getVendorBankDoc(a) : null;
+      const docB = typeof getVendorBankDoc === 'function' ? getVendorBankDoc(b) : null;
+      const hasA = !!docA;
+      const hasB = !!docB;
+      if (hasA && !hasB) return -1;
+      if (!hasA && hasB) return 1;
+      return (vTotals[b] || 0) - (vTotals[a] || 0);
+    }
+
+    if (vendorSortCol === 'remarks') {
+      const valA = (infoA.remarks || '').trim();
+      const valB = (infoB.remarks || '').trim();
+      const hasA = valA.length > 0;
+      const hasB = valB.length > 0;
+      if (hasA && !hasB) return -1;
+      if (!hasA && hasB) return 1;
+      if (!hasA && !hasB) return (vTotals[b] || 0) - (vTotals[a] || 0);
+      return vendorSortAsc ? valB.localeCompare(valA, 'ko') : valA.localeCompare(valB, 'ko');
+    }
+
+    return (vTotals[b] || 0) - (vTotals[a] || 0);
+  });
+
   const countEl = document.getElementById('mgmtVendorCount');
   if (countEl) countEl.textContent = list.length;
+
+  const currentSelectedVendor = (document.getElementById('editVendorOriginalName')?.value || document.getElementById('editVendorSelect')?.value || '').trim();
 
   list.forEach(v => {
     const info = vendorContacts[v] || { contact: '', phone: '', remarks: '' };
@@ -10063,6 +10197,33 @@ function renderVendorMgmtTable() {
     ` : `<span style="color:#aaa;">-</span>`;
 
     const tr = document.createElement('tr');
+    tr.setAttribute('data-vendor', v);
+    tr.style.cursor = 'pointer';
+    tr.title = `'${v}' 클릭 시 우측 수정칸에 정보가 표시됩니다`;
+
+    if (currentSelectedVendor && currentSelectedVendor === v) {
+      tr.style.backgroundColor = '#eff6ff';
+      tr.style.boxShadow = 'inset 4px 0 0 #2563eb';
+    }
+
+    tr.onclick = (e) => {
+      if (e.target.closest('button') || e.target.closest('a')) return;
+      editVendor(v);
+    };
+
+    tr.onmouseenter = () => {
+      const selName = (document.getElementById('editVendorOriginalName')?.value || '').trim();
+      if (tr.getAttribute('data-vendor') !== selName) {
+        tr.style.backgroundColor = '#f8fafc';
+      }
+    };
+    tr.onmouseleave = () => {
+      const selName = (document.getElementById('editVendorOriginalName')?.value || '').trim();
+      if (tr.getAttribute('data-vendor') !== selName) {
+        tr.style.backgroundColor = '';
+      }
+    };
+
     tr.innerHTML = `
       <td>
         <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
@@ -10194,6 +10355,13 @@ function loadVendorIntoEditFields(v) {
   const textEl = document.getElementById('editVendorBankDocText');
   const btnEl = document.getElementById('btnEditVendorBankDocView');
 
+  const quickCard = document.getElementById('vendorQuickSummaryCard');
+  const qName = document.getElementById('quickVendorName');
+  const qCat = document.getElementById('quickVendorCategoryBadge');
+  const qTotal = document.getElementById('quickVendorTotal');
+  const qMgr = document.getElementById('quickVendorManager');
+  const qDoc = document.getElementById('quickVendorBankDoc');
+
   if (!v) {
     if (origEl) origEl.value = '';
     if (nameEl) nameEl.value = '';
@@ -10203,6 +10371,11 @@ function loadVendorIntoEditFields(v) {
     if (mgrEl) mgrEl.value = '';
     if (remarksEl) remarksEl.value = '';
     if (statusEl) statusEl.style.display = 'none';
+    if (quickCard) quickCard.style.display = 'none';
+    document.querySelectorAll('#vendorMgmtTableBody tr').forEach(tr => {
+      tr.style.backgroundColor = '';
+      tr.style.boxShadow = '';
+    });
     return;
   }
 
@@ -10214,6 +10387,53 @@ function loadVendorIntoEditFields(v) {
   if (emailEl) emailEl.value = info.email || '';
   if (mgrEl) mgrEl.value = info.manager || '';
   if (remarksEl) remarksEl.value = info.remarks || '';
+
+  // Quick summary card display
+  if (quickCard) {
+    quickCard.style.display = 'block';
+    if (qName) qName.textContent = v;
+    
+    const tot = (window.__vTotalsCache && window.__vTotalsCache[v]) ? window.__vTotalsCache[v] : 0;
+    if (qTotal) qTotal.textContent = formatCurrency(tot);
+
+    if (qMgr) {
+      if (info.manager) {
+        qMgr.innerHTML = `<span style="color:${info.manager === '김태훈' ? '#2563eb' : '#dc2626'}; font-weight:800;">${escapeHtml(info.manager)}</span>`;
+      } else {
+        qMgr.innerHTML = '<span style="color:#94a3b8;">미지정</span>';
+      }
+    }
+
+    if (qCat) {
+      const catName = info.category || '소모품';
+      let bStyle = 'background:#e2e8f0; color:#334155;';
+      if (catName.includes('소모')) bStyle = 'background:#dbeafe; color:#1e40af; border:1px solid #bfdbfe;';
+      else if (catName.includes('부자재')) bStyle = 'background:#fef3c7; color:#92400e; border:1px solid #fde68a;';
+      else if (catName.includes('원자재')) bStyle = 'background:#d1fae5; color:#065f46; border:1px solid #a7f3d0;';
+      qCat.style.cssText = `${bStyle} font-size:0.75rem; padding:2px 8px; border-radius:4px; font-weight:700;`;
+      qCat.textContent = catName;
+    }
+
+    const bankDoc = typeof getVendorBankDoc === 'function' ? getVendorBankDoc(v) : null;
+    if (qDoc) {
+      if (bankDoc) {
+        qDoc.innerHTML = `<span style="color:#166534; font-weight:700;">✅ 등록됨 (${bankDoc.ext.toUpperCase()}, ${bankDoc.size})</span> <button type="button" class="btn btn-sm" onclick="openBankDocModal('${escapeHtml(v)}')" style="margin-left:6px; padding:1px 8px; font-size:0.72rem; background:#dcfce7; color:#166534; border:1px solid #86efac; border-radius:4px; font-weight:700;">👁️ 열람</button>`;
+      } else {
+        qDoc.innerHTML = '<span style="color:#94a3b8;">미등록</span>';
+      }
+    }
+  }
+
+  // Highlight selected table row
+  document.querySelectorAll('#vendorMgmtTableBody tr').forEach(tr => {
+    if (tr.getAttribute('data-vendor') === v) {
+      tr.style.backgroundColor = '#eff6ff';
+      tr.style.boxShadow = 'inset 4px 0 0 #2563eb';
+    } else {
+      tr.style.backgroundColor = '';
+      tr.style.boxShadow = '';
+    }
+  });
 
   // Bank Doc status display
   const bankDoc = typeof getVendorBankDoc === 'function' ? getVendorBankDoc(v) : null;
