@@ -1,4 +1,4 @@
-# Simple HTTP Static Server for Windows PowerShell
+﻿# Simple HTTP Static Server for Windows PowerShell
 param(
     [int]$Port = 8080
 )
@@ -36,8 +36,11 @@ $mimeTypes = @{
     ".pdf"  = "application/pdf"
 }
 
-$root = $PSScriptRoot
-if (-not $root) { $root = (Get-Location).Path }
+$root = Split-Path -Parent $PSScriptRoot
+if (-not (Test-Path (Join-Path $root "index.html"))) {
+    $root = $PSScriptRoot
+    if (-not $root) { $root = (Get-Location).Path }
+}
 
 while ($listener.IsListening) {
     try {

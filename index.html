@@ -5741,14 +5741,14 @@ canvas.custom-chart {
   </div>
 
   <!-- Load pre-compiled data -->
-  <script src="data.js"></script>
-  <script src="sub_data.js"></script>
-  <script src="raw_data.js"></script>
-  <script src="scrap_data.js?v=20261118"></script>
-  <script src="pallet_data.js"></script>
-  <script src="vendor_bank_docs.js"></script>
-  <script src="vendor_master_data.js"></script>
-  <script src="pdf.min.js"></script>
+  <script src="data/data.js"></script>
+  <script src="data/sub_data.js"></script>
+  <script src="data/raw_data.js"></script>
+  <script src="data/scrap_data.js?v=20261118"></script>
+  <script src="data/pallet_data.js"></script>
+  <script src="data/vendor_bank_docs.js"></script>
+  <script src="data/vendor_master_data.js"></script>
+  <script src="lib/pdf.min.js"></script>
 
   <!-- Main Application Script -->
   <script>
@@ -6222,7 +6222,7 @@ function initPwa() {
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=3.2').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=3.3').then(reg => {
         console.log('PWA ServiceWorker registered:', reg.scope);
         reg.update();
         reg.addEventListener('updatefound', () => {
@@ -6538,7 +6538,7 @@ function printCurrentBankDoc() {
     (async () => {
       try {
         if (!window.pdfjsLib) throw new Error('pdfjsLib is not loaded');
-        pdfjsLib.GlobalWorkerOptions.workerSrc = './pdf.worker.min.js';
+        pdfjsLib.GlobalWorkerOptions.workerSrc = './lib/pdf.worker.min.js';
 
         const loadingTask = pdfjsLib.getDocument(encodedPath);
         const pdf = await loadingTask.promise;
@@ -11218,7 +11218,7 @@ function exportDataJsFile() {
   a.download = 'data.js';
   a.click();
   URL.revokeObjectURL(url);
-  showToast('data.js 파일이 다운로드되었습니다. 다운로드 폴더의 data.js 파일을 대시보드 폴더에 덮어쓰시면 영구 반영됩니다!', 'success');
+  showToast('data.js 파일이 다운로드되었습니다. 다운로드 폴더의 data.js 파일을 대시보드 폴더 내 data/ 폴더에 덮어쓰시면 영구 반영됩니다!', 'success');
 }
 
 // ==========================================

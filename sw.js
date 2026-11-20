@@ -1,15 +1,15 @@
 // ===================================================================
 // (주)에스앤더블류 구매 관리 대시보드 — Service Worker (PWA)
 // ===================================================================
-const CACHE_NAME = 'snw-pwa-v3.2';
+const CACHE_NAME = 'snw-pwa-v3.3';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './vendor_bank_docs.js',
-  './vendor_master_data.js',
-  './pdf.min.js',
-  './pdf.worker.min.js',
+  './data/vendor_bank_docs.js',
+  './data/vendor_master_data.js',
+  './lib/pdf.min.js',
+  './lib/pdf.worker.min.js',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/apple-touch-icon.png',

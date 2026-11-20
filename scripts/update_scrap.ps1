@@ -1,14 +1,16 @@
-# 올메탈(AllMetal) 폐초경 및 폐팁 시세 자동 업데이트 스크립트
+﻿# 올메탈(AllMetal) 폐초경 및 폐팁 시세 자동 업데이트 스크립트
 # 최신 공지 기준: 2026-11-18 (wr_id=178)
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 if (-not $scriptDir) { $scriptDir = Get-Location }
-Set-Location $scriptDir
+$projectRoot = Split-Path -Parent $scriptDir
+if (-not (Test-Path (Join-Path $projectRoot "index.html"))) { $projectRoot = $scriptDir }
+Set-Location $projectRoot
 
-$jsonPath = Join-Path $scriptDir "scrap_prices.json"
-$jsPath = Join-Path $scriptDir "scrap_data.js"
+$jsonPath = Join-Path $projectRoot "data\scrap_prices.json"
+$jsPath = Join-Path $projectRoot "data\scrap_data.js"
 
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "  올메탈(AllMetal) 폐초경/폐팁 시세 동기화 스크립트" -ForegroundColor Yellow

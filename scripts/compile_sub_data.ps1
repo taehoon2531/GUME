@@ -1,4 +1,4 @@
-# 부자재 텍스트(부자재.txt) → sub_data.js 변환 스크립트
+﻿# 부자재 텍스트(부자재.txt) → sub_data.js 변환 스크립트
 # 열 매핑:
 #   입고일(0) → 입고일자 (row[0])
 #   공급처명(17) → 업체명 (row[1])
@@ -11,11 +11,13 @@
 #   재질(4) → 재질 (row[8])
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-$txtPath = Join-Path $PSScriptRoot "부자재.txt"
+$projectRoot = Split-Path -Parent $PSScriptRoot
+if (-not (Test-Path (Join-Path $projectRoot "index.html"))) { $projectRoot = $PSScriptRoot }
+$txtPath = Join-Path $projectRoot "raw_data\부자재.txt"
 if (-not (Test-Path $txtPath)) {
-    $txtPath = Join-Path $PSScriptRoot "부자재_raw.csv"
+    $txtPath = Join-Path $projectRoot "raw_data\부자재_raw.csv"
 }
-$outPath = Join-Path $PSScriptRoot "sub_data.js"
+$outPath = Join-Path $projectRoot "data\sub_data.js"
 
 Write-Host "Reading source file: $txtPath"
 $lines = [System.IO.File]::ReadAllLines($txtPath, [System.Text.Encoding]::UTF8)

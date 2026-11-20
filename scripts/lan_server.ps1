@@ -1,4 +1,4 @@
-# ========================================================================
+﻿# ========================================================================
 #   (주)에스앤더블류 구매부 통합 대시보드 - 사내 LAN 고성능 웹 서버
 #   무설치(Zero-Dependency) C# 비동기 멀티스레드 정적 HTTP 서버
 # ========================================================================
@@ -232,9 +232,12 @@ public class LanDashboardServer {
 
 Add-Type -TypeDefinition $csharpServer
 
-$rootDir = $PSScriptRoot
-if ([string]::IsNullOrEmpty($rootDir)) {
-    $rootDir = (Get-Location).Path
+$rootDir = Split-Path -Parent $PSScriptRoot
+if (-not (Test-Path (Join-Path $rootDir "index.html"))) {
+    $rootDir = $PSScriptRoot
+    if ([string]::IsNullOrEmpty($rootDir)) {
+        $rootDir = (Get-Location).Path
+    }
 }
 
 # 3. 포트 사용 가능 여부 확인 및 자동 포트 지정

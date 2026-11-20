@@ -1,4 +1,4 @@
-# 원자재 텍스트(원자재.txt) → raw_data.js 변환 스크립트
+﻿# 원자재 텍스트(원자재.txt) → raw_data.js 변환 스크립트
 # 열 매핑:
 #   입고일(0) → 입고일자 (row[0])
 #   공급처명(17) → 업체명 (row[1])
@@ -11,8 +11,10 @@
 #   재질(4) → 재질 (row[8])
 
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-$txtPath = Join-Path $PSScriptRoot "원자재.txt"
-$outPath = Join-Path $PSScriptRoot "raw_data.js"
+$projectRoot = Split-Path -Parent $PSScriptRoot
+if (-not (Test-Path (Join-Path $projectRoot "index.html"))) { $projectRoot = $PSScriptRoot }
+$txtPath = Join-Path $projectRoot "raw_data\원자재.txt"
+$outPath = Join-Path $projectRoot "data\raw_data.js"
 
 Write-Host "Reading source file: $txtPath"
 $lines = [System.IO.File]::ReadAllLines($txtPath, [System.Text.Encoding]::UTF8)
