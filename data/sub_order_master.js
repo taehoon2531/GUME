@@ -281,7 +281,7 @@ window.SUB_ORDER_VENDORS = [
     ]
   },
   {
-    vendor: "에스비앤",
+    vendor: "에스비엔",
     category: "특수합금 너트 / 스터드볼트",
     contactPerson: "영업부 담당자님",
     officePhone: "051-315-0811",
@@ -335,7 +335,7 @@ window.initSubOrderView = function(force) {
   }
   window.subOrderInitialized = true;
 
-  // 1. Populate vendor dropdown
+  // 1. Populate vendor dropdown (사내 부재료 발주서 등록 15개 업체 전용)
   if (select) {
     select.innerHTML = '<option value="">-- 부재료 발주 거래처 선택 --</option>';
     window.SUB_ORDER_VENDORS.forEach((v, idx) => {
@@ -345,22 +345,6 @@ window.initSubOrderView = function(force) {
       if (idx === 0) opt.selected = true;
       select.appendChild(opt);
     });
-
-    // Also add any other vendors from VENDOR_MASTER_DATA if available
-    if (window.VENDOR_MASTER_DATA && Array.isArray(window.VENDOR_MASTER_DATA)) {
-      const existing = new Set(window.SUB_ORDER_VENDORS.map(v => v.vendor));
-      const group = document.createElement('optgroup');
-      group.label = "기타 등록 거래처";
-      window.VENDOR_MASTER_DATA.forEach(vm => {
-        if (!existing.has(vm.vendor) && vm.vendor) {
-          const opt = document.createElement('option');
-          opt.value = vm.vendor;
-          opt.textContent = `${vm.vendor} (${vm.category || '기타'})`;
-          group.appendChild(opt);
-        }
-      });
-      if (group.children.length > 0) select.appendChild(group);
-    }
   }
 
   // 2. Set default date and auto PO number
@@ -496,21 +480,8 @@ window.loadVendorSheets = function(vendorName) {
   const todayDateStr = `${yyyy}-${mm}-${dd}`;
   const shortSheetName = `${String(yyyy).substring(2)}.${mm}.${dd}`;
 
-  // Get vendor contact info
+  // Get vendor contact info (사내 부재료 발주서 15개 업체 전용)
   let vMeta = (window.SUB_ORDER_VENDORS || []).find(v => v.vendor === vendorName);
-  if (!vMeta && window.VENDOR_MASTER_DATA) {
-    const vm = window.VENDOR_MASTER_DATA.find(v => v.vendor === vendorName);
-    if (vm) {
-      vMeta = {
-        vendor: vm.vendor,
-        contactPerson: vm.contactPerson || '대표/담당자님',
-        officePhone: vm.officePhone || '',
-        fax: '',
-        mobilePhone: vm.mobilePhone || '',
-        frequentItems: []
-      };
-    }
-  }
   if (!vMeta) {
     vMeta = {
       vendor: vendorName,
