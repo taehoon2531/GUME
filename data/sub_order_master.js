@@ -1,7 +1,19 @@
-﻿// ========================================================================
+// ========================================================================
 // (주)에스앤더블류 부재료 발주서 마스터 데이터 & 전용 작성기 엔진
 // (Sub-materials Purchase Order Master & Live Generator Engine)
 // ========================================================================
+
+function escapeHTML(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+window.escapeHTML = escapeHTML;
+window.escapeHtml = window.escapeHtml || escapeHTML;
 
 window.SUB_ORDER_SENDER_DEFAULT = {
   company: "(주)에스앤더블류",
@@ -313,12 +325,17 @@ window.subOrderItems = [];
 window.subOrderCurrentVendor = null;
 window.subOrderInitialized = false;
 
-window.initSubOrderView = function() {
-  if (window.subOrderInitialized) return;
+window.initSubOrderView = function(force) {
+  const select = document.getElementById('subOrderVendorSelect');
+  if (!select) return;
+
+  if (window.subOrderInitialized && !force) {
+    if (typeof updateSubOrderPreview === 'function') updateSubOrderPreview();
+    return;
+  }
   window.subOrderInitialized = true;
 
   // 1. Populate vendor dropdown
-  const select = document.getElementById('subOrderVendorSelect');
   if (select) {
     select.innerHTML = '<option value="">-- 부재료 발주 거래처 선택 --</option>';
     window.SUB_ORDER_VENDORS.forEach((v, idx) => {
@@ -1111,3 +1128,20 @@ window.resetSubOrderForm = function() {
     onSubOrderVendorChange(select.value);
   }
 };
+
+// Auto-initialize Sub Order view when DOM is ready
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof window.initSubOrderView === 'function') {
+        window.initSubOrderView(true);
+      }
+    });
+  } else {
+    setTimeout(function() {
+      if (typeof window.initSubOrderView === 'function') {
+        window.initSubOrderView(true);
+      }
+    }, 100);
+  }
+}

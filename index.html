@@ -3432,13 +3432,13 @@ canvas.custom-chart {
         <span class="nav-tab-icon">🧱</span>
         <span class="nav-tab-text">부자재 검색 &amp; 상세</span>
       </button>
-      <button class="nav-tab" data-tab="tab-suborder" title="부재료 발주서 작성">
-        <span class="nav-tab-icon">📝</span>
-        <span class="nav-tab-text">부재료 발주서</span>
-      </button>
       <button class="nav-tab" data-tab="tab-raw" title="원자재 검색 & 상세">
         <span class="nav-tab-icon">🏭</span>
         <span class="nav-tab-text">원자재 검색 &amp; 상세</span>
+      </button>
+      <button class="nav-tab" data-tab="tab-suborder" title="부재료 발주서 작성">
+        <span class="nav-tab-icon">📝</span>
+        <span class="nav-tab-text">부재료 발주서</span>
       </button>
       <button class="nav-tab" data-tab="tab-trends" title="거래처별 매입추이">
         <span class="nav-tab-icon">📈</span>
@@ -3789,6 +3789,113 @@ canvas.custom-chart {
     <!-- ========================================== -->
     <!-- TAB: 부재료 발주서 작성기 -->
     <!-- ========================================== -->
+    <section id="tab-raw" class="tab-content">
+      <div class="search-layout">
+        
+        <!-- Left Sidebar: Raw materials Vendor Quick Filter + Top Major Items -->
+        <aside class="sidebar-panel">
+          <div class="sidebar-header">
+            <h3>🏭 원자재 거래처 (<span id="rawSidebarVendorCount">0</span>)</h3>
+            <button class="btn btn-sm btn-outline" onclick="selectRawVendor('')">전체</button>
+          </div>
+          <div class="sidebar-search-box">
+            <input type="text" id="rawVendorSidebarSearch" placeholder="원자재 거래처 검색..." oninput="filterRawVendorSidebarList()">
+          </div>
+          <ul class="vendor-list" id="rawSidebarVendorList">
+            <!-- Dynamic Raw Vendor Items -->
+          </ul>
+
+          <div class="major-items-section" id="rawMajorItemsSection" style="display: none;">
+            <div class="major-items-header">
+              <span>🌟 주요 원자재 (금액순 TOP 10)</span>
+              <span id="rawMajorVendorName" style="color: #059669; font-weight:700;"></span>
+            </div>
+            <ul class="major-items-list" id="rawMajorItemsList">
+              <!-- Dynamic Major Items -->
+            </ul>
+          </div>
+        </aside>
+
+        <!-- Main Data Table Panel -->
+        <div class="data-panel">
+          <!-- 4-Field Search Card -->
+          <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: var(--card-shadow);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+              <div style="font-size: 0.95rem; font-weight: 800; color: #047857; display: flex; align-items: center; gap: 6px;">
+                <span>🏭 원자재 4열 멀티 검색</span>
+                <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:0.75rem;">ERP 33,115건 (2,448억)</span>
+                <span class="badge" style="background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; font-size:0.72rem;">마지막 입고: 2026-11-13</span>
+              </div>
+              <button class="btn btn-sm btn-outline" onclick="resetRawFilters()">🔄 필터 초기화</button>
+            </div>
+
+            <div class="multi-search-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 10px;">
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">🏢 공급사 (세한스틸, 삼양특수강...)</label>
+                <input type="text" id="rawSearchVendor" list="rawVendorDatalist" placeholder="원자재 업체명 선택/입력..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
+                <datalist id="rawVendorDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📦 품명/형상 (ROUND BAR, PLATE...)</label>
+                <input type="text" id="rawSearchItem" list="rawItemDatalist" placeholder="원자재 품종 검색..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
+                <datalist id="rawItemDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">🪨 강종/재질 (SCM440, S45C, SUS...)</label>
+                <input type="text" id="rawSearchMaterial" list="rawMaterialDatalist" placeholder="강종/재질 검색..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
+                <datalist id="rawMaterialDatalist"></datalist>
+              </div>
+              <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📐 규격/외경 (Ø, 두께, 치수...)</label>
+                <input type="text" id="rawSearchSpec" list="rawSpecDatalist" placeholder="원자재 규격 검색..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
+                <datalist id="rawSpecDatalist"></datalist>
+              </div>
+            </div>
+
+            <!-- Date Range Filter -->
+            <div style="display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--slate-200); padding-top: 10px;">
+              <div class="date-filter-group">
+                <span>입고기간:</span>
+                <input type="date" id="rawFilterStartDate" onchange="applyRawFilters()">
+                <span>~</span>
+                <input type="date" id="rawFilterEndDate" onchange="applyRawFilters()">
+                <button class="btn btn-sm btn-outline" onclick="resetRawDateFilter()">전체</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="table-container">
+            <div class="table-info-bar">
+              <span id="rawTableInfoText">0건 중 0 - 0 표시</span>
+              <button class="btn btn-sm btn-outline" onclick="exportRawToCSV()">📥 원자재 엑셀(CSV) 저장</button>
+            </div>
+            <table class="data-table" id="rawMaterialsTable">
+              <thead>
+                <tr>
+                  <th onclick="sortRawData(0)" style="width: 95px; text-align: center;">입고일자 <span class="sort-icon" id="rawSort0">▼</span></th>
+                  <th onclick="sortRawData(1)" style="width: 140px;">업체명 <span class="sort-icon" id="rawSort1">↕</span></th>
+                  <th onclick="sortRawData(2)" style="min-width: 150px;">품명 <span class="sort-icon" id="rawSort2">↕</span></th>
+                  <th onclick="sortRawData(8)" style="width: 130px;">재질/강종 <span class="sort-icon" id="rawSort8">↕</span></th>
+                  <th onclick="sortRawData(3)" style="min-width: 130px;">규격 <span class="sort-icon" id="rawSort3">↕</span></th>
+                  <th onclick="sortRawData(4)" style="width: 80px; text-align: right;">수량(KG) <span class="sort-icon" id="rawSort4">↕</span></th>
+                  <th onclick="sortRawData(5)" style="width: 110px; text-align: right;">단가 <span class="sort-icon" id="rawSort5">↕</span></th>
+                  <th onclick="sortRawData(6)" style="width: 130px; text-align: right;">공급가액 <span class="sort-icon" id="rawSort6">↕</span></th>
+                  <th onclick="sortRawData(7)" style="min-width: 130px;">비고(단위/사양) <span class="sort-icon" id="rawSort7">↕</span></th>
+                </tr>
+              </thead>
+              <tbody id="rawTableBody">
+                <!-- Dynamic Raw Rows -->
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" id="rawPagination"></div>
+        </div>
+      </div>
+    </section>
+<!-- ========================================== -->
+    <!-- TAB 2: 거래처별 매입추이 피벗 분석 -->
+    <!-- ========================================== -->
     <section id="tab-suborder" class="tab-content">
       <!-- Top Action Bar -->
       <div class="suborder-top-bar" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; background: var(--card-bg); border: 1px solid var(--card-border); padding: 14px 18px; border-radius: 12px; box-shadow: var(--card-shadow);">
@@ -3991,113 +4098,6 @@ canvas.custom-chart {
 
     <!-- ========================================== -->
     <!-- TAB 1-3: 원자재 검색 & 상세 분석 -->
-    <!-- ========================================== -->
-    <section id="tab-raw" class="tab-content">
-      <div class="search-layout">
-        
-        <!-- Left Sidebar: Raw materials Vendor Quick Filter + Top Major Items -->
-        <aside class="sidebar-panel">
-          <div class="sidebar-header">
-            <h3>🏭 원자재 거래처 (<span id="rawSidebarVendorCount">0</span>)</h3>
-            <button class="btn btn-sm btn-outline" onclick="selectRawVendor('')">전체</button>
-          </div>
-          <div class="sidebar-search-box">
-            <input type="text" id="rawVendorSidebarSearch" placeholder="원자재 거래처 검색..." oninput="filterRawVendorSidebarList()">
-          </div>
-          <ul class="vendor-list" id="rawSidebarVendorList">
-            <!-- Dynamic Raw Vendor Items -->
-          </ul>
-
-          <div class="major-items-section" id="rawMajorItemsSection" style="display: none;">
-            <div class="major-items-header">
-              <span>🌟 주요 원자재 (금액순 TOP 10)</span>
-              <span id="rawMajorVendorName" style="color: #059669; font-weight:700;"></span>
-            </div>
-            <ul class="major-items-list" id="rawMajorItemsList">
-              <!-- Dynamic Major Items -->
-            </ul>
-          </div>
-        </aside>
-
-        <!-- Main Data Table Panel -->
-        <div class="data-panel">
-          <!-- 4-Field Search Card -->
-          <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 10px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: var(--card-shadow);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
-              <div style="font-size: 0.95rem; font-weight: 800; color: #047857; display: flex; align-items: center; gap: 6px;">
-                <span>🏭 원자재 4열 멀티 검색</span>
-                <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:0.75rem;">ERP 33,115건 (2,448억)</span>
-                <span class="badge" style="background:#eff6ff; color:#1e40af; border:1px solid #bfdbfe; font-size:0.72rem;">마지막 입고: 2026-11-13</span>
-              </div>
-              <button class="btn btn-sm btn-outline" onclick="resetRawFilters()">🔄 필터 초기화</button>
-            </div>
-
-            <div class="multi-search-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; margin-bottom: 10px;">
-              <div>
-                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">🏢 공급사 (세한스틸, 삼양특수강...)</label>
-                <input type="text" id="rawSearchVendor" list="rawVendorDatalist" placeholder="원자재 업체명 선택/입력..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
-                <datalist id="rawVendorDatalist"></datalist>
-              </div>
-              <div>
-                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📦 품명/형상 (ROUND BAR, PLATE...)</label>
-                <input type="text" id="rawSearchItem" list="rawItemDatalist" placeholder="원자재 품종 검색..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
-                <datalist id="rawItemDatalist"></datalist>
-              </div>
-              <div>
-                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">🪨 강종/재질 (SCM440, S45C, SUS...)</label>
-                <input type="text" id="rawSearchMaterial" list="rawMaterialDatalist" placeholder="강종/재질 검색..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
-                <datalist id="rawMaterialDatalist"></datalist>
-              </div>
-              <div>
-                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); display: block; margin-bottom: 4px;">📐 규격/외경 (Ø, 두께, 치수...)</label>
-                <input type="text" id="rawSearchSpec" list="rawSpecDatalist" placeholder="원자재 규격 검색..." class="form-input" style="width: 100%; padding: 6px 10px; border: 1px solid var(--input-border); border-radius: 6px;" oninput="applyRawFilters()">
-                <datalist id="rawSpecDatalist"></datalist>
-              </div>
-            </div>
-
-            <!-- Date Range Filter -->
-            <div style="display: flex; justify-content: flex-end; align-items: center; flex-wrap: wrap; gap: 10px; border-top: 1px dashed var(--slate-200); padding-top: 10px;">
-              <div class="date-filter-group">
-                <span>입고기간:</span>
-                <input type="date" id="rawFilterStartDate" onchange="applyRawFilters()">
-                <span>~</span>
-                <input type="date" id="rawFilterEndDate" onchange="applyRawFilters()">
-                <button class="btn btn-sm btn-outline" onclick="resetRawDateFilter()">전체</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Table Container -->
-          <div class="table-container">
-            <div class="table-info-bar">
-              <span id="rawTableInfoText">0건 중 0 - 0 표시</span>
-              <button class="btn btn-sm btn-outline" onclick="exportRawToCSV()">📥 원자재 엑셀(CSV) 저장</button>
-            </div>
-            <table class="data-table" id="rawMaterialsTable">
-              <thead>
-                <tr>
-                  <th onclick="sortRawData(0)" style="width: 95px; text-align: center;">입고일자 <span class="sort-icon" id="rawSort0">▼</span></th>
-                  <th onclick="sortRawData(1)" style="width: 140px;">업체명 <span class="sort-icon" id="rawSort1">↕</span></th>
-                  <th onclick="sortRawData(2)" style="min-width: 150px;">품명 <span class="sort-icon" id="rawSort2">↕</span></th>
-                  <th onclick="sortRawData(8)" style="width: 130px;">재질/강종 <span class="sort-icon" id="rawSort8">↕</span></th>
-                  <th onclick="sortRawData(3)" style="min-width: 130px;">규격 <span class="sort-icon" id="rawSort3">↕</span></th>
-                  <th onclick="sortRawData(4)" style="width: 80px; text-align: right;">수량(KG) <span class="sort-icon" id="rawSort4">↕</span></th>
-                  <th onclick="sortRawData(5)" style="width: 110px; text-align: right;">단가 <span class="sort-icon" id="rawSort5">↕</span></th>
-                  <th onclick="sortRawData(6)" style="width: 130px; text-align: right;">공급가액 <span class="sort-icon" id="rawSort6">↕</span></th>
-                  <th onclick="sortRawData(7)" style="min-width: 130px;">비고(단위/사양) <span class="sort-icon" id="rawSort7">↕</span></th>
-                </tr>
-              </thead>
-              <tbody id="rawTableBody">
-                <!-- Dynamic Raw Rows -->
-              </tbody>
-            </table>
-          </div>
-          <div class="pagination" id="rawPagination"></div>
-        </div>
-      </div>
-    </section>
-<!-- ========================================== -->
-    <!-- TAB 2: 거래처별 매입추이 피벗 분석 -->
     <!-- ========================================== -->
     <section id="tab-trends" class="tab-content">
       <div class="pivot-panel">
@@ -14284,13 +14284,13 @@ function exportPalletRatesToCSV() {
       <span class="m-nav-icon">🧱</span>
       <span class="m-nav-label">부자재</span>
     </button>
-    <button class="m-nav-item" data-tab="tab-suborder" onclick="switchMobileTab('tab-suborder')">
-      <span class="m-nav-icon">📝</span>
-      <span class="m-nav-label">발주서</span>
-    </button>
     <button class="m-nav-item" data-tab="tab-raw" onclick="switchMobileTab('tab-raw')">
       <span class="m-nav-icon">🏭</span>
       <span class="m-nav-label">원자재</span>
+    </button>
+    <button class="m-nav-item" data-tab="tab-suborder" onclick="switchMobileTab('tab-suborder')">
+      <span class="m-nav-icon">📝</span>
+      <span class="m-nav-label">발주서</span>
     </button>
     <button class="m-nav-item" data-tab="tab-scrap" onclick="switchMobileTab('tab-scrap')">
       <span class="m-nav-icon">💎</span>
