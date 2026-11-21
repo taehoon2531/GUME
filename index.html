@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -12033,6 +12033,363 @@ function parsePastedText(text) {
       remark = '';
     } else if (cols.length >= 4) {
       q = parseFloat((cols[4] || '1').replace(/,/g, '')) || 1;
+      p = parseFloat((cols[5] || '0').replace(/,/g, '')) || 0;
+      amt = q * p;
+    }
+    
+    rows.push([d, v, item, spec, q, p, amt, remark]);
+  }
+  
+  return rows;
+}
+
+function loadPastedTextIntoGrid(text, sourceName) {
+  const parsed = parsePastedText(text);
+  if (parsed.length === 0) {
+    showToast('유효한 테이블 데이터를 파싱할 수 없습니다.', 'warning');
+    return;
+  }
+  
+  pastedSpreadsheetRows = parsed;
+  renderPastedSpreadsheetTable();
+  const label = sourceName ? `'${sourceName}' 파일에서` : '엑셀에서';
+  showToast(`${label} ${formatNumber(parsed.length)}건의 데이터를 불러왔습니다. 확인 후 등록하세요!`, 'success');
+}
+
+function renderPastedSpreadsheetTable() {
+  const tbody = document.getElementById('pastedSpreadsheetTableBody');
+  const countEl = document.getElementById('pastedRowCount');
+  const totalAmtWrap = document.getElementById('pastedTotalAmtWrap');
+  const totalAmtEl = document.getElementById('pastedTotalAmt');
+  const toolbar = document.getElementById('pastedActionToolbar');
+  
+  if (!tbody) return;
+  tbody.innerHTML = '';
+  
+  if (pastedSpreadsheetRows.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="10" style="text-align: center; padding: 40px 16px; color: var(--text-muted); font-size: 0.85rem;">
+          엑셀에서 행을 복사(Ctrl+C)한 후 위 영역을 클릭하고 붙여넣기(Ctrl+V) 하거나,<br>
+          [➕ 빈 행 추가] 버튼을 눌러 직접 입력하세요.
+        </td>
+      </tr>`;
+    if (countEl) countEl.textContent = '0';
+    if (totalAmtWrap) totalAmtWrap.style.display = 'none';
+    if (toolbar) toolbar.style.display = 'none';
+    return;
+  }
+  
+  let totalAmt = 0;
+  pastedSpreadsheetRows.forEach((r, idx) => {
+    const qty = parseFloat(r[4]) || 0;
+    const price = parseFloat(r[5]) || 0;
+    const amt = parseFloat(r[6]) || (qty * price);
+    r[6] = amt;
+    totalAmt += amt;
+    
+    const tr = document.createElement('tr');
+    tr.style.borderBottom = '1px solid var(--card-border)';
+    tr.innerHTML = `
+      <td style="text-align: center; font-weight: 600; color: var(--text-muted); padding: 4px;">${idx + 1}</td>
+      <td style="padding: 2px 4px;"><input type="date" class="excel-cell-input" value="${r[0] || ''}" oninput="onPastedCellChange(${idx}, 0, this.value)"></td>
+      <td style="padding: 2px 4px;"><input type="text" class="excel-cell-input" value="${escapeHtml(r[1] || '')}" placeholder="거래처" oninput="onPastedCellChange(${idx}, 1, this.value)"></td>
+      <td style="padding: 2px 4px;"><input type="text" class="excel-cell-input" value="${escapeHtml(r[2] || '')}" placeholder="품명" oninput="onPastedCellChange(${idx}, 2, this.value)"></td>
+      <td style="padding: 2px 4px;"><input type="text" class="excel-cell-input" value="${escapeHtml(r[3] || '')}" placeholder="규격" oninput="onPastedCellChange(${idx}, 3, this.value)"></td>
+      <td style="padding: 2px 4px;"><input type="number" class="excel-cell-input text-right" value="${qty}" min="0" step="any" oninput="onPastedQtyPriceChange(${idx}, 4, this.value)"></td>
+      <td style="padding: 2px 4px;"><input type="number" class="excel-cell-input text-right" value="${price}" min="0" step="any" oninput="onPastedQtyPriceChange(${idx}, 5, this.value)"></td>
+      <td style="text-align: right; font-weight: 700; color: #1e3a8a; padding: 4px 8px; font-variant-numeric: tabular-nums;">
+        <span id="pastedRowAmt_${idx}">${formatNumber(amt)}</span>
+      </td>
+      <td style="padding: 2px 4px;"><input type="text" class="excel-cell-input" value="${escapeHtml(r[7] || '')}" placeholder="비고(사용처 등)" oninput="onPastedCellChange(${idx}, 7, this.value)"></td>
+      <td style="text-align: center; padding: 2px 4px;">
+        <button class="btn btn-sm btn-outline" style="color: var(--danger); border-color: #fca5a5; padding: 2px 6px; font-size: 0.78rem;" title="행 삭제" onclick="deletePastedRow(${idx})">🗑️</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+  
+  if (countEl) countEl.textContent = formatNumber(pastedSpreadsheetRows.length);
+  if (totalAmtWrap) totalAmtWrap.style.display = 'inline';
+  if (totalAmtEl) totalAmtEl.textContent = formatNumber(totalAmt);
+  if (toolbar) toolbar.style.display = 'flex';
+}
+
+function onPastedCellChange(idx, col, val) {
+  if (pastedSpreadsheetRows[idx]) {
+    pastedSpreadsheetRows[idx][col] = val;
+  }
+}
+
+function onPastedQtyPriceChange(idx, col, val) {
+  if (!pastedSpreadsheetRows[idx]) return;
+  pastedSpreadsheetRows[idx][col] = parseFloat(val) || 0;
+  const q = parseFloat(pastedSpreadsheetRows[idx][4]) || 0;
+  const p = parseFloat(pastedSpreadsheetRows[idx][5]) || 0;
+  const amt = q * p;
+  pastedSpreadsheetRows[idx][6] = amt;
+  const span = document.getElementById(`pastedRowAmt_${idx}`);
+  if (span) span.textContent = formatNumber(amt);
+  
+  let totalAmt = 0;
+  pastedSpreadsheetRows.forEach(r => totalAmt += (parseFloat(r[6]) || 0));
+  const totalAmtEl = document.getElementById('pastedTotalAmt');
+  if (totalAmtEl) totalAmtEl.textContent = formatNumber(totalAmt);
+}
+
+function addPastedSpreadsheetRow() {
+  const today = new Date().toISOString().substring(0, 10);
+  pastedSpreadsheetRows.unshift([today, '', '', '', 1, 0, 0, '']);
+  renderPastedSpreadsheetTable();
+}
+
+function deletePastedRow(idx) {
+  pastedSpreadsheetRows.splice(idx, 1);
+  renderPastedSpreadsheetTable();
+}
+
+function clearPastedSpreadsheet() {
+  if (pastedSpreadsheetRows.length === 0) return;
+  if (confirm('스프레드시트 입력 대기 목록을 모두 비우시겠습니까?')) {
+    pastedSpreadsheetRows = [];
+    renderPastedSpreadsheetTable();
+  }
+}
+
+async function applyPastedData(mode) {
+  if (!pastedSpreadsheetRows || pastedSpreadsheetRows.length === 0) {
+    showToast('적용할 데이터가 없습니다.', 'warning');
+    return;
+  }
+  
+  const validRows = pastedSpreadsheetRows.filter(r => r[0] && (r[1] || r[2]));
+  if (validRows.length === 0) {
+    alert('유효한 데이터(일자 및 거래처 또는 품명 입력)가 없습니다.');
+    return;
+  }
+  
+  if (mode === 'append') {
+    const msg = `총 ${formatNumber(validRows.length)}건의 신규 구매 데이터를 기존 데이터(${formatNumber(allData.length)}건)에 누적 추가하시겠습니까?\n\n추가 후 총 ${formatNumber(allData.length + validRows.length)}건이 됩니다.`;
+    if (!confirm(msg)) return;
+    allData = validRows.concat(allData);
+  } else if (mode === 'replace') {
+    const msg = `⚠️ 주의: 기존 데이터(${formatNumber(allData.length)}건)를 모두 지우고,\n현재 붙여넣은 ${formatNumber(validRows.length)}건으로 전체 교체하시겠습니까?`;
+    if (!confirm(msg)) return;
+    allData = validRows;
+  }
+  
+  await saveMasterDataToDB(allData);
+  window._isUsingLocalDB = true;
+  
+  loadStoredVendors();
+  initDateFilters();
+  populateSuppliesDatalists(true);
+  applyFilters();
+  renderVendorSidebar();
+  renderPivotView();
+  renderClosingView();
+  renderVendorMgmtTable();
+  updateSyncInfo();
+  updateFooterInfo();
+  
+  pastedSpreadsheetRows = [];
+  renderPastedSpreadsheetTable();
+  
+  showToast(`${formatNumber(validRows.length)}건의 데이터가 성공적으로 반영 및 영구 저장되었습니다!`, 'success');
+}
+
+function initDragDrop() {
+  const zone = document.getElementById('dropZone');
+  if (!zone) return;
+  ['dragenter', 'dragover'].forEach(eventName => {
+    zone.addEventListener(eventName, e => {
+      e.preventDefault();
+      zone.classList.add('dragover');
+    }, false);
+  });
+
+  ['dragleave', 'drop'].forEach(eventName => {
+    zone.addEventListener(eventName, e => {
+      e.preventDefault();
+      zone.classList.remove('dragover');
+    }, false);
+  });
+
+  zone.addEventListener('drop', e => {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    if (files.length > 0) {
+      processImportFile(files[0]);
+    }
+  });
+}
+
+function handleFileSelect(e) {
+  const files = e.target.files;
+  if (files.length > 0) {
+    processImportFile(files[0]);
+  }
+}
+
+function processImportFile(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const buffer = e.target.result;
+    const bytes = new Uint8Array(buffer);
+    let text = '';
+
+    if (bytes[0] === 0xFE && bytes[1] === 0xFF) {
+      const decoder = new TextDecoder('utf-16be');
+      text = decoder.decode(buffer);
+    } else if (bytes[0] === 0xFF && bytes[1] === 0xFE) {
+      const decoder = new TextDecoder('utf-16le');
+      text = decoder.decode(buffer);
+    } else {
+      const decoder = new TextDecoder('utf-8');
+      text = decoder.decode(buffer);
+    }
+
+    loadPastedTextIntoGrid(text, file.name);
+    const tableEl = document.getElementById('pastedSpreadsheetTableBody');
+    if (tableEl) tableEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function updateSyncInfo() {
+  const rowCountEl = document.getElementById('syncTotalRows');
+  if (rowCountEl) {
+    const totalAll = (allData.length || 0) + (subData.length || 0) + (rawData.length || 0);
+    rowCountEl.innerHTML = `${formatNumber(totalAll)}건 <div style="font-size:0.75rem; color:var(--text-muted); font-weight:normal; margin-top:4px;">소모품 ${formatNumber(allData.length)}건 / 부자재 ${formatNumber(subData.length)}건 / 원자재 ${formatNumber(rawData.length)}건</div>`;
+  }
+  const headerTotal = (allData.length || 0) + (subData.length || 0) + (rawData.length || 0);
+  const headerEl = document.getElementById('headerTotalCount');
+  if (headerEl) headerEl.textContent = `통합 ${formatNumber(headerTotal)}건 로드됨`;
+  
+  let minD = '9999-99-99';
+  let maxD = '0000-00-00';
+  const vSet = new Set();
+  for (let i = 0; i < allData.length; i++) {
+    const d = allData[i][0];
+    if (d && d < minD) minD = d;
+    if (d && d > maxD) maxD = d;
+    if (allData[i][1]) vSet.add(allData[i][1]);
+  }
+  const dateRangeEl = document.getElementById('syncDateRange');
+  if (dateRangeEl) dateRangeEl.textContent = (minD !== '9999-99-99') ? `${minD} ~ ${maxD}` : '-';
+  const vendorCountEl = document.getElementById('syncVendorCount');
+  if (vendorCountEl) vendorCountEl.textContent = vSet.size + '개사';
+
+  const badgeEl = document.getElementById('syncDataSourceBadge');
+  if (badgeEl) {
+    if (window._isUsingLocalDB) {
+      badgeEl.textContent = '🟢 브라우저 로컬 저장소 최신 데이터';
+      badgeEl.style.background = '#dcfce7';
+      badgeEl.style.color = '#15803d';
+      badgeEl.style.borderColor = '#86efac';
+    } else {
+      badgeEl.textContent = '🔵 data.js 기본 파일 로드됨';
+      badgeEl.style.background = '#e0f2fe';
+      badgeEl.style.color = '#0284c7';
+      badgeEl.style.borderColor = '#bae6fd';
+    }
+  }
+}
+
+async function resetToInitialData() {
+  if (!confirm('브라우저에 저장된 변경 사항을 비우고, 처음 data.js 기본 데이터로 되돌리시겠습니까?')) return;
+  await clearMasterDataDB();
+  window._isUsingLocalDB = false;
+  if (window.INITIAL_SUPPLIES_DATA) {
+    allData = window.INITIAL_SUPPLIES_DATA;
+  } else {
+    allData = [];
+  }
+  loadStoredVendors();
+  initDateFilters();
+  populateSuppliesDatalists(true);
+  applyFilters();
+  renderVendorSidebar();
+  renderPivotView();
+  renderClosingView();
+  renderVendorMgmtTable();
+  updateSyncInfo();
+  updateFooterInfo();
+  showToast('초기 data.js 기본 데이터로 복원되었습니다.', 'info');
+}
+
+function exportDataJsFile() {
+  if (!allData || allData.length === 0) {
+    showToast('내보낼 데이터가 없습니다.', 'warning');
+    return;
+  }
+  const jsContent = '// Pre-compiled Purchasing Data\nwindow.INITIAL_SUPPLIES_DATA = ' + JSON.stringify(allData) + ';\n';
+  const blob = new Blob([jsContent], { type: 'application/javascript;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'data.js';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('data.js 파일이 다운로드되었습니다. 다운로드 폴더의 data.js 파일을 대시보드 폴더 내 data/ 폴더에 덮어쓰시면 영구 반영됩니다!', 'success');
+}
+
+// ==========================================
+// 11. CSV Export Functions
+// ==========================================
+function exportCurrentTableToCSV() {
+  const headers = ['입고일자', '업체명', '품명', '규격', '수량', '단가', '공급가액', '비고'];
+  exportToCSV(headers, filteredData, `소모품_검색결과_${new Date().toISOString().substring(0,10)}.csv`);
+  showToast('검색 결과 CSV 파일이 다운로드되었습니다.', 'success');
+}
+
+function exportFullDataToCSV() {
+  const headers = ['입고일자', '업체명', '품명', '규격', '수량', '단가', '공급가액', '비고'];
+  exportToCSV(headers, allData, `소모품_전체데이터_${new Date().toISOString().substring(0,10)}.csv`);
+  showToast('전체 데이터 CSV 파일이 다운로드되었습니다.', 'success');
+}
+
+function exportItemHistoryToCSV() {
+  const headers = ['입고일자', '공급업체', '수량', '단가', '공급가액', '비고'];
+  const rows = currentItemHistory.map(r => [r[0], r[1], r[4], r[5], r[6], r[7] || '']);
+  const itemTitle = document.getElementById('modalItemFullName').textContent.replace(/[\\/:*?"<>|]/g, '_');
+  const vendorPrefix = currentDetailVendor ? (currentDetailVendor + '_') : '';
+  exportToCSV(headers, rows, `품목이력_${vendorPrefix}${itemTitle}_${new Date().toISOString().substring(0,10)}.csv`);
+  showToast('품목 이력 CSV 파일이 다운로드되었습니다.', 'success');
+}
+
+function exportReportToCSV() {
+  const ym = currentClosingMonth;
+  const v = currentClosingVendor;
+  const cacheKey = `${ym}|${v || 'ALL'}`;
+  const reportItems = [];
+
+  if (customReportData[cacheKey] && Array.isArray(customReportData[cacheKey])) {
+    customReportData[cacheKey].forEach(row => {
+      const itemSpec = row[3] ? `${row[2]} ${row[3]}` : (row[2] || '');
+      reportItems.push([row[0] || '', itemSpec, row[4] || 0, row[5] || 0, row[6] || 0, row[7] || '']);
+    });
+  } else {
+    for (let i = 0; i < allData.length; i++) {
+      const row = allData[i];
+      if (row[0] && row[0].substring(0, 7) === ym) {
+        if (!v || row[1] === v) {
+          const itemSpec = row[3] ? `${row[2]} ${row[3]}` : row[2];
+          reportItems.push([row[0], itemSpec, row[4], row[5], row[6], row[7] || '']);
+        }
+      }
+    }
+  }
+  const headers = ['입고일자', '품명 및 규격', '수량', '단가', '공급가액', '비고'];
+  exportToCSV(headers, reportItems, `거래처별_자재_구매현황_${ym}_${v || '전체'}.csv`);
+  showToast('거래처별 자재 구매현황 CSV 파일이 다운로드되었습니다.', 'success');
+}
+
+function exportVendorsToCSV() {
+  ensureMaterialsLoaded();
+  const headers = ['업체명', '취급구분', '거래처 담당자', '연락처', '이메일', '사내담당', '주소 및 비고', '누적 매입액'];
+  const allDatasets = [
+    { name: '소모품', data: (allData && allData.length > 0) ? allData : (window.INITIAL_SUPPLIES_DATA || []) },
     { name: '부자재', data: (subData && subData.length > 0) ? subData : (window.INITIAL_SUB_MATERIALS_DATA || []) },
     { name: '원자재', data: (rawData && rawData.length > 0) ? rawData : (window.INITIAL_RAW_MATERIALS_DATA || []) }
   ];
