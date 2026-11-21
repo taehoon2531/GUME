@@ -1426,22 +1426,36 @@ window.renderSubOrderFormTable = function() {
 
   const items = window.subOrderItems || [];
   if (items.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 16px; color: var(--text-secondary, #64748b);">우측 시트에서 직접 입력하거나 [+ 품목 행 추가]를 클릭하세요.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 22px; color: var(--text-secondary, #64748b); font-size: 0.85rem;">우측 시트에서 직접 입력하거나 상단의 <strong>[+ 품목 행 추가]</strong>를 클릭하세요.</td></tr>`;
     return;
   }
 
   items.forEach((item, idx) => {
     const tr = document.createElement('tr');
-    tr.style.cssText = 'border-bottom: 1px solid var(--input-border, #cbd5e1); height: 32px;';
+    tr.style.cssText = 'border-bottom: 1px solid var(--input-border, #cbd5e1); height: 40px; transition: background 0.15s;';
     tr.innerHTML = `
-      <td style="text-align: center; font-weight: 700; font-size: 0.8rem; color: var(--text-secondary, #475569);">${idx + 1}</td>
-      <td style="padding: 2px 4px;"><input type="text" value="${escapeHTML(item.name || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'name', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);"></td>
-      <td style="padding: 2px 4px;"><input type="text" value="${escapeHTML(item.material || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'material', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);"></td>
-      <td style="padding: 2px 4px;"><input type="text" value="${escapeHTML(item.spec || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'spec', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);"></td>
-      <td style="padding: 2px 4px;"><input type="text" value="${escapeHTML(item.unit || 'EA')}" oninput="onSubOrderItemFieldChange(${idx}, 'unit', this.value)" style="width: 100%; padding: 4px 4px; font-size: 0.8rem; text-align: center; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);"></td>
-      <td style="padding: 2px 4px;"><input type="number" value="${item.qty || ''}" oninput="onSubOrderItemFieldChange(${idx}, 'qty', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.8rem; text-align: right; font-weight: 700; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);"></td>
-      <td style="padding: 2px 4px;"><input type="text" value="${escapeHTML(item.remark || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'remark', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);"></td>
-      <td style="text-align: center;"><button type="button" onclick="removeSubOrderItem(${idx})" style="background: none; border: none; color: #ef4444; font-size: 0.95rem; cursor: pointer;">✕</button></td>
+      <td style="text-align: center; font-weight: 700; font-size: 0.85rem; color: var(--text-secondary, #475569); padding: 4px;">${idx + 1}</td>
+      <td style="padding: 3px 6px;">
+        <input type="text" value="${escapeHTML(item.name || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'name', this.value)" placeholder="품명 (예: PLAIN WASHER)" title="품명 입력" style="width: 100%; min-width: 170px; padding: 6px 8px; font-size: 0.88rem; font-weight: 700; border: 1.5px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); outline: none; transition: border-color 0.15s, box-shadow 0.15s;">
+      </td>
+      <td style="padding: 3px 6px;">
+        <input type="text" value="${escapeHTML(item.material || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'material', this.value)" placeholder="재질 (예: SUS316L)" title="재질 및 표면처리 입력" style="width: 100%; min-width: 120px; padding: 6px 8px; font-size: 0.86rem; font-weight: 600; border: 1.5px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); outline: none; transition: border-color 0.15s, box-shadow 0.15s;">
+      </td>
+      <td style="padding: 3px 6px;">
+        <input type="text" value="${escapeHTML(item.spec || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'spec', this.value)" placeholder="규격 (예: M16*70L)" title="규격 및 치수 입력" style="width: 100%; min-width: 150px; padding: 6px 8px; font-size: 0.86rem; font-weight: 600; border: 1.5px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); outline: none; transition: border-color 0.15s, box-shadow 0.15s;">
+      </td>
+      <td style="padding: 3px 4px;">
+        <input type="text" value="${escapeHTML(item.unit || 'EA')}" oninput="onSubOrderItemFieldChange(${idx}, 'unit', this.value)" title="단위" style="width: 100%; padding: 6px 2px; font-size: 0.85rem; font-weight: 600; text-align: center; border: 1px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); outline: none;">
+      </td>
+      <td style="padding: 3px 4px;">
+        <input type="number" value="${item.qty || ''}" oninput="onSubOrderItemFieldChange(${idx}, 'qty', this.value)" placeholder="0" title="수량" style="width: 100%; padding: 6px 6px; font-size: 0.88rem; text-align: right; font-weight: 800; border: 1.5px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: #2563eb; outline: none;">
+      </td>
+      <td style="padding: 3px 6px;">
+        <input type="text" value="${escapeHTML(item.remark || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'remark', this.value)" placeholder="비고 (선택사항)" title="비고" style="width: 100%; min-width: 100px; padding: 6px 8px; font-size: 0.85rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); outline: none;">
+      </td>
+      <td style="text-align: center; padding: 4px;">
+        <button type="button" onclick="removeSubOrderItem(${idx})" title="이 품목 행 삭제" style="background: none; border: none; color: #ef4444; font-size: 1.05rem; cursor: pointer; padding: 4px 6px; border-radius: 4px; line-height: 1;">✕</button>
+      </td>
     `;
     tbody.appendChild(tr);
   });
