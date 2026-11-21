@@ -7227,7 +7227,7 @@ function isDataHealthy() {
                 (window.INITIAL_SUB_MATERIALS_DATA && Array.isArray(window.INITIAL_SUB_MATERIALS_DATA) && window.INITIAL_SUB_MATERIALS_DATA.length > 0);
   const rawOk = (typeof rawData !== 'undefined' && Array.isArray(rawData) && rawData.length > 0) ||
                 (window.INITIAL_RAW_MATERIALS_DATA && Array.isArray(window.INITIAL_RAW_MATERIALS_DATA) && window.INITIAL_RAW_MATERIALS_DATA.length > 0);
-  const subSheetsOk = Array.isArray(window.SUB_ORDER_ORIGINAL_SHEETS) && window.SUB_ORDER_ORIGINAL_SHEETS.length > 0;
+  const subSheetsOk = !!window.SUB_ORDER_ORIGINAL_SHEETS && typeof window.SUB_ORDER_ORIGINAL_SHEETS === 'object';
   const subOrderOk = typeof SUB_ORDER_VENDORS !== 'undefined';
   return suppliesOk && subOk && rawOk && subSheetsOk && subOrderOk;
 }
@@ -7295,7 +7295,7 @@ async function runAutoDataHealing(interactive = false) {
     const needSupplies = !allData || allData.length === 0 || !window.INITIAL_SUPPLIES_DATA || window.INITIAL_SUPPLIES_DATA.length === 0;
     const needSub = !window.INITIAL_SUB_MATERIALS_DATA || window.INITIAL_SUB_MATERIALS_DATA.length === 0;
     const needRaw = !window.INITIAL_RAW_MATERIALS_DATA || window.INITIAL_RAW_MATERIALS_DATA.length === 0;
-    const needSheets = !window.SUB_ORDER_ORIGINAL_SHEETS || window.SUB_ORDER_ORIGINAL_SHEETS.length === 0;
+    const needSheets = !window.SUB_ORDER_ORIGINAL_SHEETS || typeof window.SUB_ORDER_ORIGINAL_SHEETS !== 'object';
     const needSubMaster = typeof SUB_ORDER_VENDORS === 'undefined';
 
     if (!needSupplies && !needSub && !needRaw && !needSheets && !needSubMaster) {
@@ -12025,24 +12025,18 @@ function exportPivotToExcelWithChart() {
   const catLabel = catNames[cat] || '통합';
   const vendorLabel = currentTrendVendor ? `[${currentTrendVendor}]` : '전체 거래처 합산';
 
-  // 1. Capture trend chart canvas image with solid white background (prevents transparent black box in Excel)
-  let chartBase64Clean = '';
+  // 1. Capture trend chart canvas image as base64
+  let chartImageHtml = '';
   const canvas = document.getElementById('monthlyTrendChart');
   if (canvas) {
     try {
-      const offCanvas = document.createElement('canvas');
-      offCanvas.width = canvas.width;
-      offCanvas.height = canvas.height;
-      const offCtx = offCanvas.getContext('2d');
-      offCtx.fillStyle = '#ffffff';
-      offCtx.fillRect(0, 0, offCanvas.width, offCanvas.height);
-      offCtx.drawImage(canvas, 0, 0);
-
-      const dataUrl = offCanvas.toDataURL('image/png');
-      const commaIdx = dataUrl.indexOf(',');
-      if (commaIdx !== -1) {
-        chartBase64Clean = dataUrl.substring(commaIdx + 1);
-      }
+      const imgDataUrl = canvas.toDataURL('image/png');
+      chartImageHtml = `
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-size: 13pt; color: #1e3a8a; margin-bottom: 6px;">📈 ${escapeHtml(vendorLabel)} ${escapeHtml(periodText)} 월별 매입금액 추이 그래프</h3>
+          <img src="${imgDataUrl}" width="800" height="230" style="border: 1px solid #cbd5e1; border-radius: 6px;" />
+        </div>
+      `;
     } catch (e) {
       console.warn('Chart capture failed for Excel export:', e);
     }
@@ -12130,25 +12124,10 @@ function exportPivotToExcelWithChart() {
   });
   totalsRow += `<td style="text-align: right; border: 1px solid #cbd5e1; padding: 8px 10px; color: #1e3a8a;">${formatNumber(grandTotal)}</td></tr>`;
 
-  let chartSectionHtml = '';
-  if (chartBase64Clean) {
-    chartSectionHtml = `
-      <div style="margin-bottom: 20px;">
-        <h3 style="font-size: 13pt; color: #1e3a8a; margin-bottom: 6px;">📈 ${escapeHtml(vendorLabel)} ${escapeHtml(periodText)} 월별 매입금액 추이 그래프</h3>
-        <div style="margin-bottom: 8px; font-size: 8.5pt; color: #166534; background: #f0fdf4; padding: 6px 10px; border: 1px solid #bbf7d0; border-radius: 4px;">
-          💡 <strong>엑셀 안내:</strong> 상단에 <em>'보호된 보기 / 편집 사용'</em> 또는 <em>'콘텐츠 사용'</em> 노란색 알림바가 뜰 경우 클릭하시면 그래프가 정상 표시됩니다.
-        </div>
-        <img src="trend_chart.png" width="780" height="230" style="border: 1px solid #cbd5e1; border-radius: 6px;" />
-      </div>
-    `;
-  }
-
   const excelHtml = `
     <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
     <head>
-      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-      <meta name="ProgId" content="Excel.Sheet">
-      <meta name="Generator" content="Microsoft Excel">
+      <meta charset="utf-8">
       <!--[if gte mso 9]>
       <xml>
         <x:ExcelWorkbook>
@@ -12174,7 +12153,7 @@ function exportPivotToExcelWithChart() {
         구분: <strong>${escapeHtml(catLabel)}</strong> | 분석 대상: <strong>${escapeHtml(vendorLabel)}</strong> | 출력일시: ${new Date().toLocaleString('ko-KR')}
       </div>
       
-      ${chartSectionHtml}
+      ${chartImageHtml}
 
       <h3 style="font-size: 12pt; color: #1e293b; margin-top: 18px; margin-bottom: 6px;">📋 월별 크로스탭 피벗 테이블</h3>
       <table>
@@ -12194,15 +12173,8 @@ function exportPivotToExcelWithChart() {
     </html>
   `;
 
-  let exportBlobContent = '';
-  if (chartBase64Clean) {
-    const boundary = '----=_NextPart_GUME_PIVOT_EXCEL_' + Date.now();
-    const formattedBase64 = chartBase64Clean.replace(/(.{76})/g, '$1\r\n');
-    exportBlobContent = [
-      'MIME-Version: 1.0',
-      'X-Document-Type: Workbook',
-      `Content-Type: multipart/related; boundary="${boundary}"`,
-      '',
+  const blob = new Blob([excelHtml], { type: 'application/vnd.ms-excel;charset=utf-8;' });
+  const cleanPeriod = periodText.replace(/[^0-9a-zA-Z가-힣]/g, '');
   const filename = `거래처별매입추이_${catLabel}_${cleanPeriod}_${currentTrendVendor || '전체'}_${new Date().toISOString().substring(0,10)}.xls`;
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);
