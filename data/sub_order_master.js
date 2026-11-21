@@ -1033,24 +1033,24 @@ window.renderSubOrderPaper = function() {
     const noText = (i < items.length && (item.name || item.qty)) ? (i + 1) : '';
 
     tableRowsHtml += `
-      <tr style="height: 27px; border-bottom: 1px solid #000;">
-        <td style="text-align: center; border-right: 1px solid #000; font-size: 0.82rem; color: #475569; width: 36px; padding: 0;">${noText || (i + 1)}</td>
+      <tr style="min-height: 27px; height: auto; border-bottom: 1px solid #000;">
+        <td style="text-align: center; border-right: 1px solid #000; font-size: 0.82rem; color: #475569; width: 34px; padding: 0;">${noText || (i + 1)}</td>
         <td style="border-right: 1px solid #000; padding: 0;">
           <input class="po-cell-input po-item-cell" data-row="${i}" data-col="0" value="${escapeHTML(item.name || '')}" oninput="onPaperItemCellInput(${i}, 'name', this.value)" onkeydown="onPaperCellKeyDown(event, ${i}, 0)" onpaste="onPaperTablePaste(event, ${i}, 0)" placeholder="${i === 0 && !item.name ? '품명 입력' : ''}" style="font-weight: 700;">
         </td>
-        <td style="border-right: 1px solid #000; width: 110px; padding: 0;">
+        <td style="border-right: 1px solid #000; width: 90px; padding: 0;">
           <input class="po-cell-input po-item-cell" data-row="${i}" data-col="1" value="${escapeHTML(item.material || '')}" oninput="onPaperItemCellInput(${i}, 'material', this.value)" onkeydown="onPaperCellKeyDown(event, ${i}, 1)" onpaste="onPaperTablePaste(event, ${i}, 1)" style="text-align: center;">
         </td>
-        <td style="border-right: 1px solid #000; width: 175px; padding: 0;">
+        <td style="border-right: 1px solid #000; width: 160px; padding: 0;">
           <input class="po-cell-input po-item-cell" data-row="${i}" data-col="2" value="${escapeHTML(item.spec || '')}" oninput="onPaperItemCellInput(${i}, 'spec', this.value)" onkeydown="onPaperCellKeyDown(event, ${i}, 2)" onpaste="onPaperTablePaste(event, ${i}, 2)">
         </td>
-        <td style="border-right: 1px solid #000; width: 45px; padding: 0;">
+        <td style="border-right: 1px solid #000; width: 42px; padding: 0;">
           <input class="po-cell-input po-item-cell" data-row="${i}" data-col="3" value="${escapeHTML(item.unit || (item.name ? 'EA' : ''))}" oninput="onPaperItemCellInput(${i}, 'unit', this.value)" onkeydown="onPaperCellKeyDown(event, ${i}, 3)" onpaste="onPaperTablePaste(event, ${i}, 3)" style="text-align: center;">
         </td>
-        <td style="border-right: 1px solid #000; width: 75px; padding: 0;">
-          <input class="po-cell-input po-item-cell" data-row="${i}" data-col="4" value="${item.qty !== undefined && item.qty !== null ? item.qty : ''}" oninput="onPaperItemCellInput(${i}, 'qty', this.value)" onkeydown="onPaperCellKeyDown(event, ${i}, 4)" onpaste="onPaperTablePaste(event, ${i}, 4)" style="text-align: right; font-weight: 700;">
+        <td style="border-right: 1px solid #000; width: 90px; padding: 0;">
+          <input class="po-cell-input po-item-cell" data-row="${i}" data-col="4" value="${item.qty !== undefined && item.qty !== null ? item.qty : ''}" oninput="onPaperItemCellInput(${i}, 'qty', this.value)" onkeydown="onPaperCellKeyDown(event, ${i}, 4)" onpaste="onPaperTablePaste(event, ${i}, 4)" style="text-align: right; font-weight: 800; color: #1e3a8a; padding-right: 8px;">
         </td>
-        <td style="width: 120px; padding: 0;">
+        <td style="width: 165px; padding: 0;">
           <input class="po-cell-input po-item-cell" data-row="${i}" data-col="5" value="${escapeHTML(item.remark || '')}" oninput="onPaperItemCellInput(${i}, 'remark', this.value)" onkeydown="onPaperCellKeyDown(event, ${i}, 5)" onpaste="onPaperTablePaste(event, ${i}, 5)">
         </td>
       </tr>
@@ -1127,16 +1127,16 @@ window.renderSubOrderPaper = function() {
     </div>
 
     <!-- Main Items Grid (7 Columns) -->
-    <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000; font-size: 8.8pt;">
+    <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000; font-size: 8.8pt; table-layout: fixed;">
       <thead>
         <tr style="background: #e2e8f0; height: 28px; border-bottom: 1.5px solid #000;">
-          <th style="width: 36px; border: 1px solid #000; text-align: center;">순</th>
+          <th style="width: 34px; border: 1px solid #000; text-align: center;">순</th>
           <th style="border: 1px solid #000; text-align: center;">품 명</th>
-          <th style="width: 110px; border: 1px solid #000; text-align: center;">재 질</th>
-          <th style="width: 175px; border: 1px solid #000; text-align: center;">규 격</th>
-          <th style="width: 45px; border: 1px solid #000; text-align: center;">단위</th>
-          <th style="width: 75px; border: 1px solid #000; text-align: center;">수 량</th>
-          <th style="width: 120px; border: 1px solid #000; text-align: center;">비 고</th>
+          <th style="width: 90px; border: 1px solid #000; text-align: center;">재 질</th>
+          <th style="width: 160px; border: 1px solid #000; text-align: center;">규 격</th>
+          <th style="width: 42px; border: 1px solid #000; text-align: center;">단위</th>
+          <th style="width: 90px; border: 1px solid #000; text-align: center;">수 량</th>
+          <th style="width: 165px; border: 1px solid #000; text-align: center;">비 고</th>
         </tr>
       </thead>
       <tbody>
@@ -1448,10 +1448,10 @@ window.renderSubOrderFormTable = function() {
         <input type="text" value="${escapeHTML(item.unit || 'EA')}" oninput="onSubOrderItemFieldChange(${idx}, 'unit', this.value)" title="단위" style="width: 100%; padding: 6px 2px; font-size: 0.85rem; font-weight: 600; text-align: center; border: 1px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); outline: none;">
       </td>
       <td style="padding: 3px 4px;">
-        <input type="number" value="${item.qty || ''}" oninput="onSubOrderItemFieldChange(${idx}, 'qty', this.value)" placeholder="0" title="수량" style="width: 100%; padding: 6px 6px; font-size: 0.88rem; text-align: right; font-weight: 800; border: 1.5px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: #2563eb; outline: none;">
+        <input type="number" value="${item.qty || ''}" oninput="onSubOrderItemFieldChange(${idx}, 'qty', this.value)" placeholder="0" title="수량 입력 (예: 100)" style="width: 100%; min-width: 90px; padding: 6px 8px; font-size: 0.92rem; text-align: right; font-weight: 800; border: 1.5px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: #2563eb; outline: none;">
       </td>
       <td style="padding: 3px 6px;">
-        <input type="text" value="${escapeHTML(item.remark || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'remark', this.value)" placeholder="비고 (선택사항)" title="비고" style="width: 100%; min-width: 100px; padding: 6px 8px; font-size: 0.85rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); outline: none;">
+        <input type="text" value="${escapeHTML(item.remark || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'remark', this.value)" placeholder="비고 (특기사항, 밀시트, 검사조건 등)" title="${escapeHTML(item.remark || '비고 입력')}" style="width: 100%; min-width: 170px; padding: 6px 8px; font-size: 0.86rem; border: 1.5px solid var(--input-border, #cbd5e1); border-radius: 5px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); outline: none;">
       </td>
       <td style="text-align: center; padding: 4px;">
         <button type="button" onclick="removeSubOrderItem(${idx})" title="이 품목 행 삭제" style="background: none; border: none; color: #ef4444; font-size: 1.05rem; cursor: pointer; padding: 4px 6px; border-radius: 4px; line-height: 1;">✕</button>
@@ -1540,14 +1540,14 @@ window.printSubOrder = function() {
     const noText = (i < items.length && (item.name || item.qty)) ? (i + 1) : '';
 
     rowsHtml += `
-      <tr style="height: 27px; border-bottom: 1px solid #000;">
-        <td style="text-align: center; border-right: 1px solid #000; font-size: 8.5pt;">${noText || (i + 1)}</td>
-        <td style="padding: 2px 6px; font-weight: 700; border-right: 1px solid #000; font-size: 8.5pt;">${escapeHTML(item.name || '')}</td>
-        <td style="text-align: center; padding: 2px 4px; border-right: 1px solid #000; font-size: 8.5pt;">${escapeHTML(item.material || '')}</td>
-        <td style="padding: 2px 6px; border-right: 1px solid #000; font-size: 8.5pt;">${escapeHTML(item.spec || '')}</td>
-        <td style="text-align: center; border-right: 1px solid #000; font-size: 8.5pt;">${escapeHTML(item.unit || (item.name ? 'EA' : ''))}</td>
-        <td style="text-align: right; padding: 2px 6px; font-weight: 700; border-right: 1px solid #000; font-size: 8.5pt;">${q > 0 ? q.toLocaleString() : ''}</td>
-        <td style="padding: 2px 6px; font-size: 8.2pt;">${escapeHTML(item.remark || '')}</td>
+      <tr style="min-height: 28px; height: auto; border-bottom: 1px solid #000;">
+        <td style="text-align: center; border-right: 1px solid #000; font-size: 8.5pt; vertical-align: middle; padding: 4px 2px;">${noText || (i + 1)}</td>
+        <td style="padding: 4px 6px; font-weight: 700; border-right: 1px solid #000; font-size: 8.5pt; vertical-align: middle; word-break: break-all; word-wrap: break-word; white-space: pre-wrap; line-height: 1.35;">${escapeHTML(item.name || '')}</td>
+        <td style="text-align: center; padding: 4px 4px; border-right: 1px solid #000; font-size: 8.5pt; vertical-align: middle; word-break: break-all;">${escapeHTML(item.material || '')}</td>
+        <td style="padding: 4px 6px; border-right: 1px solid #000; font-size: 8.5pt; vertical-align: middle; word-break: break-all; word-wrap: break-word; white-space: pre-wrap; line-height: 1.35;">${escapeHTML(item.spec || '')}</td>
+        <td style="text-align: center; border-right: 1px solid #000; font-size: 8.5pt; vertical-align: middle;">${escapeHTML(item.unit || (item.name ? 'EA' : ''))}</td>
+        <td style="text-align: right; padding: 4px 8px; font-weight: 800; border-right: 1px solid #000; font-size: 8.8pt; vertical-align: middle; white-space: nowrap;">${q > 0 ? q.toLocaleString() : ''}</td>
+        <td style="padding: 4px 8px; font-size: 8.3pt; vertical-align: middle; word-break: break-all; word-wrap: break-word; white-space: pre-wrap; line-height: 1.35;">${escapeHTML(item.remark || '')}</td>
       </tr>
     `;
   }
@@ -1563,6 +1563,8 @@ window.printSubOrder = function() {
     body { margin: 0; padding: 0; font-family: 'Malgun Gothic', '맑은 고딕', Dotum, sans-serif; background: #fff; color: #000; }
     .no-print-bar { margin-bottom: 12px; padding: 8px 14px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
     @media print { .no-print-bar { display: none !important; } body { margin: 0; padding: 0; } }
+    table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+    td, th { word-break: break-all; overflow-wrap: break-word; }
   </style>
 </head>
 <body>
@@ -1629,16 +1631,16 @@ window.printSubOrder = function() {
     </table>
   </div>
 
-  <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000; font-size: 8.8pt;">
+  <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000; font-size: 8.8pt; table-layout: fixed;">
     <thead>
       <tr style="background: #e2e8f0; height: 28px; border-bottom: 1.5px solid #000;">
-        <th style="width: 36px; border: 1px solid #000; text-align: center;">순</th>
+        <th style="width: 34px; border: 1px solid #000; text-align: center;">순</th>
         <th style="border: 1px solid #000; text-align: center;">품 명</th>
-        <th style="width: 110px; border: 1px solid #000; text-align: center;">재 질</th>
-        <th style="width: 175px; border: 1px solid #000; text-align: center;">규 격</th>
-        <th style="width: 45px; border: 1px solid #000; text-align: center;">단위</th>
-        <th style="width: 75px; border: 1px solid #000; text-align: center;">수 량</th>
-        <th style="width: 120px; border: 1px solid #000; text-align: center;">비 고</th>
+        <th style="width: 90px; border: 1px solid #000; text-align: center;">재 질</th>
+        <th style="width: 160px; border: 1px solid #000; text-align: center;">규 격</th>
+        <th style="width: 42px; border: 1px solid #000; text-align: center;">단위</th>
+        <th style="width: 90px; border: 1px solid #000; text-align: center;">수 량</th>
+        <th style="width: 165px; border: 1px solid #000; text-align: center;">비 고</th>
       </tr>
     </thead>
     <tbody>
@@ -1647,7 +1649,7 @@ window.printSubOrder = function() {
     <tfoot>
       <tr style="background: #f8fafc; height: 28px; font-weight: 700; border-top: 1.5px solid #000;">
         <td colspan="5" style="border: 1px solid #000; text-align: center; letter-spacing: 10px; font-weight: 800;">합 &nbsp; &nbsp;계</td>
-        <td style="border: 1px solid #000; text-align: right; padding: 3px 8px; color: #000; font-weight: 800;">${totalQty > 0 ? totalQty.toLocaleString() : ''}</td>
+        <td style="border: 1px solid #000; text-align: right; padding: 4px 8px; color: #000; font-weight: 800;">${totalQty > 0 ? totalQty.toLocaleString() : ''}</td>
         <td style="border: 1px solid #000;">&nbsp;</td>
       </tr>
     </tfoot>
@@ -1656,7 +1658,7 @@ window.printSubOrder = function() {
   <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000; margin-top: 8px; font-size: 8.8pt;">
     <tr>
       <th style="width: 28px; background: #f8fafc; border-right: 1px solid #000; writing-mode: vertical-rl; text-orientation: upright; font-weight: 800; color: #000; letter-spacing: 4px; padding: 6px 0; text-align: center; vertical-align: middle;">참고사항</th>
-      <td style="padding: 6px 10px; vertical-align: middle;">
+      <td style="padding: 6px 10px; vertical-align: middle; word-break: break-all; word-wrap: break-word; white-space: pre-wrap; line-height: 1.5;">
         <strong style="color: #000;">${escapeHTML(note)}</strong>
       </td>
     </tr>
@@ -1786,13 +1788,13 @@ window.downloadSubOrderExcel = function() {
         </tr>
         <tr><td colspan="7" style="height:6px;"></td></tr>
         <tr style="background:#ddd; font-weight:bold; height:28px;">
-          <th style="border:1px solid #000; width:40px; text-align:center;">순</th>
+          <th style="border:1px solid #000; width:36px; text-align:center;">순</th>
           <th style="border:1px solid #000; text-align:center;">품 명</th>
-          <th style="border:1px solid #000; width:110px; text-align:center;">재 질</th>
-          <th style="border:1px solid #000; width:180px; text-align:center;">규 격</th>
-          <th style="border:1px solid #000; width:45px; text-align:center;">단위</th>
-          <th style="border:1px solid #000; width:75px; text-align:center;">수 량</th>
-          <th style="border:1px solid #000; width:120px; text-align:center;">비 고</th>
+          <th style="border:1px solid #000; width:90px; text-align:center;">재 질</th>
+          <th style="border:1px solid #000; width:160px; text-align:center;">규 격</th>
+          <th style="border:1px solid #000; width:42px; text-align:center;">단위</th>
+          <th style="border:1px solid #000; width:90px; text-align:center;">수 량</th>
+          <th style="border:1px solid #000; width:165px; text-align:center;">비 고</th>
         </tr>
         ${rowsXml}
         <tr style="background:#eee; font-weight:bold; height:28px;">
