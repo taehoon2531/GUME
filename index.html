@@ -1986,6 +1986,17 @@ canvas.custom-chart {
 .suborder-layout.expanded .suborder-form-column {
   display: none !important;
 }
+@keyframes pulseSave {
+  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); }
+  70% { box-shadow: 0 0 0 8px rgba(37, 99, 235, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+.pulse-save-btn {
+  animation: pulseSave 1.6s infinite !important;
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+}
 
 /* ─── Print Styles ─── */
 @page {
@@ -4008,20 +4019,26 @@ canvas.custom-chart {
           <button class="btn btn-sm" onclick="downloadSubOrderExcel()" style="display: flex; align-items: center; gap: 6px; background: #16a34a; color: #fff; font-weight: 700; padding: 6px 14px; border: none;">
             <span>📥</span> 엑셀 다운로드
           </button>
+          <button class="btn btn-sm btn-primary" onclick="saveCurrentSubOrder()" id="btnSaveSubOrder" style="display: flex; align-items: center; gap: 6px; font-weight: 800; padding: 6px 16px; background: #2563eb; color: #fff; border: none; box-shadow: 0 2px 5px rgba(37,99,235,0.35);" title="현재 수정한 발주서 내용을 영구 저장합니다">
+            <span>💾</span> 발주서 저장
+          </button>
+          <button class="btn btn-sm btn-outline" onclick="revertSubOrderChanges()" id="btnRevertSubOrder" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px;" title="저장하지 않은 변경 내용을 취소하고 이전 저장 상태로 되돌립니다">
+            <span>↩️</span> 변경 취소
+          </button>
+          <button class="btn btn-sm btn-outline" onclick="restoreVendorOriginalSheets()" id="btnRestoreOriginalSubOrder" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px; color: #64748b;" title="이 업체의 모든 발주서를 최초 2026년 원본 엑셀 데이터로 완전히 복원합니다">
+            <span>🔄</span> 2026 원본 복원
+          </button>
           <button class="btn btn-sm btn-outline" onclick="copySubOrderText()" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px;">
             <span>📋</span> 표 텍스트 복사
           </button>
           <button class="btn btn-sm btn-outline" onclick="openSubOrderEmail()" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px;">
             <span>✉️</span> 메일 작성
           </button>
-          <button class="btn btn-sm btn-outline" onclick="saveSubOrderToHistory()" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px; color: #3b82f6; border-color: rgba(59, 130, 246, 0.4);">
-            <span>💾</span> 발주서 저장
-          </button>
           <button class="btn btn-sm btn-outline" onclick="showSubOrderHistoryModal()" style="display: flex; align-items: center; gap: 6px; font-weight: 600; padding: 6px 12px;">
             <span>📂</span> 발주 이력
           </button>
-          <button class="btn btn-sm btn-outline" onclick="resetSubOrderForm()" style="padding: 6px 10px; color: #94a3b8;" title="작성 초기화">
-            <span>🔄</span>
+          <button class="btn btn-sm btn-outline" onclick="resetSubOrderForm()" style="padding: 6px 10px; color: #94a3b8;" title="작성 내용 초기화">
+            <span>🗑️</span>
           </button>
         </div>
       </div>
@@ -4185,10 +4202,16 @@ canvas.custom-chart {
             </div>
 
             <div style="display: flex; align-items: center; gap: 8px;">
-              <div id="subOrderAutoSaveBadge" style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 700; color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.04);">
+              <div id="subOrderAutoSaveBadge" style="display: flex; align-items: center; gap: 6px; font-size: 0.78rem; font-weight: 700; color: #166534; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 4px 10px; border-radius: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); transition: all 0.2s;">
                 <span id="subOrderAutoSaveDot">🟢</span>
-                <span id="subOrderAutoSaveText">자동 저장됨</span>
+                <span id="subOrderAutoSaveText">저장됨 (최신 상태)</span>
               </div>
+              <button type="button" class="btn btn-sm btn-primary" onclick="saveCurrentSubOrder()" style="font-size: 0.76rem; font-weight: 700; padding: 4px 10px; background: #2563eb; color: #fff; border: none; border-radius: 5px;" title="현재 작성/수정 내용 저장">
+                <span>💾</span> 저장
+              </button>
+              <button type="button" class="btn btn-sm btn-outline" onclick="revertSubOrderChanges()" style="font-size: 0.76rem; font-weight: 600; padding: 4px 8px; border-radius: 5px;" title="미저장 변경 취소">
+                <span>↩️</span> 취소
+              </button>
             </div>
           </div>
 
@@ -11963,30 +11986,6 @@ function exportPivotToExcelWithChart() {
       'X-Document-Type: Workbook',
       `Content-Type: multipart/related; boundary="${boundary}"`,
       '',
-      `--${boundary}`,
-      'Content-Location: file:///C:/gume_pivot.htm',
-      'Content-Transfer-Encoding: 8bit',
-      'Content-Type: text/html; charset="utf-8"',
-      '',
-      excelHtml,
-      '',
-      `--${boundary}`,
-      'Content-Location: trend_chart.png',
-      'Content-ID: <trend_chart.png>',
-      'Content-Transfer-Encoding: base64',
-      'Content-Type: image/png',
-      '',
-      formattedBase64,
-      '',
-      `--${boundary}--`,
-      ''
-    ].join('\r\n');
-  } else {
-    exportBlobContent = excelHtml;
-  }
-
-  const blob = new Blob([exportBlobContent], { type: 'application/vnd.ms-excel;charset=utf-8;' });
-  const cleanPeriod = periodText.replace(/[^0-9a-zA-Z가-힣]/g, '');
   const filename = `거래처별매입추이_${catLabel}_${cleanPeriod}_${currentTrendVendor || '전체'}_${new Date().toISOString().substring(0,10)}.xls`;
   const link = document.createElement('a');
   const url = URL.createObjectURL(blob);

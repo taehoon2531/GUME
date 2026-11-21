@@ -648,10 +648,13 @@ window.initSubOrderView = function(force) {
 // (Interactive PO Spreadsheet & Real-Time Auto-Save Engine)
 // ========================================================================
 
+window.savedVendorSheetsMap = {};
 window.vendorSheetsMap = {};
 window.currentSubOrderVendor = "갑진와셔";
 window.currentActiveSheetIdx = 0;
 window.isSubOrderLayoutExpanded = false;
+window.hasSubOrderUnsavedChanges = false;
+window.lastSubOrderSavedTime = null;
 let subOrderAutoSaveTimer = null;
 
 // Layout Expand / Split Mode Toggle
@@ -673,34 +676,186 @@ window.toggleSubOrderLayoutExpand = function() {
   }
 };
 
-// Trigger Debounced Auto-Save
-window.triggerSubOrderAutoSave = function() {
+// Update Save Status Badge & Save Buttons
+window.updateSubOrderSaveStatus = function(isDirty, customMsg) {
+  const badge = document.getElementById('subOrderAutoSaveBadge');
   const badgeDot = document.getElementById('subOrderAutoSaveDot');
   const badgeText = document.getElementById('subOrderAutoSaveText');
-  if (badgeDot) badgeDot.textContent = '💾';
-  if (badgeText) badgeText.textContent = '저장 중...';
+  const btnSave = document.getElementById('btnSaveSubOrder');
 
-  clearTimeout(subOrderAutoSaveTimer);
-  subOrderAutoSaveTimer = setTimeout(() => {
-    try {
-      const v = window.currentSubOrderVendor;
-      const sheets = window.vendorSheetsMap[v] || [];
-      localStorage.setItem('SNW_SUBORDER_SHEETS_' + v, JSON.stringify(sheets));
-      localStorage.setItem('SNW_SUBORDER_ACTIVE_IDX_' + v, String(window.currentActiveSheetIdx));
-      localStorage.setItem('SNW_SUBORDER_LAST_VENDOR', v);
-
-      const now = new Date();
-      const timeStr = String(now.getHours()).padStart(2, '0') + ':' +
-                      String(now.getMinutes()).padStart(2, '0') + ':' +
-                      String(now.getSeconds()).padStart(2, '0');
-      if (badgeDot) badgeDot.textContent = '🟢';
-      if (badgeText) badgeText.textContent = `자동 저장됨 (${timeStr})`;
-    } catch (e) {
-      console.warn('Auto-save error:', e);
-      if (badgeDot) badgeDot.textContent = '⚠️';
-      if (badgeText) badgeText.textContent = '저장 오류';
+  if (isDirty) {
+    if (badge) {
+      badge.style.background = '#fff7ed';
+      badge.style.borderColor = '#fdba74';
+      badge.style.color = '#c2410c';
     }
-  }, 250);
+    if (badgeDot) badgeDot.textContent = '🟠';
+    if (badgeText) badgeText.textContent = customMsg || '미저장 변경사항 있음';
+    if (btnSave) {
+      btnSave.classList.add('pulse-save-btn');
+    }
+  } else {
+    if (badge) {
+      badge.style.background = '#f0fdf4';
+      badge.style.borderColor = '#bbf7d0';
+      badge.style.color = '#166534';
+    }
+    if (badgeDot) badgeDot.textContent = '🟢';
+    if (badgeText) badgeText.textContent = customMsg || (window.lastSubOrderSavedTime ? `저장 완료 (${window.lastSubOrderSavedTime})` : '저장됨 (최신 상태)');
+    if (btnSave) {
+      btnSave.classList.remove('pulse-save-btn');
+    }
+  }
+};
+
+// Mark changes as dirty (working draft only, NOT persisted until user clicks Save)
+window.markSubOrderDirty = function() {
+  window.hasSubOrderUnsavedChanges = true;
+  window.updateSubOrderSaveStatus(true);
+};
+
+// Compatibility alias
+window.triggerSubOrderAutoSave = function() {
+  window.markSubOrderDirty();
+};
+
+// Manual Save Handler: Explicitly commit working sheets to saved baseline & LocalStorage
+window.saveCurrentSubOrder = function() {
+  const v = window.currentSubOrderVendor;
+  const sheets = window.vendorSheetsMap[v] || [];
+  if (sheets.length === 0) return;
+
+  try {
+    // 1. Deep clone current working state into saved baseline
+    window.savedVendorSheetsMap[v] = JSON.parse(JSON.stringify(sheets));
+
+    // 2. Persist to localStorage with explicit manual key
+    localStorage.setItem('SNW_SUBORDER_MANUAL_' + v, JSON.stringify(sheets));
+    localStorage.setItem('SNW_SUBORDER_ACTIVE_IDX_' + v, String(window.currentActiveSheetIdx));
+    localStorage.setItem('SNW_SUBORDER_LAST_VENDOR', v);
+
+    // 3. Record snapshot to history
+    const s = sheets[window.currentActiveSheetIdx] || {};
+    let history = [];
+    try {
+      history = JSON.parse(localStorage.getItem('snw_sub_orders_history') || '[]');
+    } catch (e) {}
+    const record = {
+      id: 'po_' + Date.now(),
+      vendor: v,
+      sheetName: s.sheetName,
+      poNo: s.poNo,
+      date: s.poDate,
+      savedAt: new Date().toISOString(),
+      note: s.note,
+      recv: {
+        company: s.recvCompany,
+        person: s.recvPerson,
+        phone: s.recvPhone,
+        fax: s.recvFax,
+        mobile: s.recvMobile
+      },
+      items: s.items || []
+    };
+    history.unshift(record);
+    if (history.length > 50) history = history.slice(0, 50);
+    localStorage.setItem('snw_sub_orders_history', JSON.stringify(history));
+
+    // 4. Update status
+    const now = new Date();
+    const timeStr = String(now.getHours()).padStart(2, '0') + ':' +
+                    String(now.getMinutes()).padStart(2, '0') + ':' +
+                    String(now.getSeconds()).padStart(2, '0');
+    window.lastSubOrderSavedTime = timeStr;
+    window.hasSubOrderUnsavedChanges = false;
+    window.updateSubOrderSaveStatus(false, `저장 완료 (${timeStr})`);
+
+    if (typeof showToast === 'function') {
+      showToast(`[${v} - ${s.sheetName || '발주서'}] 성공적으로 저장되었습니다.`, 'success');
+    }
+  } catch (err) {
+    console.error('Failed to save sub order:', err);
+    if (typeof showToast === 'function') {
+      showToast('발주서 저장 중 오류 발생: ' + err.message, 'error');
+    }
+  }
+};
+window.saveSubOrderToHistory = window.saveCurrentSubOrder;
+
+// Revert unsaved edits back to last saved baseline
+window.revertSubOrderChanges = function() {
+  const v = window.currentSubOrderVendor;
+  if (!window.hasSubOrderUnsavedChanges) {
+    if (typeof showToast === 'function') showToast('변경되거나 수정된 내용이 없습니다.', 'info');
+    return;
+  }
+  if (!confirm('현재 작성 중인 변경사항을 취소하고 마지막 저장 상태로 되돌리시겠습니까?')) {
+    return;
+  }
+
+  if (window.savedVendorSheetsMap[v]) {
+    window.vendorSheetsMap[v] = JSON.parse(JSON.stringify(window.savedVendorSheetsMap[v]));
+  }
+  window.hasSubOrderUnsavedChanges = false;
+
+  renderSubOrderSheetTabs();
+  renderSubOrderPaper();
+
+  const sheets = window.vendorSheetsMap[v] || [];
+  const s = sheets[window.currentActiveSheetIdx] || {};
+  if (document.getElementById('subOrderPoNo')) document.getElementById('subOrderPoNo').value = s.poNo || '';
+  if (document.getElementById('subOrderDate')) document.getElementById('subOrderDate').value = s.poDate || '';
+  if (document.getElementById('subOrderRecvCompany')) document.getElementById('subOrderRecvCompany').value = s.recvCompany || '';
+  if (document.getElementById('subOrderRecvPerson')) document.getElementById('subOrderRecvPerson').value = s.recvPerson || '';
+  if (document.getElementById('subOrderRecvPhone')) document.getElementById('subOrderRecvPhone').value = s.recvPhone || '';
+  if (document.getElementById('subOrderRecvFax')) document.getElementById('subOrderRecvFax').value = s.recvFax || '';
+  if (document.getElementById('subOrderRecvMobile')) document.getElementById('subOrderRecvMobile').value = s.recvMobile || '';
+  if (document.getElementById('subOrderTermsNotes')) document.getElementById('subOrderTermsNotes').value = s.note || '';
+
+  window.subOrderItems = s.items || [];
+  renderSubOrderFormTable();
+
+  window.updateSubOrderSaveStatus(false);
+  if (typeof showToast === 'function') showToast('작성 중이던 변경사항이 취소되고 이전 데이터로 복원되었습니다.', 'info');
+};
+
+// Reset vendor sheets back to authentic 2026 Excel data
+window.restoreVendorOriginalSheets = function() {
+  const v = window.currentSubOrderVendor;
+  if (!confirm(`[${v}] 발주서 데이터를 최초 2026년 원본 엑셀 데이터로 초기화하시겠습니까?\n(수정 및 저장되었던 내용이 원본으로 되돌아갑니다)`)) {
+    return;
+  }
+
+  try {
+    localStorage.removeItem('SNW_SUBORDER_MANUAL_' + v);
+    localStorage.removeItem('SNW_SUBORDER_SHEETS_' + v);
+    delete window.savedVendorSheetsMap[v];
+    delete window.vendorSheetsMap[v];
+
+    window.hasSubOrderUnsavedChanges = false;
+    window.loadVendorSheets(v);
+    renderSubOrderSheetTabs();
+    renderSubOrderPaper();
+
+    const sheets = window.vendorSheetsMap[v] || [];
+    const s = sheets[window.currentActiveSheetIdx] || {};
+    if (document.getElementById('subOrderPoNo')) document.getElementById('subOrderPoNo').value = s.poNo || '';
+    if (document.getElementById('subOrderDate')) document.getElementById('subOrderDate').value = s.poDate || '';
+    if (document.getElementById('subOrderRecvCompany')) document.getElementById('subOrderRecvCompany').value = s.recvCompany || '';
+    if (document.getElementById('subOrderRecvPerson')) document.getElementById('subOrderRecvPerson').value = s.recvPerson || '';
+    if (document.getElementById('subOrderRecvPhone')) document.getElementById('subOrderRecvPhone').value = s.recvPhone || '';
+    if (document.getElementById('subOrderRecvFax')) document.getElementById('subOrderRecvFax').value = s.recvFax || '';
+    if (document.getElementById('subOrderRecvMobile')) document.getElementById('subOrderRecvMobile').value = s.recvMobile || '';
+    if (document.getElementById('subOrderTermsNotes')) document.getElementById('subOrderTermsNotes').value = s.note || '';
+
+    window.subOrderItems = s.items || [];
+    renderSubOrderFormTable();
+
+    window.updateSubOrderSaveStatus(false, '2026 원본 복원됨');
+    if (typeof showToast === 'function') showToast(`[${v}] 발주서가 2026년 원본 데이터로 깨끗하게 복원되었습니다!`, 'success');
+  } catch (e) {
+    console.error('Failed to restore original sheets:', e);
+  }
 };
 
 // Load Sheets for a Vendor (from LocalStorage or Real 2026 Files)
@@ -712,16 +867,17 @@ window.loadVendorSheets = function(vendorName) {
     return window.vendorSheetsMap[vendorName];
   }
 
-  // 1. Check LocalStorage
+  // 1. Check LocalStorage for manual saved data
   try {
-    const saved = localStorage.getItem('SNW_SUBORDER_SHEETS_' + vendorName);
+    const saved = localStorage.getItem('SNW_SUBORDER_MANUAL_' + vendorName);
     if (saved) {
       const parsed = JSON.parse(saved);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        window.vendorSheetsMap[vendorName] = parsed;
+        window.savedVendorSheetsMap[vendorName] = JSON.parse(JSON.stringify(parsed));
+        window.vendorSheetsMap[vendorName] = JSON.parse(JSON.stringify(parsed));
         const savedIdx = parseInt(localStorage.getItem('SNW_SUBORDER_ACTIVE_IDX_' + vendorName) || '0', 10);
         window.currentActiveSheetIdx = Math.max(0, Math.min(savedIdx, parsed.length - 1));
-        return parsed;
+        return window.vendorSheetsMap[vendorName];
       }
     }
   } catch (e) {}
@@ -824,9 +980,10 @@ window.loadVendorSheets = function(vendorName) {
     });
   }
 
-  window.vendorSheetsMap[vendorName] = sheets;
+  window.savedVendorSheetsMap[vendorName] = JSON.parse(JSON.stringify(sheets));
+  window.vendorSheetsMap[vendorName] = JSON.parse(JSON.stringify(sheets));
   window.currentActiveSheetIdx = 0;
-  return sheets;
+  return window.vendorSheetsMap[vendorName];
 };
 
 // Render Sheet Tab Bar
@@ -863,9 +1020,20 @@ window.renderSubOrderSheetTabs = function() {
   });
 };
 
-// Switch Active Sheet
+// Switch Active Sheet (Auto-reverts unsaved edits back to saved baseline if user did not click save)
 window.switchSubOrderSheet = function(idx) {
   const v = window.currentSubOrderVendor;
+  
+  // Revert unsaved edits if user didn't save before switching sheets!
+  if (window.hasSubOrderUnsavedChanges && window.savedVendorSheetsMap[v]) {
+    window.vendorSheetsMap[v] = JSON.parse(JSON.stringify(window.savedVendorSheetsMap[v]));
+    window.hasSubOrderUnsavedChanges = false;
+    window.updateSubOrderSaveStatus(false);
+    if (typeof showToast === 'function') {
+      showToast('저장하지 않은 변경 내용이 취소되고 이전 데이터로 복원되었습니다.', 'info');
+    }
+  }
+
   const sheets = window.vendorSheetsMap[v] || [];
   if (!sheets[idx]) return;
 
@@ -886,7 +1054,6 @@ window.switchSubOrderSheet = function(idx) {
 
   window.subOrderItems = s.items || [];
   renderSubOrderFormTable();
-  triggerSubOrderAutoSave();
 };
 
 // Add New Sheet
@@ -923,10 +1090,10 @@ window.addNewSubOrderSheet = function() {
 
   sheets.unshift(newSheet);
   window.currentActiveSheetIdx = 0;
+  markSubOrderDirty();
   renderSubOrderSheetTabs();
   renderSubOrderPaper();
-  triggerSubOrderAutoSave();
-  if (typeof showToast === 'function') showToast(`새 발주서 시트 [${sheetName}]가 추가되었습니다.`, 'success');
+  if (typeof showToast === 'function') showToast(`새 발주서 시트 [${sheetName}]가 추가되었습니다. 상단의 [💾 발주서 저장]을 누르면 영구 보관됩니다.`, 'info');
 };
 
 // Delete Sheet
@@ -938,15 +1105,15 @@ window.deleteSubOrderSheet = function(idx) {
     return;
   }
   const sName = sheets[idx].sheetName;
-  if (!confirm(`'${sName}' 발주서 시트를 삭제하시겠습니까?`)) return;
+  if (!confirm(`'${sName}' 발주서 시트를 삭제하시겠습니까?\n(상단의 [💾 발주서 저장]을 눌러야 영구 반영됩니다)`)) return;
 
   sheets.splice(idx, 1);
   if (window.currentActiveSheetIdx >= sheets.length) {
     window.currentActiveSheetIdx = sheets.length - 1;
   }
+  markSubOrderDirty();
   renderSubOrderSheetTabs();
   renderSubOrderPaper();
-  triggerSubOrderAutoSave();
 };
 
 // Add Blank Row
@@ -968,7 +1135,7 @@ window.addBlankRowToPaper = function() {
   window.subOrderItems = s.items;
   renderSubOrderPaper();
   renderSubOrderFormTable();
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
 
   // Focus new row's name cell
   setTimeout(() => {
@@ -989,7 +1156,7 @@ window.clearEmptyPaperRows = function() {
   window.subOrderItems = s.items;
   renderSubOrderPaper();
   renderSubOrderFormTable();
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
   if (typeof showToast === 'function') showToast('내용이 없는 빈 행이 정리되었습니다.', 'info');
 };
 
@@ -1165,8 +1332,24 @@ window.renderSubOrderPaper = function() {
   `;
 };
 
-// Aliases for compatibility
-window.updateSubOrderPreview = window.renderSubOrderPaper;
+// Aliases and Live Synchronization
+window.updateSubOrderPreview = function() {
+  const v = window.currentSubOrderVendor;
+  const sheets = window.vendorSheetsMap[v] || [];
+  const s = sheets[window.currentActiveSheetIdx];
+  if (s) {
+    if (document.getElementById('subOrderPoNo')) s.poNo = document.getElementById('subOrderPoNo').value;
+    if (document.getElementById('subOrderDate')) s.poDate = document.getElementById('subOrderDate').value;
+    if (document.getElementById('subOrderRecvCompany')) s.recvCompany = document.getElementById('subOrderRecvCompany').value;
+    if (document.getElementById('subOrderRecvPerson')) s.recvPerson = document.getElementById('subOrderRecvPerson').value;
+    if (document.getElementById('subOrderRecvPhone')) s.recvPhone = document.getElementById('subOrderRecvPhone').value;
+    if (document.getElementById('subOrderRecvFax')) s.recvFax = document.getElementById('subOrderRecvFax').value;
+    if (document.getElementById('subOrderRecvMobile')) s.recvMobile = document.getElementById('subOrderRecvMobile').value;
+    if (document.getElementById('subOrderTermsNotes')) s.note = document.getElementById('subOrderTermsNotes').value;
+    window.markSubOrderDirty();
+  }
+  window.renderSubOrderPaper();
+};
 
 // Interactive Cell Input Handlers
 window.onPaperItemCellInput = function(rowIdx, field, val) {
@@ -1195,7 +1378,7 @@ window.onPaperItemCellInput = function(rowIdx, field, val) {
   window.subOrderItems = s.items;
   renderSubOrderFormTable();
 
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
 };
 
 window.onPaperMetaChange = function(field, val) {
@@ -1208,7 +1391,7 @@ window.onPaperMetaChange = function(field, val) {
   if (field === 'poNo' && document.getElementById('subOrderPoNo')) document.getElementById('subOrderPoNo').value = val;
   if (field === 'poDate' && document.getElementById('subOrderDate')) document.getElementById('subOrderDate').value = val;
 
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
 };
 
 window.onPaperRecvChange = function(field, val) {
@@ -1218,7 +1401,7 @@ window.onPaperRecvChange = function(field, val) {
   if (!s) return;
   s[field] = val;
 
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
 };
 
 window.onPaperSenderChange = function(field, val) {
@@ -1228,7 +1411,7 @@ window.onPaperSenderChange = function(field, val) {
   if (!s) return;
   s[field] = val;
 
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
 };
 
 window.onPaperNoteChange = function(val) {
@@ -1240,7 +1423,7 @@ window.onPaperNoteChange = function(val) {
 
   if (document.getElementById('subOrderTermsNotes')) document.getElementById('subOrderTermsNotes').value = val;
 
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
 };
 
 // Keyboard Arrow / Tab / Enter Navigation
@@ -1305,13 +1488,21 @@ window.onPaperTablePaste = function(event, startRow, startCol) {
   window.subOrderItems = s.items;
   renderSubOrderPaper();
   renderSubOrderFormTable();
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
   if (typeof showToast === 'function') showToast(`엑셀에서 ${lines.length}개 행이 발주서 시트에 붙여넣어졌습니다.`, 'success');
 };
 
 // Vendor Change Handler
 window.onSubOrderVendorChange = function(vendorName) {
   if (!vendorName) return;
+
+  const prevVendor = window.currentSubOrderVendor;
+  if (window.hasSubOrderUnsavedChanges && prevVendor && window.savedVendorSheetsMap[prevVendor]) {
+    // Revert previous vendor's working copy from saved baseline if unsaved
+    window.vendorSheetsMap[prevVendor] = JSON.parse(JSON.stringify(window.savedVendorSheetsMap[prevVendor]));
+  }
+  window.hasSubOrderUnsavedChanges = false;
+
   window.currentSubOrderVendor = vendorName;
   window.currentActiveSheetIdx = 0; // Always start at primary active sheet
 
@@ -1386,7 +1577,7 @@ window.onSubOrderVendorChange = function(vendorName) {
 
   window.subOrderItems = s.items || [];
   renderSubOrderFormTable();
-  triggerSubOrderAutoSave();
+  window.updateSubOrderSaveStatus(false);
 };
 
 window.renderSubOrderQuickChips = function(target) {
@@ -1479,7 +1670,7 @@ window.addSubOrderItem = function(defaultValues = {}) {
   window.subOrderItems = s.items;
   renderSubOrderPaper();
   renderSubOrderFormTable();
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
 };
 
 window.removeSubOrderItem = function(idx) {
@@ -1492,7 +1683,7 @@ window.removeSubOrderItem = function(idx) {
   window.subOrderItems = s.items;
   renderSubOrderPaper();
   renderSubOrderFormTable();
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
 };
 
 window.onSubOrderItemFieldChange = function(idx, field, value) {
@@ -1503,7 +1694,7 @@ window.onSubOrderItemFieldChange = function(idx, field, value) {
   s.items[idx][field] = value;
   window.subOrderItems = s.items;
   renderSubOrderPaper();
-  triggerSubOrderAutoSave();
+  markSubOrderDirty();
 };
 
 // Print Function (Exact 1:1 A4 Format)
@@ -2013,8 +2204,8 @@ window.loadSubOrderRecord = function(id) {
     renderSubOrderSheetTabs();
     renderSubOrderPaper();
     closeSubOrderHistoryModal();
-    triggerSubOrderAutoSave();
-    if (typeof showToast === 'function') showToast(`발주서 [${record.poNo}]를 새 시트로 성공적으로 불러왔습니다.`, 'success');
+    markSubOrderDirty();
+    if (typeof showToast === 'function') showToast(`발주서 [${record.poNo}]를 새 시트로 성공적으로 불러왔습니다. 상단의 [💾 발주서 저장]을 누르면 영구 보관됩니다.`, 'success');
   } catch (e) {
     console.error('Load record failed:', e);
   }
@@ -2040,7 +2231,7 @@ window.resetSubOrderForm = function() {
     window.subOrderItems = [];
     renderSubOrderPaper();
     renderSubOrderFormTable();
-    triggerSubOrderAutoSave();
+    markSubOrderDirty();
   }
 };
 
