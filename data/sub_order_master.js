@@ -382,14 +382,115 @@ window.renderSubOrderVendorPills = function(filteredList) {
   });
 };
 
+// Render Vendor Search Results Dropdown
+window.renderVendorSearchResultsDropdown = function(filteredList, query) {
+  const container = document.getElementById('subOrderVendorSearchResults');
+  if (!container) return;
+  const q = (query || '').trim();
+  if (!q) {
+    container.style.display = 'none';
+    container.innerHTML = '';
+    return;
+  }
+
+  const list = filteredList || [];
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div style="padding: 12px; text-align: center; color: var(--text-secondary, #94a3b8); font-size: 0.82rem;">
+        🔍 <strong>'${escapeHTML(q)}'</strong> 일치하는 부재료 거래처가 없습니다.
+      </div>
+    `;
+    container.style.display = 'block';
+    return;
+  }
+
+  const isShowAll = (q === '전체' || q === '*');
+  let html = `
+    <div style="padding: 6px 10px; font-size: 0.74rem; color: #2563eb; font-weight: 700; border-bottom: 1px solid var(--card-border, #cbd5e1); display: flex; justify-content: space-between; align-items: center; background: rgba(59, 130, 246, 0.05); border-radius: 6px 6px 0 0;">
+      <span>🏢 ${isShowAll ? '사내 등록 부재료 거래처 전체 (15개)' : `검색 결과 (${list.length}개 업체)`}</span>
+      <span style="color: var(--text-secondary, #64748b); font-size: 0.7rem; font-weight: 500;">클릭 또는 Enter 시 즉시 발주서 전환</span>
+    </div>
+    <div style="display: flex; flex-direction: column; gap: 2px; padding: 4px 2px;">
+  `;
+
+  list.forEach(v => {
+    const isCurrent = (v.vendor === window.currentSubOrderVendor);
+    html += `
+      <div class="suborder-search-item" onclick="onSubOrderSelectFromDropdown('${escapeHTML(v.vendor)}')" style="padding: 7px 10px; border-radius: 6px; cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.15s; ${
+        isCurrent
+          ? 'background: rgba(37, 99, 235, 0.12); border: 1.5px solid #2563eb;'
+          : 'background: var(--input-bg, #ffffff); border: 1px solid transparent;'
+      }">
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <span style="font-weight: 800; font-size: 0.88rem; color: ${isCurrent ? '#2563eb' : 'var(--text-primary, #0f172a)'};">${isCurrent ? '✓ ' : ''}${escapeHTML(v.vendor)}</span>
+            <span style="font-size: 0.72rem; padding: 1px 6px; border-radius: 4px; background: rgba(59, 130, 246, 0.12); color: #2563eb; font-weight: 700;">${escapeHTML(v.category || '부재료')}</span>
+          </div>
+          <div style="font-size: 0.74rem; color: var(--text-secondary, #64748b);">
+            <span>담당: ${escapeHTML(v.contactPerson || '-')}</span>
+            ${v.officePhone ? `<span style="margin-left: 8px;">☎ ${escapeHTML(v.officePhone)}</span>` : ''}
+          </div>
+        </div>
+        <div>
+          ${isCurrent
+            ? '<span style="font-size: 0.72rem; font-weight: 700; background: #2563eb; color: #ffffff; padding: 3px 8px; border-radius: 4px; box-shadow: 0 1px 2px rgba(37,99,235,0.3);">현재 발주서</span>'
+            : '<span style="font-size: 0.75rem; font-weight: 700; color: #2563eb; padding: 3px 8px; border-radius: 4px; background: rgba(59, 130, 246, 0.08);">선택 →</span>'}
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
+  container.innerHTML = html;
+  container.style.display = 'block';
+
+  const items = container.querySelectorAll('.suborder-search-item');
+  items.forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      if (!el.style.borderColor.includes('rgb(37, 99, 235)')) {
+        el.style.background = 'rgba(59, 130, 246, 0.08)';
+      }
+    });
+    el.addEventListener('mouseleave', () => {
+      if (!el.style.borderColor.includes('rgb(37, 99, 235)')) {
+        el.style.background = 'var(--input-bg, #ffffff)';
+      }
+    });
+  });
+};
+
+window.onSubOrderSelectFromDropdown = function(vendorName) {
+  const input = document.getElementById('subOrderVendorSearchInput');
+  if (input) input.value = vendorName;
+  const clearBtn = document.getElementById('btnClearVendorSearch');
+  if (clearBtn) clearBtn.style.display = 'block';
+
+  const container = document.getElementById('subOrderVendorSearchResults');
+  if (container) container.style.display = 'none';
+
+  window.onSubOrderVendorChange(vendorName);
+  if (typeof showToast === 'function') showToast(`[${vendorName}] 부재료 발주서로 전환되었습니다.`, 'success');
+};
+
+window.onSubOrderVendorSearchFocus = function() {
+  const input = document.getElementById('subOrderVendorSearchInput');
+  const query = (input ? input.value : '').trim();
+  const filtered = (window.SUB_ORDER_VENDORS || []).filter(v => matchSubOrderVendor(v, query));
+  renderVendorSearchResultsDropdown(filtered.length > 0 ? filtered : window.SUB_ORDER_VENDORS, query || '전체');
+};
+
 window.onSubOrderVendorSearchInput = function(query) {
   const clearBtn = document.getElementById('btnClearVendorSearch');
   if (clearBtn) clearBtn.style.display = query ? 'block' : 'none';
 
-  const filtered = (window.SUB_ORDER_VENDORS || []).filter(v => matchSubOrderVendor(v, query));
+  const trimmed = (query || '').trim();
+  const filtered = (window.SUB_ORDER_VENDORS || []).filter(v => matchSubOrderVendor(v, trimmed));
+  
+  // 1. Render dropdown & pills
+  renderVendorSearchResultsDropdown(filtered, trimmed);
   renderSubOrderVendorPills(filtered);
 
-  // Also filter select box options
+  // 2. Filter select box options
   const select = document.getElementById('subOrderVendorSelect');
   if (select) {
     select.innerHTML = '<option value="">-- 부재료 발주 거래처 선택 --</option>';
@@ -401,22 +502,43 @@ window.onSubOrderVendorSearchInput = function(query) {
       select.appendChild(opt);
     });
   }
+
+  // 3. AUTO-SWITCH TO VENDOR:
+  // If exact match found:
+  const exactMatch = filtered.find(v => v.vendor.toLowerCase() === trimmed.toLowerCase());
+  if (exactMatch) {
+    if (window.currentSubOrderVendor !== exactMatch.vendor) {
+      window.onSubOrderVendorChange(exactMatch.vendor);
+    }
+    return;
+  }
+
+  // If only 1 vendor matches and user typed something:
+  if (filtered.length === 1 && trimmed.length >= 1) {
+    if (window.currentSubOrderVendor !== filtered[0].vendor) {
+      window.onSubOrderVendorChange(filtered[0].vendor);
+    }
+  }
 };
 
 window.onSubOrderVendorSearchKeyDown = function(event) {
+  const container = document.getElementById('subOrderVendorSearchResults');
+  const input = document.getElementById('subOrderVendorSearchInput');
+  const query = (input ? input.value : '').trim();
+  const filtered = (window.SUB_ORDER_VENDORS || []).filter(v => matchSubOrderVendor(v, query));
+
   if (event.key === 'Enter') {
-    const input = document.getElementById('subOrderVendorSearchInput');
-    const query = (input ? input.value : '').trim();
-    const filtered = (window.SUB_ORDER_VENDORS || []).filter(v => matchSubOrderVendor(v, query));
+    event.preventDefault();
     if (filtered.length > 0) {
       const topMatch = filtered[0];
-      const select = document.getElementById('subOrderVendorSelect');
-      if (select) select.value = topMatch.vendor;
+      if (input) input.value = topMatch.vendor;
+      if (container) container.style.display = 'none';
       window.onSubOrderVendorChange(topMatch.vendor);
       if (input) input.blur();
-      if (typeof showToast === 'function') showToast(`[${topMatch.vendor}] 거래처가 선택되었습니다.`, 'success');
+      if (typeof showToast === 'function') showToast(`[${topMatch.vendor}] 부재료 발주서가 선택되었습니다.`, 'success');
     }
   } else if (event.key === 'Escape') {
+    if (container) container.style.display = 'none';
     window.clearSubOrderVendorSearch();
   }
 };
@@ -426,6 +548,8 @@ window.clearSubOrderVendorSearch = function() {
   if (input) input.value = '';
   const clearBtn = document.getElementById('btnClearVendorSearch');
   if (clearBtn) clearBtn.style.display = 'none';
+  const container = document.getElementById('subOrderVendorSearchResults');
+  if (container) container.style.display = 'none';
 
   renderSubOrderVendorPills(window.SUB_ORDER_VENDORS);
 
@@ -440,6 +564,7 @@ window.clearSubOrderVendorSearch = function() {
       if (v.vendor === window.currentSubOrderVendor) opt.selected = true;
       select.appendChild(opt);
     });
+    select.value = window.currentSubOrderVendor;
   }
   if (input) input.focus();
 };
@@ -581,6 +706,9 @@ window.triggerSubOrderAutoSave = function() {
 // Load Sheets for a Vendor (from LocalStorage or Real 2026 Files)
 window.loadVendorSheets = function(vendorName) {
   if (window.vendorSheetsMap[vendorName] && window.vendorSheetsMap[vendorName].length > 0) {
+    if (window.currentActiveSheetIdx >= window.vendorSheetsMap[vendorName].length) {
+      window.currentActiveSheetIdx = 0;
+    }
     return window.vendorSheetsMap[vendorName];
   }
 
@@ -1185,6 +1313,27 @@ window.onPaperTablePaste = function(event, startRow, startCol) {
 window.onSubOrderVendorChange = function(vendorName) {
   if (!vendorName) return;
   window.currentSubOrderVendor = vendorName;
+  window.currentActiveSheetIdx = 0; // Always start at primary active sheet
+
+  // Sync select dropdown options & value
+  const select = document.getElementById('subOrderVendorSelect');
+  if (select) {
+    let exists = false;
+    for (let i = 0; i < select.options.length; i++) {
+      if (select.options[i].value === vendorName) {
+        exists = true;
+        break;
+      }
+    }
+    if (!exists) {
+      const vMeta = (window.SUB_ORDER_VENDORS || []).find(v => v.vendor === vendorName);
+      const opt = document.createElement('option');
+      opt.value = vendorName;
+      opt.textContent = `${vendorName} (${(vMeta && vMeta.category) || '부재료'})`;
+      select.appendChild(opt);
+    }
+    select.value = vendorName;
+  }
 
   // Update Category Badge & Header Title
   let vMeta = (window.SUB_ORDER_VENDORS || []).find(v => v.vendor === vendorName);
@@ -1200,7 +1349,18 @@ window.onSubOrderVendorChange = function(vendorName) {
     const input = document.getElementById('subOrderVendorSearchInput');
     const query = input ? input.value : '';
     const filtered = (window.SUB_ORDER_VENDORS || []).filter(v => matchSubOrderVendor(v, query));
-    renderSubOrderVendorPills(filtered);
+    renderSubOrderVendorPills(filtered.length > 0 ? filtered : window.SUB_ORDER_VENDORS);
+  }
+
+  // Update search results dropdown if open
+  const resBox = document.getElementById('subOrderVendorSearchResults');
+  if (resBox && resBox.style.display !== 'none') {
+    const input = document.getElementById('subOrderVendorSearchInput');
+    const query = input ? input.value : '';
+    if (query && query.trim()) {
+      const filtered = (window.SUB_ORDER_VENDORS || []).filter(v => matchSubOrderVendor(v, query));
+      renderVendorSearchResultsDropdown(filtered, query);
+    }
   }
 
   // Render quick chips
@@ -1870,6 +2030,17 @@ window.resetSubOrderForm = function() {
 
 // Auto-initialize Sub Order view when DOM is ready
 if (typeof document !== 'undefined') {
+  // Global click listener to close vendor search suggestions when clicked outside
+  document.addEventListener('click', function(e) {
+    const container = document.getElementById('subOrderVendorSearchResults');
+    const input = document.getElementById('subOrderVendorSearchInput');
+    if (container && input && container.style.display !== 'none') {
+      if (!container.contains(e.target) && e.target !== input) {
+        container.style.display = 'none';
+      }
+    }
+  });
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function() {
       if (typeof window.initSubOrderView === 'function') {

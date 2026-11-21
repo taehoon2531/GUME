@@ -4018,8 +4018,11 @@ canvas.custom-chart {
 
                 <!-- Instant Search Input -->
                 <div style="position: relative; margin-bottom: 6px;">
-                  <input type="text" id="subOrderVendorSearchInput" oninput="onSubOrderVendorSearchInput(this.value)" onkeydown="onSubOrderVendorSearchKeyDown(event)" placeholder="🔍 거래처 검색 (예: 갑진, 세광, 일진, ㄱㅈ, ㅂㅌ)..." style="width: 100%; padding: 8px 30px 8px 10px; font-size: 0.88rem; font-weight: 600; border: 1.5px solid #3b82f6; border-radius: 6px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); box-shadow: 0 1px 2px rgba(0,0,0,0.05); outline: none;">
+                  <input type="text" id="subOrderVendorSearchInput" oninput="onSubOrderVendorSearchInput(this.value)" onfocus="onSubOrderVendorSearchFocus()" onkeydown="onSubOrderVendorSearchKeyDown(event)" placeholder="🔍 거래처 검색 (예: 갑진, 세광, 일진, ㄱㅈ, ㅂㅌ)..." style="width: 100%; padding: 8px 30px 8px 10px; font-size: 0.88rem; font-weight: 600; border: 1.5px solid #3b82f6; border-radius: 6px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); box-shadow: 0 1px 2px rgba(0,0,0,0.05); outline: none;">
                   <button type="button" onclick="clearSubOrderVendorSearch()" id="btnClearVendorSearch" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); background: none; border: none; font-size: 0.85rem; color: #94a3b8; cursor: pointer; display: none;" title="검색어 지우기">✕</button>
+                  
+                  <!-- Auto-Suggest Dropdown Results -->
+                  <div id="subOrderVendorSearchResults" style="display: none; position: absolute; left: 0; right: 0; top: calc(100% + 4px); background: var(--card-bg, #ffffff); border: 1.5px solid #3b82f6; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); z-index: 1000; max-height: 250px; overflow-y: auto; padding: 4px;"></div>
                 </div>
 
                 <!-- Quick Vendor 1-Click Pills (15 Authentic Vendors) -->
