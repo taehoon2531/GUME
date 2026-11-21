@@ -1,4 +1,4 @@
-﻿// ========================================================================
+// ========================================================================
 // (주)에스앤더블류 부재료 발주서 마스터 데이터 & 전용 작성기 엔진
 // (Sub-materials Purchase Order Master & Live Generator Engine)
 // ========================================================================
@@ -321,6 +321,129 @@ window.SUB_ORDER_VENDORS = [
 // ==========================================
 // Sub Order Generator Interactive Logic
 // ==========================================
+// ==========================================
+// Korean Chosung & Vendor Search Helper
+// ==========================================
+const KOREAN_CHOSUNG = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+function getKoreanChosung(str) {
+  if (!str) return '';
+  let result = '';
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i) - 44032;
+    if (code >= 0 && code <= 11171) {
+      result += KOREAN_CHOSUNG[Math.floor(code / 588)];
+    } else {
+      result += str.charAt(i);
+    }
+  }
+  return result;
+}
+
+function matchSubOrderVendor(v, query) {
+  if (!query || !query.trim()) return true;
+  const q = query.trim().toLowerCase();
+  const vName = (v.vendor || '').toLowerCase();
+  const vCat = (v.category || '').toLowerCase();
+  if (vName.includes(q) || vCat.includes(q)) return true;
+  const chosung = getKoreanChosung(vName);
+  if (chosung.includes(q)) return true;
+  return false;
+}
+
+window.renderSubOrderVendorPills = function(filteredList) {
+  const container = document.getElementById('subOrderVendorPillsContainer');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const list = filteredList || window.SUB_ORDER_VENDORS || [];
+  if (list.length === 0) {
+    container.innerHTML = '<span style="font-size: 0.74rem; color: #94a3b8; padding: 3px 6px;">일치하는 거래처가 없습니다.</span>';
+    return;
+  }
+
+  list.forEach(v => {
+    const isActive = (v.vendor === window.currentSubOrderVendor);
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'btn btn-sm';
+    pill.style.cssText = `font-size: 0.74rem; padding: 3px 8px; border-radius: 4px; font-weight: ${isActive ? '800' : '600'}; cursor: pointer; white-space: nowrap; transition: all 0.15s; ${
+      isActive
+        ? 'background: #2563eb; color: #ffffff; border: 1.5px solid #1d4ed8; box-shadow: 0 1px 3px rgba(37,99,235,0.3);'
+        : 'background: var(--input-bg, #ffffff); color: #334155; border: 1px solid var(--input-border, #cbd5e1);'
+    }`;
+    pill.innerHTML = `${isActive ? '✓ ' : ''}${v.vendor}`;
+    pill.title = `${v.vendor} (${v.category || ''})`;
+    pill.onclick = () => {
+      const select = document.getElementById('subOrderVendorSelect');
+      if (select) select.value = v.vendor;
+      window.onSubOrderVendorChange(v.vendor);
+    };
+    container.appendChild(pill);
+  });
+};
+
+window.onSubOrderVendorSearchInput = function(query) {
+  const clearBtn = document.getElementById('btnClearVendorSearch');
+  if (clearBtn) clearBtn.style.display = query ? 'block' : 'none';
+
+  const filtered = (window.SUB_ORDER_VENDORS || []).filter(v => matchSubOrderVendor(v, query));
+  renderSubOrderVendorPills(filtered);
+
+  // Also filter select box options
+  const select = document.getElementById('subOrderVendorSelect');
+  if (select) {
+    select.innerHTML = '<option value="">-- 부재료 발주 거래처 선택 --</option>';
+    filtered.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.vendor;
+      opt.textContent = `${v.vendor} (${v.category})`;
+      if (v.vendor === window.currentSubOrderVendor) opt.selected = true;
+      select.appendChild(opt);
+    });
+  }
+};
+
+window.onSubOrderVendorSearchKeyDown = function(event) {
+  if (event.key === 'Enter') {
+    const input = document.getElementById('subOrderVendorSearchInput');
+    const query = (input ? input.value : '').trim();
+    const filtered = (window.SUB_ORDER_VENDORS || []).filter(v => matchSubOrderVendor(v, query));
+    if (filtered.length > 0) {
+      const topMatch = filtered[0];
+      const select = document.getElementById('subOrderVendorSelect');
+      if (select) select.value = topMatch.vendor;
+      window.onSubOrderVendorChange(topMatch.vendor);
+      if (input) input.blur();
+      if (typeof showToast === 'function') showToast(`[${topMatch.vendor}] 거래처가 선택되었습니다.`, 'success');
+    }
+  } else if (event.key === 'Escape') {
+    window.clearSubOrderVendorSearch();
+  }
+};
+
+window.clearSubOrderVendorSearch = function() {
+  const input = document.getElementById('subOrderVendorSearchInput');
+  if (input) input.value = '';
+  const clearBtn = document.getElementById('btnClearVendorSearch');
+  if (clearBtn) clearBtn.style.display = 'none';
+
+  renderSubOrderVendorPills(window.SUB_ORDER_VENDORS);
+
+  // Restore select box options
+  const select = document.getElementById('subOrderVendorSelect');
+  if (select) {
+    select.innerHTML = '<option value="">-- 부재료 발주 거래처 선택 --</option>';
+    window.SUB_ORDER_VENDORS.forEach(v => {
+      const opt = document.createElement('option');
+      opt.value = v.vendor;
+      opt.textContent = `${v.vendor} (${v.category})`;
+      if (v.vendor === window.currentSubOrderVendor) opt.selected = true;
+      select.appendChild(opt);
+    });
+  }
+  if (input) input.focus();
+};
+
 window.subOrderItems = [];
 window.subOrderCurrentVendor = null;
 window.subOrderInitialized = false;
@@ -346,6 +469,9 @@ window.initSubOrderView = function(force) {
       select.appendChild(opt);
     });
   }
+
+  // 1-1. Render 1-click quick vendor pills
+  renderSubOrderVendorPills(window.SUB_ORDER_VENDORS);
 
   // 2. Set default date and auto PO number
   const today = new Date();
@@ -1060,11 +1186,21 @@ window.onSubOrderVendorChange = function(vendorName) {
   if (!vendorName) return;
   window.currentSubOrderVendor = vendorName;
 
-  // Update Category Badge
+  // Update Category Badge & Header Title
   let vMeta = (window.SUB_ORDER_VENDORS || []).find(v => v.vendor === vendorName);
   const badge = document.getElementById('subOrderVendorCategoryBadge');
   if (badge && vMeta) {
     badge.textContent = vMeta.category || '부재료';
+  }
+  const titleBadge = document.getElementById('currentVendorHeaderTitle');
+  if (titleBadge) titleBadge.textContent = vendorName;
+
+  // Re-render vendor pills to highlight active vendor
+  if (typeof renderSubOrderVendorPills === 'function') {
+    const input = document.getElementById('subOrderVendorSearchInput');
+    const query = input ? input.value : '';
+    const filtered = (window.SUB_ORDER_VENDORS || []).filter(v => matchSubOrderVendor(v, query));
+    renderSubOrderVendorPills(filtered);
   }
 
   // Render quick chips
