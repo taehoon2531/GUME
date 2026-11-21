@@ -577,70 +577,65 @@ window.initSubOrderView = function(force) {
   const select = document.getElementById('subOrderVendorSelect');
   if (!select) return;
 
-  if (window.subOrderInitialized && !force) {
-    if (typeof updateSubOrderPreview === 'function') updateSubOrderPreview();
-    return;
-  }
-  window.subOrderInitialized = true;
-
-  // 1. Populate vendor dropdown (사내 부재료 발주서 등록 15개 업체 전용)
-  if (select) {
+  // 1. Populate vendor dropdown if needed
+  if (select.children.length <= 1 || force) {
     select.innerHTML = '<option value="">-- 부재료 발주 거래처 선택 --</option>';
-    window.SUB_ORDER_VENDORS.forEach((v, idx) => {
+    (window.SUB_ORDER_VENDORS || []).forEach((v, idx) => {
       const opt = document.createElement('option');
       opt.value = v.vendor;
       opt.textContent = `${v.vendor} (${v.category})`;
-      if (idx === 0) opt.selected = true;
+      if (v.vendor === window.currentSubOrderVendor) opt.selected = true;
       select.appendChild(opt);
     });
   }
 
   // 1-1. Render 1-click quick vendor pills
-  renderSubOrderVendorPills(window.SUB_ORDER_VENDORS);
-
-  // 2. Set default date and auto PO number
-  const today = new Date();
-  const yyyy = today.getFullYear();
-  const mm = String(today.getMonth() + 1).padStart(2, '0');
-  const dd = String(today.getDate()).padStart(2, '0');
-  const dateStr = `${yyyy}-${mm}-${dd}`;
-
-  const dateInput = document.getElementById('subOrderDate');
-  if (dateInput && !dateInput.value) dateInput.value = dateStr;
-
-  const dueInput = document.getElementById('subOrderDueDate');
-  if (dueInput && !dueInput.value) {
-    const dueDate = new Date(today);
-    dueDate.setDate(dueDate.getDate() + 7);
-    const dY = dueDate.getFullYear();
-    const dM = String(dueDate.getMonth() + 1).padStart(2, '0');
-    const dD = String(dueDate.getDate()).padStart(2, '0');
-    dueInput.value = `${dY}-${dM}-${dD}`;
+  if (typeof renderSubOrderVendorPills === 'function') {
+    renderSubOrderVendorPills(window.SUB_ORDER_VENDORS || []);
   }
 
-  const poInput = document.getElementById('subOrderPoNo');
-  if (poInput && !poInput.value) {
-    const yy = String(yyyy).substring(2);
-    poInput.value = `PC${yy}${mm}-${dd}01`;
+  // 2. Ensure current vendor
+  const v = window.currentSubOrderVendor || ((window.SUB_ORDER_VENDORS && window.SUB_ORDER_VENDORS[0]) ? window.SUB_ORDER_VENDORS[0].vendor : '갑진와셔');
+  window.currentSubOrderVendor = v;
+  if (select) select.value = v;
+
+  // 3. Load sheets for current vendor
+  if (typeof window.loadVendorSheets === 'function') {
+    window.loadVendorSheets(v);
   }
 
-  // 3. Set sender defaults
-  const s = window.SUB_ORDER_SENDER_DEFAULT;
-  const sCompany = document.getElementById('subOrderSenderCompany');
-  if (sCompany) sCompany.value = s.company;
-  const sMgr = document.getElementById('subOrderSenderManager');
-  if (sMgr) sMgr.value = s.manager;
-  const sPhone = document.getElementById('subOrderSenderPhone');
-  if (sPhone) sPhone.value = s.phone;
-  const sFax = document.getElementById('subOrderSenderFax');
-  if (sFax) sFax.value = s.fax;
-  const sMobile = document.getElementById('subOrderSenderMobile');
-  if (sMobile) sMobile.value = s.mobile;
-
-  // 4. Select first vendor
-  if (window.SUB_ORDER_VENDORS.length > 0) {
-    onSubOrderVendorChange(window.SUB_ORDER_VENDORS[0].vendor);
+  // 4. Always render sheet tabs and live paper
+  if (typeof window.renderSubOrderSheetTabs === 'function') {
+    window.renderSubOrderSheetTabs();
   }
+  if (typeof window.renderSubOrderPaper === 'function') {
+    window.renderSubOrderPaper();
+  }
+
+  // 5. Sync left-hand inputs with active sheet
+  const sheets = window.vendorSheetsMap[v] || [];
+  const s = sheets[window.currentActiveSheetIdx] || {};
+  if (document.getElementById('subOrderPoNo')) document.getElementById('subOrderPoNo').value = s.poNo || '';
+  if (document.getElementById('subOrderDate')) document.getElementById('subOrderDate').value = s.poDate || '';
+  if (document.getElementById('subOrderRecvCompany')) document.getElementById('subOrderRecvCompany').value = s.recvCompany || v;
+  if (document.getElementById('subOrderRecvPerson')) document.getElementById('subOrderRecvPerson').value = s.recvPerson || '';
+  if (document.getElementById('subOrderRecvPhone')) document.getElementById('subOrderRecvPhone').value = s.recvPhone || '';
+  if (document.getElementById('subOrderRecvFax')) document.getElementById('subOrderRecvFax').value = s.recvFax || '';
+  if (document.getElementById('subOrderRecvMobile')) document.getElementById('subOrderRecvMobile').value = s.recvMobile || '';
+  if (document.getElementById('subOrderTermsNotes')) document.getElementById('subOrderTermsNotes').value = s.note || '';
+
+  window.subOrderItems = s.items || [];
+  if (typeof window.renderSubOrderFormTable === 'function') {
+    window.renderSubOrderFormTable();
+  }
+
+  // 6. Render quick chips for this vendor
+  const vMeta = (window.SUB_ORDER_VENDORS || []).find(it => it.vendor === v);
+  if (vMeta && typeof renderSubOrderQuickChips === 'function') {
+    renderSubOrderQuickChips(vMeta);
+  }
+
+  window.subOrderInitialized = true;
 };
 
 // ========================================================================
@@ -1338,14 +1333,22 @@ window.updateSubOrderPreview = function() {
   const sheets = window.vendorSheetsMap[v] || [];
   const s = sheets[window.currentActiveSheetIdx];
   if (s) {
-    if (document.getElementById('subOrderPoNo')) s.poNo = document.getElementById('subOrderPoNo').value;
-    if (document.getElementById('subOrderDate')) s.poDate = document.getElementById('subOrderDate').value;
-    if (document.getElementById('subOrderRecvCompany')) s.recvCompany = document.getElementById('subOrderRecvCompany').value;
-    if (document.getElementById('subOrderRecvPerson')) s.recvPerson = document.getElementById('subOrderRecvPerson').value;
-    if (document.getElementById('subOrderRecvPhone')) s.recvPhone = document.getElementById('subOrderRecvPhone').value;
-    if (document.getElementById('subOrderRecvFax')) s.recvFax = document.getElementById('subOrderRecvFax').value;
-    if (document.getElementById('subOrderRecvMobile')) s.recvMobile = document.getElementById('subOrderRecvMobile').value;
-    if (document.getElementById('subOrderTermsNotes')) s.note = document.getElementById('subOrderTermsNotes').value;
+    const poNoEl = document.getElementById('subOrderPoNo');
+    if (poNoEl && poNoEl.value) s.poNo = poNoEl.value;
+    const poDateEl = document.getElementById('subOrderDate');
+    if (poDateEl && poDateEl.value) s.poDate = poDateEl.value;
+    const recvCompEl = document.getElementById('subOrderRecvCompany');
+    if (recvCompEl && recvCompEl.value) s.recvCompany = recvCompEl.value;
+    const recvPersonEl = document.getElementById('subOrderRecvPerson');
+    if (recvPersonEl && recvPersonEl.value) s.recvPerson = recvPersonEl.value;
+    const recvPhoneEl = document.getElementById('subOrderRecvPhone');
+    if (recvPhoneEl) s.recvPhone = recvPhoneEl.value;
+    const recvFaxEl = document.getElementById('subOrderRecvFax');
+    if (recvFaxEl) s.recvFax = recvFaxEl.value;
+    const recvMobileEl = document.getElementById('subOrderRecvMobile');
+    if (recvMobileEl) s.recvMobile = recvMobileEl.value;
+    const notesEl = document.getElementById('subOrderTermsNotes');
+    if (notesEl && notesEl.value) s.note = notesEl.value;
     window.markSubOrderDirty();
   }
   window.renderSubOrderPaper();

@@ -395,6 +395,16 @@ header {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   font-size: 0.8rem;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+.data-status-pill:hover {
+  filter: brightness(0.95);
+  transform: translateY(-1px);
+}
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
 }
 
 .status-dot {
@@ -3496,9 +3506,9 @@ canvas.custom-chart {
         <span class="badge" style="background:#fef3c7; color:#92400e; border:1px solid #fde68a; font-size:0.73rem; font-weight:700; padding:3px 8px; border-radius:12px;">🧱 부자재 최종: 2026-11-10</span>
         <span class="badge" style="background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-size:0.73rem; font-weight:700; padding:3px 8px; border-radius:12px;">🏭 원자재 최종: 2026-11-13</span>
       </div>
-      <div class="data-status-pill">
+      <div class="data-status-pill" id="headerDataStatusPill" onclick="runAutoDataHealing(true)" style="cursor: pointer; transition: all 0.2s ease;" title="데이터 상태 점검 및 자동 자가 복구 (클릭 시 즉시 실행)">
         <span class="status-dot"></span>
-        <span id="headerTotalCount">45,922건 로드됨</span>
+        <span id="headerTotalCount">45,925건 로드됨</span>
       </div>
       <!-- PWA 스마트폰/PC 앱 설치 버튼 -->
       <button class="btn btn-sm" id="pwaInstallBtn" onclick="triggerPwaInstall()" style="display: none; background: #2563eb; color: #fff; border: 1px solid #1d4ed8; font-weight: 700; align-items: center; gap: 4px; border-radius: 6px; padding: 4px 10px; font-size: 0.78rem;" title="스마트폰 / PC 홈 화면에 앱으로 설치">
@@ -6726,9 +6736,10 @@ async function forceAppUpdate() {
   } catch (e) {
     console.warn('Cache clear error:', e);
   }
-  // Force reload with timestamp query to burst any WebView disk cache
+  // Force reload with timestamp query to burst any WebView disk cache (file:// and http:// compatible)
   setTimeout(() => {
-    window.location.href = window.location.origin + window.location.pathname + '?t=' + Date.now();
+    const cleanUrl = window.location.href.split('#')[0].split('?')[0];
+    window.location.href = cleanUrl + '?t=' + Date.now();
   }, 400);
 }
 
@@ -7204,11 +7215,207 @@ function printBankDocByVendor(v) {
   }, 400);
 }
 
+// ==========================================
+// 🛡️ Data Self-Healing & Autonomous Watchdog Engine
+// ==========================================
+window._isHealingData = false;
+
+function isDataHealthy() {
+  const suppliesOk = (Array.isArray(allData) && allData.length > 0) ||
+                     (window.INITIAL_SUPPLIES_DATA && Array.isArray(window.INITIAL_SUPPLIES_DATA) && window.INITIAL_SUPPLIES_DATA.length > 0);
+  const subOk = (typeof subData !== 'undefined' && Array.isArray(subData) && subData.length > 0) ||
+                (window.INITIAL_SUB_MATERIALS_DATA && Array.isArray(window.INITIAL_SUB_MATERIALS_DATA) && window.INITIAL_SUB_MATERIALS_DATA.length > 0);
+  const rawOk = (typeof rawData !== 'undefined' && Array.isArray(rawData) && rawData.length > 0) ||
+                (window.INITIAL_RAW_MATERIALS_DATA && Array.isArray(window.INITIAL_RAW_MATERIALS_DATA) && window.INITIAL_RAW_MATERIALS_DATA.length > 0);
+  const subSheetsOk = Array.isArray(window.SUB_ORDER_ORIGINAL_SHEETS) && window.SUB_ORDER_ORIGINAL_SHEETS.length > 0;
+  const subOrderOk = typeof SUB_ORDER_VENDORS !== 'undefined';
+  return suppliesOk && subOk && rawOk && subSheetsOk && subOrderOk;
+}
+
+function updateDataStatusPill(customText) {
+  const pill = document.querySelector('.data-status-pill');
+  const countEl = document.getElementById('headerTotalCount');
+  if (!pill) return;
+
+  pill.style.cursor = 'pointer';
+  pill.setAttribute('onclick', 'runAutoDataHealing(true)');
+
+  const currentCount = (allData && allData.length) || (window.INITIAL_SUPPLIES_DATA && window.INITIAL_SUPPLIES_DATA.length) || 0;
+
+  if (currentCount > 0) {
+    pill.style.background = 'rgba(16, 185, 129, 0.15)';
+    pill.style.border = '1px solid rgba(16, 185, 129, 0.35)';
+    pill.title = '🟢 데이터 정상 로드됨 (클릭 시 자가 진단 및 데이터 최신화)';
+    if (countEl) {
+      countEl.textContent = customText || `${formatNumber(currentCount)}건 정상`;
+      countEl.style.color = '#059669';
+      countEl.style.fontWeight = '700';
+    }
+  } else {
+    pill.style.background = 'rgba(239, 68, 68, 0.15)';
+    pill.style.border = '1px solid rgba(239, 68, 68, 0.45)';
+    pill.title = '🔴 데이터 미로드 상태입니다. 클릭 시 즉시 자동 복구를 진행합니다.';
+    if (countEl) {
+      countEl.textContent = '데이터 미로드 [⚡ 즉시 복구]';
+      countEl.style.color = '#ef4444';
+      countEl.style.fontWeight = '800';
+    }
+  }
+}
+
+function loadScriptBypassingCache(src) {
+  return new Promise((resolve) => {
+    try {
+      const script = document.createElement('script');
+      const sep = src.includes('?') ? '&' : '?';
+      script.src = src + sep + '_t=' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
+      script.async = false;
+      script.onload = () => resolve(true);
+      script.onerror = (e) => {
+        console.warn('Script reload failed for:', src, e);
+        resolve(false);
+      };
+      document.head.appendChild(script);
+    } catch (err) {
+      console.error('Error creating script element:', err);
+      resolve(false);
+    }
+  });
+}
+
+async function runAutoDataHealing(interactive = false) {
+  if (window._isHealingData) return;
+  window._isHealingData = true;
+
+  if (interactive) {
+    showToast('⚡ 데이터 자가 점검 및 자동 복원을 진행합니다...', 'info');
+  }
+
+  try {
+    const needSupplies = !allData || allData.length === 0 || !window.INITIAL_SUPPLIES_DATA || window.INITIAL_SUPPLIES_DATA.length === 0;
+    const needSub = !window.INITIAL_SUB_MATERIALS_DATA || window.INITIAL_SUB_MATERIALS_DATA.length === 0;
+    const needRaw = !window.INITIAL_RAW_MATERIALS_DATA || window.INITIAL_RAW_MATERIALS_DATA.length === 0;
+    const needSheets = !window.SUB_ORDER_ORIGINAL_SHEETS || window.SUB_ORDER_ORIGINAL_SHEETS.length === 0;
+    const needSubMaster = typeof SUB_ORDER_VENDORS === 'undefined';
+
+    if (!needSupplies && !needSub && !needRaw && !needSheets && !needSubMaster) {
+      if ((!allData || allData.length === 0) && window.INITIAL_SUPPLIES_DATA && window.INITIAL_SUPPLIES_DATA.length > 0) {
+        allData = window.INITIAL_SUPPLIES_DATA;
+        try { assignPriceTrends(allData); } catch (e) {}
+        try { applyFilters(); } catch (e) {}
+        try { renderVendorSidebar(); } catch (e) {}
+        try { updateFooterInfo(); } catch (e) {}
+      }
+      updateDataStatusPill();
+      fadeOutLoadingOverlay();
+      if (interactive) {
+        showToast(`✅ 모든 데이터가 정상적으로 연결되어 있습니다. (총 ${formatNumber(allData.length)}건)`, 'success');
+      }
+      window._isHealingData = false;
+      return true;
+    }
+
+    // Dynamic reload missing files
+    const loadPromises = [];
+    if (needSupplies) loadPromises.push(loadScriptBypassingCache('data/data.js'));
+    if (needSub) loadPromises.push(loadScriptBypassingCache('data/sub_data.js'));
+    if (needRaw) loadPromises.push(loadScriptBypassingCache('data/raw_data.js'));
+    if (needSheets) loadPromises.push(loadScriptBypassingCache('data/sub_order_sheets_history.js'));
+    if (needSubMaster) loadPromises.push(loadScriptBypassingCache('data/sub_order_master.js'));
+
+    await Promise.all(loadPromises);
+
+    // Apply recovered datasets
+    if (window.INITIAL_SUPPLIES_DATA && Array.isArray(window.INITIAL_SUPPLIES_DATA) && window.INITIAL_SUPPLIES_DATA.length > 0) {
+      allData = window.INITIAL_SUPPLIES_DATA;
+      try { assignPriceTrends(allData); } catch (e) {}
+      try { populateSuppliesDatalists(); } catch (e) {}
+      try { applyFilters(); } catch (e) {}
+      try { renderVendorSidebar(); } catch (e) {}
+      try { updateFooterInfo(); } catch (e) {}
+    }
+
+    if (window.INITIAL_SUB_MATERIALS_DATA && Array.isArray(window.INITIAL_SUB_MATERIALS_DATA)) {
+      subData = window.INITIAL_SUB_MATERIALS_DATA;
+      try { assignPriceTrends(subData); } catch (e) {}
+      try { populateSubDatalists(); } catch (e) {}
+      try { applySubFilters(); } catch (e) {}
+      try { renderSubVendorSidebar(); } catch (e) {}
+    }
+
+    if (window.INITIAL_RAW_MATERIALS_DATA && Array.isArray(window.INITIAL_RAW_MATERIALS_DATA)) {
+      rawData = window.INITIAL_RAW_MATERIALS_DATA;
+      try { assignPriceTrends(rawData); } catch (e) {}
+      try { populateRawDatalists(); } catch (e) {}
+      try { applyRawFilters(); } catch (e) {}
+      try { renderRawVendorSidebar(); } catch (e) {}
+    }
+
+    // Re-sync sub order if open
+    if (typeof initSubOrderView === 'function') {
+      try { initSubOrderView(true); } catch (e) {}
+    }
+
+    fadeOutLoadingOverlay();
+    updateDataStatusPill();
+
+    const recoveredCount = (allData && allData.length) || 0;
+    if (recoveredCount > 0) {
+      showToast(`⚡ 데이터 자가 치유 완료! (${formatNumber(recoveredCount)}건 정상 복원)`, 'success');
+      console.log(`[Data Watchdog] Auto-healed successfully with ${recoveredCount} records.`);
+    } else if (interactive) {
+      showToast('⚠️ 데이터를 읽어오는 중입니다. 잠시 후 [새로고침]을 눌러주세요.', 'warning');
+    }
+  } catch (err) {
+    console.error('runAutoDataHealing error:', err);
+    if (interactive) {
+      showToast('⚠️ 데이터 복구 중 오류가 발생했습니다. 강제 새로고침을 시도합니다.', 'warning');
+      setTimeout(forceAppUpdate, 600);
+    }
+  } finally {
+    window._isHealingData = false;
+    fadeOutLoadingOverlay();
+    updateDataStatusPill();
+  }
+}
+
+// Background autonomous watchdog timers
+function startDataWatchdog() {
+  setTimeout(() => {
+    if (!isDataHealthy()) {
+      console.warn('[Data Watchdog 350ms] Missing dataset detected. Auto-recovering...');
+      runAutoDataHealing(false);
+    } else {
+      updateDataStatusPill();
+    }
+  }, 350);
+
+  setTimeout(() => {
+    if (!isDataHealthy()) {
+      console.warn('[Data Watchdog 1200ms] Secondary scan detected incomplete data. Auto-recovering...');
+      runAutoDataHealing(false);
+    } else {
+      updateDataStatusPill();
+    }
+  }, 1200);
+
+  setTimeout(() => {
+    if (!isDataHealthy()) {
+      console.warn('[Data Watchdog 2500ms] Final sweep...');
+      runAutoDataHealing(false);
+    } else {
+      updateDataStatusPill();
+    }
+  }, 2500);
+}
+
 function triggerAppInit() {
   initApp().catch(err => {
     console.error('Fatal initialization error:', err);
   }).finally(() => {
     fadeOutLoadingOverlay();
+    startDataWatchdog();
+    updateDataStatusPill();
   });
 }
 
@@ -7230,12 +7437,12 @@ async function initApp() {
     if (saved && Array.isArray(saved) && saved.length > 0) {
       allData = saved;
       window._isUsingLocalDB = true;
-    } else if (window.INITIAL_SUPPLIES_DATA && Array.isArray(window.INITIAL_SUPPLIES_DATA)) {
+    } else if (window.INITIAL_SUPPLIES_DATA && Array.isArray(window.INITIAL_SUPPLIES_DATA) && window.INITIAL_SUPPLIES_DATA.length > 0) {
       allData = window.INITIAL_SUPPLIES_DATA;
       window._isUsingLocalDB = false;
     } else {
       console.warn('data.js not loaded or empty.');
-      allData = [];
+      allData = (window.INITIAL_SUPPLIES_DATA && Array.isArray(window.INITIAL_SUPPLIES_DATA)) ? window.INITIAL_SUPPLIES_DATA : [];
       window._isUsingLocalDB = false;
     }
   } catch (e) {
@@ -7361,7 +7568,7 @@ function initNavTabs() {
       } else if (target === 'tab-vendors') {
         renderVendorMgmtTable();
       } else if (target === 'tab-suborder') {
-        if (typeof initSubOrderView === 'function') initSubOrderView();
+        if (typeof initSubOrderView === 'function') initSubOrderView(true);
       }
     });
   });
@@ -7582,8 +7789,7 @@ function applyFilters() {
   animateValue(kpiRowCountEl, 0, filteredData.length, 600, '건', formatNumber);
   animateValue(kpiAvgPriceEl, 0, avgPrice, 600, '원', formatNumber);
 
-  const headerTotalCount = document.getElementById('headerTotalCount');
-  if (headerTotalCount) headerTotalCount.textContent = formatNumber(filteredData.length) + '건 로드됨';
+  updateDataStatusPill(formatNumber(filteredData.length) + '건 로드됨');
 
   // Update Filter Pills
   updateFilterTags(startDate, endDate);
@@ -7926,6 +8132,17 @@ function renderTable() {
   if (existingTfoot) existingTfoot.remove();
 
   if (total === 0) {
+    if (!allData || allData.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center" style="padding: 3.5rem 1rem;">
+        <div style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.9;">⚡</div>
+        <div style="font-size: 1.15rem; font-weight: 700; color: #1e293b; margin-bottom: 6px;">소모품 데이터가 아직 로드되지 않았습니다.</div>
+        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 14px;">브라우저 캐시 지연 또는 일시적 통신 미완료 시 자동 복구 엔진을 통해 즉시 복원할 수 있습니다.</div>
+        <button class="btn btn-primary" onclick="runAutoDataHealing(true)" style="padding: 8px 20px; font-weight: 700; border-radius: 8px; box-shadow: 0 4px 12px rgba(37,99,235,0.25);">⚡ 지금 즉시 자동 복구 실행</button>
+      </td></tr>`;
+      document.getElementById('tableInfoText').textContent = '데이터 미로드';
+      renderPagination(0);
+      return;
+    }
     // [MODIFIED] Improved empty state with icon and actionable message
     tbody.innerHTML = `<tr><td colspan="7" class="text-center" style="padding: 3.5rem 1rem;">
       <div style="font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4;">🔍</div>
@@ -13218,6 +13435,16 @@ function renderSubTable() {
   }
 
   if (total === 0) {
+    if (!subData || subData.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" class="text-center" style="padding: 3rem 1rem; color: var(--text-muted);">
+        <div style="font-size: 2rem; margin-bottom: 8px;">⚡</div>
+        <div style="font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 6px;">부자재 데이터가 아직 로드되지 않았습니다.</div>
+        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">캐시 지연 시 아래 복구 버튼을 누르면 즉시 복원됩니다.</div>
+        <button class="btn btn-primary btn-sm" style="margin-top: 4px; padding: 6px 16px; font-weight: 700;" onclick="runAutoDataHealing(true)">⚡ 부자재 데이터 즉시 자동 복구</button>
+      </td></tr>`;
+      renderSubPagination();
+      return;
+    }
     tbody.innerHTML = `<tr><td colspan="9" class="text-center" style="padding: 3rem 1rem; color: var(--text-muted);">
       <div style="font-size: 2rem; margin-bottom: 8px; opacity: 0.5;">🔍</div>
       <div style="font-size: 0.95rem; font-weight: 600;">조건에 일치하는 부자재 데이터가 없습니다.</div>
@@ -13621,6 +13848,16 @@ function renderRawTable() {
   }
 
   if (total === 0) {
+    if (!rawData || rawData.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" class="text-center" style="padding: 3rem 1rem; color: var(--text-muted);">
+        <div style="font-size: 2rem; margin-bottom: 8px;">⚡</div>
+        <div style="font-size: 1rem; font-weight: 700; color: #1e293b; margin-bottom: 6px;">원자재 데이터가 아직 로드되지 않았습니다.</div>
+        <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 12px;">캐시 지연 시 아래 복구 버튼을 누르면 즉시 복원됩니다.</div>
+        <button class="btn btn-primary btn-sm" style="margin-top: 4px; padding: 6px 16px; font-weight: 700;" onclick="runAutoDataHealing(true)">⚡ 원자재 데이터 즉시 자동 복구</button>
+      </td></tr>`;
+      renderRawPagination();
+      return;
+    }
     tbody.innerHTML = `<tr><td colspan="9" class="text-center" style="padding: 3rem 1rem; color: var(--text-muted);">
       <div style="font-size: 2rem; margin-bottom: 8px; opacity: 0.5;">🔍</div>
       <div style="font-size: 0.95rem; font-weight: 600;">조건에 일치하는 원자재 데이터가 없습니다.</div>

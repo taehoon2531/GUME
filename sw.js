@@ -1,7 +1,7 @@
 // ===================================================================
 // (주)에스앤더블류 구매 관리 대시보드 — Service Worker (PWA)
 // ===================================================================
-const CACHE_NAME = 'snw-pwa-v4.4';
+const CACHE_NAME = 'snw-pwa-v4.5';
 const PRECACHE_ASSETS = [
   './',
   './index.html',
@@ -46,8 +46,7 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Fetch: Strictly Network-First with Cache Fallback
-// HTML and JavaScript requests always bypass browser disk cache when online.
+// Fetch: Strictly Network-First with Safe Fallback
 self.addEventListener('fetch', event => {
   const req = event.request;
   
@@ -56,9 +55,9 @@ self.addEventListener('fetch', event => {
   }
 
   const isHtml = req.mode === 'navigate' || (req.headers.get('accept') && req.headers.get('accept').includes('text/html'));
+  const isJs = req.url.includes('.js');
   
   event.respondWith(
-    // Always fetch fresh HTML & code from network
     fetch(req, isHtml ? { cache: 'no-cache' } : {})
       .then(networkResponse => {
         if (networkResponse && networkResponse.status === 200) {
@@ -70,7 +69,7 @@ self.addEventListener('fetch', event => {
         return networkResponse;
       })
       .catch(() => {
-        // Fallback to cache if offline
+        // Fallback to cache if network fails
         return caches.match(req).then(cachedResponse => {
           if (cachedResponse) {
             return cachedResponse;
@@ -78,7 +77,13 @@ self.addEventListener('fetch', event => {
           if (isHtml) {
             return caches.match('./index.html');
           }
-          return new Response('Network offline', { status: 503, statusText: 'Service Unavailable' });
+          if (isJs) {
+            // Return empty JS instead of 503 text to prevent SyntaxError crash
+            return new Response('/* offline fallback */', {
+              headers: { 'Content-Type': 'application/javascript; charset=utf-8' }
+            });
+          }
+          return new Response('Offline', { status: 404, statusText: 'Not Found' });
         });
       })
   );
