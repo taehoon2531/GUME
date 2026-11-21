@@ -9,6 +9,9 @@
   <meta name="application-name" content="S&W 구매대시보드">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="theme-color" content="#1e40af">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>소모품 구매 관리 대시보드 | 에스앤더블류 구매부</title>
   <!-- PWA Web App Manifest & App Icons -->
   <link rel="manifest" href="manifest.json">
@@ -2368,38 +2371,11 @@ canvas.custom-chart {
    NEW ENHANCEMENTS
    =================================================================== */
 
-/* ─── Loading Overlay ─── */
+/* ─── Loading Overlay (Never block clicks or cover screen) ─── */
 #loadingOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  opacity: 1;
-  transition: opacity 0.3s ease;
-  /* CSS 안전 자동 해제: 만에 하나 어떤 예외가 발생하더라도 0.5초 후 무조건 화면 해제 */
-  animation: failsafeOverlayDismiss 0.3s ease 0.5s forwards;
-}
-
-@keyframes failsafeOverlayDismiss {
-  to {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    display: none;
-  }
-}
-
-#loadingOverlay.hidden {
-  opacity: 0 !important;
+  display: none !important;
   visibility: hidden !important;
   pointer-events: none !important;
-  display: none !important;
 }
 
 [data-theme="dark"] #loadingOverlay {
@@ -3467,10 +3443,7 @@ canvas.custom-chart {
 <body>
 
   <!-- Loading Overlay -->
-  <div id="loadingOverlay" class="loading-overlay">
-    <div class="loading-spinner"></div>
-    <div class="loading-text">소모품 데이터(45,000+건)를 분석 중입니다...</div>
-  </div>
+  <div id="loadingOverlay" class="loading-overlay hidden" style="display: none !important; pointer-events: none !important; opacity: 0 !important; visibility: hidden !important;"></div>
   <script>
     // [1단계 최상단 안전장치] 대용량 JS 로딩 지연 또는 어떤 스크립트 예외가 발생하더라도 0.3초 후 강제 해제
     (function() {
@@ -6196,7 +6169,7 @@ canvas.custom-chart {
 // ==========================================
 // 1. Global State Management
 // ==========================================
-let allData = [];          // Master dataset: [ [date, vendor, item, spec, qty, unitPrice, amount, remark], ... ]
+let allData = (typeof window !== 'undefined' && window.INITIAL_SUPPLIES_DATA && Array.isArray(window.INITIAL_SUPPLIES_DATA)) ? window.INITIAL_SUPPLIES_DATA : [];
 let filteredData = [];     // Currently filtered dataset for Tab 1
 let selectedVendor = '';   // Current vendor filter
 let currentSearchTerm = '';
@@ -6648,6 +6621,18 @@ function copyDashboardMemo() {
 let deferredPwaPrompt = null;
 
 function initPwa() {
+  // If running via file:/// protocol, clean up any service workers
+  if (window.location.protocol === 'file:') {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then(regs => {
+        for (let r of regs) r.unregister();
+      }).catch(() => {});
+    }
+    const installBtn = document.getElementById('pwaInstallBtn');
+    if (installBtn) installBtn.style.display = 'none';
+    return;
+  }
+
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   const installBtn = document.getElementById('pwaInstallBtn');
   
@@ -6662,7 +6647,7 @@ function initPwa() {
   // Register Service Worker
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js?v=3.3').then(reg => {
+      navigator.serviceWorker.register('./sw.js?v=4.6').then(reg => {
         console.log('PWA ServiceWorker registered:', reg.scope);
         reg.update();
         reg.addEventListener('updatefound', () => {
@@ -6672,7 +6657,8 @@ function initPwa() {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                 showToast('⚡ 최신 화면으로 업데이트되었습니다! 새로고침합니다.', 'success');
                 setTimeout(() => {
-                  window.location.href = window.location.origin + window.location.pathname + '?t=' + Date.now();
+                  const cleanUrl = window.location.href.split('#')[0].split('?')[0];
+                  window.location.href = cleanUrl;
                 }, 1000);
               }
             });
@@ -6736,10 +6722,14 @@ async function forceAppUpdate() {
   } catch (e) {
     console.warn('Cache clear error:', e);
   }
-  // Force reload with timestamp query to burst any WebView disk cache (file:// and http:// compatible)
+  // Force reload (file:// and http:// compatible)
   setTimeout(() => {
-    const cleanUrl = window.location.href.split('#')[0].split('?')[0];
-    window.location.href = cleanUrl + '?t=' + Date.now();
+    if (window.location.protocol === 'file:') {
+      window.location.reload();
+    } else {
+      const cleanUrl = window.location.href.split('#')[0].split('?')[0];
+      window.location.href = cleanUrl + '?t=' + Date.now();
+    }
   }, 400);
 }
 
@@ -7431,28 +7421,12 @@ setTimeout(() => {
 }, 250);
 
 async function initApp() {
-  // 1. Try to load updated master dataset from IndexedDB first
-  try {
-    const saved = await loadMasterDataFromDB();
-    if (saved && Array.isArray(saved) && saved.length > 0) {
-      allData = saved;
-      window._isUsingLocalDB = true;
-    } else if (window.INITIAL_SUPPLIES_DATA && Array.isArray(window.INITIAL_SUPPLIES_DATA) && window.INITIAL_SUPPLIES_DATA.length > 0) {
+  // 1. Ensure master dataset from memory immediately (0ms instant render)
+  if (!allData || allData.length === 0) {
+    if (window.INITIAL_SUPPLIES_DATA && Array.isArray(window.INITIAL_SUPPLIES_DATA) && window.INITIAL_SUPPLIES_DATA.length > 0) {
       allData = window.INITIAL_SUPPLIES_DATA;
       window._isUsingLocalDB = false;
-    } else {
-      console.warn('data.js not loaded or empty.');
-      allData = (window.INITIAL_SUPPLIES_DATA && Array.isArray(window.INITIAL_SUPPLIES_DATA)) ? window.INITIAL_SUPPLIES_DATA : [];
-      window._isUsingLocalDB = false;
     }
-  } catch (e) {
-    console.error('Data initialization error:', e);
-    if (window.INITIAL_SUPPLIES_DATA && Array.isArray(window.INITIAL_SUPPLIES_DATA)) {
-      allData = window.INITIAL_SUPPLIES_DATA;
-    } else {
-      allData = [];
-    }
-    window._isUsingLocalDB = false;
   }
 
   // Pre-calculate price fluctuation trends (신규 / 보합 / 인상 / 인하)
@@ -7481,8 +7455,20 @@ async function initApp() {
   try { renderVendorSidebar(); } catch (e) { console.error('renderVendorSidebar error:', e); }
   try { updatePageTitle(); } catch (e) {}
 
-  // 6. [핵심] 오버레이 즉시 완전히 해제 (0.05초 만에 화면 오픈!)
+  // 6. [핵심] 오버레이 즉시 완전히 해제
   fadeOutLoadingOverlay();
+
+  // Async background sync from IndexedDB if modified
+  loadMasterDataFromDB().then(saved => {
+    if (saved && Array.isArray(saved) && saved.length > 0) {
+      allData = saved;
+      window._isUsingLocalDB = true;
+      try { assignPriceTrends(allData); } catch (e) {}
+      try { applyFilters(); } catch (e) {}
+      try { renderVendorSidebar(); } catch (e) {}
+      try { updateFooterInfo(); } catch (e) {}
+    }
+  }).catch(() => {});
 
   // 7. 백그라운드 지연 로딩 (메인 스레드 멈춤 없이 보이지 않는 탭들 비동기 준비)
   setTimeout(() => {
@@ -12135,12 +12121,6 @@ function exportPivotToExcelWithChart() {
             <x:ExcelWorksheet>
               <x:Name>거래처별매입추이</x:Name>
               <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions>
-            </x:ExcelWorksheet>
-          </x:ExcelWorksheets>
-        </x:ExcelWorkbook>
-      </xml>
-      <![endif]-->
-      <style>
         body { font-family: 맑은 고딕, Malgun Gothic, sans-serif; font-size: 10pt; }
         table { border-collapse: collapse; margin-top: 10px; }
         th { background: #3730a3; color: #ffffff; border: 1px solid #6366f1; padding: 8px 12px; font-size: 10pt; text-align: center; }
@@ -13202,7 +13182,7 @@ function switchCategory(cat) {
 // ============================================================================
 // 🧱 SUB-MATERIALS (부자재 - 44,185건) STATE & LOGIC
 // ============================================================================
-let subData = [];
+let subData = (typeof window !== 'undefined' && window.INITIAL_SUB_MATERIALS_DATA && Array.isArray(window.INITIAL_SUB_MATERIALS_DATA)) ? window.INITIAL_SUB_MATERIALS_DATA : [];
 let filteredSubData = [];
 let selectedSubVendor = '';
 let subCurrentPage = 1;
@@ -13619,7 +13599,7 @@ function exportSubToCSV() {
 // ============================================================================
 // 🏭 RAW MATERIALS (원자재 - 33,115건) STATE & LOGIC
 // ============================================================================
-let rawData = [];
+let rawData = (typeof window !== 'undefined' && window.INITIAL_RAW_MATERIALS_DATA && Array.isArray(window.INITIAL_RAW_MATERIALS_DATA)) ? window.INITIAL_RAW_MATERIALS_DATA : [];
 let filteredRawData = [];
 let selectedRawVendor = '';
 let rawCurrentPage = 1;
