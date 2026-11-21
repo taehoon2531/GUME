@@ -11912,6 +11912,9 @@ function exportVendorsToCSV() {
   const headers = ['업체명', '취급구분', '거래처 담당자', '연락처', '이메일', '사내담당', '주소 및 비고', '누적 매입액'];
   const allDatasets = [
     { name: '소모품', data: (allData && allData.length > 0) ? allData : (window.INITIAL_SUPPLIES_DATA || []) },
+  const headers = ['업체명', '취급구분', '거래처 담당자', '연락처', '이메일', '사내담당', '주소 및 비고', '누적 매입액'];
+  const allDatasets = [
+    { name: '소모품', data: (allData && allData.length > 0) ? allData : (window.INITIAL_SUPPLIES_DATA || []) },
     { name: '부자재', data: (subData && subData.length > 0) ? subData : (window.INITIAL_SUB_MATERIALS_DATA || []) },
     { name: '원자재', data: (rawData && rawData.length > 0) ? rawData : (window.INITIAL_RAW_MATERIALS_DATA || []) }
   ];
