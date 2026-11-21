@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -3940,7 +3940,7 @@ canvas.custom-chart {
         <div class="suborder-form-column" style="display: flex; flex-direction: column; gap: 16px;">
           
           <!-- Card 1: 거래처 및 발주 기본 정보 -->
-          <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; box-shadow: var(--card-shadow);">
+          <div style="background: var(--card-bg, #ffffff); border: 1px solid var(--card-border, #cbd5e1); border-radius: 12px; padding: 16px; box-shadow: var(--card-shadow);">
             <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
               <span style="display: flex; align-items: center; gap: 6px;">🏢 1. 거래처 및 발주 기본 정보</span>
               <span id="subOrderVendorCategoryBadge" style="font-size: 0.72rem; padding: 2px 8px; border-radius: 4px; background: rgba(59, 130, 246, 0.15); color: #3b82f6; font-weight: 600;">와셔 / 체결류</span>
@@ -3948,31 +3948,31 @@ canvas.custom-chart {
 
             <div style="display: flex; flex-direction: column; gap: 10px;">
               <div>
-                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">공급 거래처 선택 *</label>
-                <select id="subOrderVendorSelect" onchange="onSubOrderVendorChange(this.value)" style="width: 100%; padding: 8px 10px; font-size: 0.88rem; font-weight: 700; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+                <label style="display: block; font-size: 0.8rem; font-weight: 700; color: var(--text-primary, #0f172a); margin-bottom: 5px;">공급 거래처 선택 *</label>
+                <select id="subOrderVendorSelect" onchange="onSubOrderVendorChange(this.value)" style="width: 100%; padding: 9px 12px; font-size: 0.9rem; font-weight: 700; border: 1.5px solid #3b82f6; border-radius: 6px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.06);">
                   <!-- Dynamic options from SUB_ORDER_VENDORS -->
                 </select>
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div>
-                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">발주번호</label>
-                  <input type="text" id="subOrderPoNo" oninput="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; font-family: monospace; font-weight: 700; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary, #475569); margin-bottom: 4px;">발주번호</label>
+                  <input type="text" id="subOrderPoNo" oninput="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; font-family: monospace; font-weight: 700; border: 1px solid var(--input-border, #cbd5e1); border-radius: 6px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
                 </div>
                 <div>
-                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">발주일자</label>
-                  <input type="date" id="subOrderDate" onchange="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary, #475569); margin-bottom: 4px;">발주일자</label>
+                  <input type="date" id="subOrderDate" onchange="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 6px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
                 </div>
               </div>
 
               <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                 <div>
-                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">납기일자</label>
-                  <input type="date" id="subOrderDueDate" onchange="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary, #475569); margin-bottom: 4px;">납기일자</label>
+                  <input type="date" id="subOrderDueDate" onchange="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 6px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
                 </div>
                 <div>
-                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">납품장소</label>
-                  <select id="subOrderDeliveryLoc" onchange="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+                  <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary, #475569); margin-bottom: 4px;">납품장소</label>
+                  <select id="subOrderDeliveryLoc" onchange="updateSubOrderPreview()" style="width: 100%; padding: 6px 10px; font-size: 0.85rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 6px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
                     <option value="본사 출하반">본사 출하반</option>
                     <option value="본사 가공공장">본사 가공공장</option>
                     <option value="녹산공장">녹산공장</option>
@@ -3983,40 +3983,40 @@ canvas.custom-chart {
               </div>
 
               <!-- 수신처 세부 (접이식 정보) -->
-              <details style="margin-top: 4px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color, #334155); border-radius: 6px; padding: 6px 10px;">
-                <summary style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); cursor: pointer;">🔍 수신처 / 발신처 연락처 세부 수정</summary>
+              <details style="margin-top: 4px; background: var(--card-bg, #ffffff); border: 1px solid var(--input-border, #e2e8f0); border-radius: 6px; padding: 6px 10px;">
+                <summary style="font-size: 0.78rem; font-weight: 700; color: var(--text-secondary, #475569); cursor: pointer;">🔍 수신처 / 발신처 연락처 세부 수정</summary>
                 <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px; font-size: 0.8rem;">
                   <div style="font-weight: 700; color: #3b82f6;">[수신처 상세]</div>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                    <input type="text" id="subOrderRecvCompany" placeholder="수신 상호" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
-                    <input type="text" id="subOrderRecvPerson" placeholder="담당자 (대표/담당)" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <input type="text" id="subOrderRecvCompany" placeholder="수신 상호" oninput="updateSubOrderPreview()" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
+                    <input type="text" id="subOrderRecvPerson" placeholder="담당자 (대표/담당)" oninput="updateSubOrderPreview()" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
                   </div>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                    <input type="text" id="subOrderRecvPhone" placeholder="전화번호" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
-                    <input type="text" id="subOrderRecvFax" placeholder="FAX" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <input type="text" id="subOrderRecvPhone" placeholder="전화번호" oninput="updateSubOrderPreview()" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
+                    <input type="text" id="subOrderRecvFax" placeholder="FAX" oninput="updateSubOrderPreview()" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
                   </div>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                    <input type="text" id="subOrderRecvMobile" placeholder="휴대폰 (H.P)" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
-                    <input type="email" id="subOrderRecvEmail" placeholder="이메일" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <input type="text" id="subOrderRecvMobile" placeholder="휴대폰 (H.P)" oninput="updateSubOrderPreview()" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
+                    <input type="email" id="subOrderRecvEmail" placeholder="이메일" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
                   </div>
 
                   <div style="font-weight: 700; color: #10b981; margin-top: 6px;">[발신처 상세 (에스앤더블류)]</div>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                    <input type="text" id="subOrderSenderCompany" value="(주)에스앤더블류" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
-                    <input type="text" id="subOrderSenderManager" value="김태훈 주임" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <input type="text" id="subOrderSenderCompany" value="(주)에스앤더블류" oninput="updateSubOrderPreview()" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
+                    <input type="text" id="subOrderSenderManager" value="김태훈 주임" oninput="updateSubOrderPreview()" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
                   </div>
                   <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                    <input type="text" id="subOrderSenderPhone" value="051-209-2229" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
-                    <input type="text" id="subOrderSenderFax" value="051-205-7417" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);">
+                    <input type="text" id="subOrderSenderPhone" value="051-209-2229" oninput="updateSubOrderPreview()" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
+                    <input type="text" id="subOrderSenderFax" value="051-205-7417" oninput="updateSubOrderPreview()" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
                   </div>
-                  <input type="text" id="subOrderSenderMobile" value="010-6645-9311" oninput="updateSubOrderPreview()" style="padding: 4px 6px; font-size: 0.78rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary); color: var(--text-primary);" placeholder="발신자 휴대폰">
+                  <input type="text" id="subOrderSenderMobile" value="010-6645-9311" oninput="updateSubOrderPreview()" style="padding: 5px 8px; font-size: 0.8rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);" placeholder="발신자 휴대폰">
                 </div>
               </details>
             </div>
           </div>
 
           <!-- Card 2: 발주 품목 작성 -->
-          <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 12px; padding: 16px; box-shadow: var(--card-shadow);">
+          <div style="background: var(--card-bg, #ffffff); border: 1px solid var(--card-border, #cbd5e1); border-radius: 12px; padding: 16px; box-shadow: var(--card-shadow);">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
               <span style="font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 6px;">📦 2. 발주 품목 목록</span>
               <button class="btn btn-sm btn-primary" onclick="addSubOrderItem()" style="font-size: 0.76rem; padding: 4px 10px; font-weight: 700;">+ 품목 행 추가</button>
@@ -4024,26 +4024,25 @@ canvas.custom-chart {
 
             <!-- Quick Add Chips -->
             <div style="margin-bottom: 10px;">
-              <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">⚡ 해당 거래처 빈출 추천 품목 (클릭 시 즉시 추가):</div>
+              <div style="font-size: 0.74rem; font-weight: 700; color: var(--text-secondary, #475569); margin-bottom: 4px;">⚡ 해당 거래처 빈출 추천 품목 (클릭 시 즉시 추가):</div>
               <div id="subOrderQuickChips" style="display: flex; gap: 5px; flex-wrap: wrap;">
                 <!-- Dynamic Chips -->
               </div>
             </div>
 
             <!-- Items Table in Form -->
-            <div style="overflow-x: auto; max-height: 380px; overflow-y: auto; border: 1px solid var(--border-color, #334155); border-radius: 6px;">
+            <div style="overflow-x: auto; max-height: 380px; overflow-y: auto; border: 1px solid var(--input-border, #cbd5e1); border-radius: 6px;">
               <table style="width: 100%; border-collapse: collapse; font-size: 0.8rem;">
-                <thead style="background: rgba(255,255,255,0.05); position: sticky; top: 0; z-index: 2;">
-                  <tr style="border-bottom: 1px solid var(--border-color, #334155); height: 28px;">
-                    <th style="padding: 4px; text-align: center; width: 36px;">순</th>
-                    <th style="padding: 4px; text-align: left;">품명 *</th>
-                    <th style="padding: 4px; text-align: left; width: 85px;">재질/표면</th>
-                    <th style="padding: 4px; text-align: left; width: 95px;">규격 *</th>
-                    <th style="padding: 4px; text-align: center; width: 45px;">단위</th>
-                    <th style="padding: 4px; text-align: right; width: 65px;">수량 *</th>
-                    <th style="padding: 4px; text-align: right; width: 75px;">단가</th>
-                    <th style="padding: 4px; text-align: left; width: 85px;">비고</th>
-                    <th style="padding: 4px; text-align: center; width: 36px;">삭제</th>
+                <thead style="background: var(--table-header-bg, #f1f5f9); position: sticky; top: 0; z-index: 2;">
+                  <tr style="border-bottom: 1px solid var(--input-border, #cbd5e1); height: 28px;">
+                    <th style="padding: 4px; text-align: center; width: 36px; color: var(--text-secondary, #334155);">순</th>
+                    <th style="padding: 4px; text-align: left; color: var(--text-secondary, #334155);">품명 *</th>
+                    <th style="padding: 4px; text-align: left; width: 95px; color: var(--text-secondary, #334155);">재질/표면</th>
+                    <th style="padding: 4px; text-align: left; width: 105px; color: var(--text-secondary, #334155);">규격 *</th>
+                    <th style="padding: 4px; text-align: center; width: 45px; color: var(--text-secondary, #334155);">단위</th>
+                    <th style="padding: 4px; text-align: right; width: 70px; color: var(--text-secondary, #334155);">수량 *</th>
+                    <th style="padding: 4px; text-align: left; width: 95px; color: var(--text-secondary, #334155);">비고</th>
+                    <th style="padding: 4px; text-align: center; width: 36px; color: var(--text-secondary, #334155);">삭제</th>
                   </tr>
                 </thead>
                 <tbody id="subOrderFormTableBody">
@@ -4054,8 +4053,8 @@ canvas.custom-chart {
 
             <!-- Bottom Notes -->
             <div style="margin-top: 12px;">
-              <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary); margin-bottom: 4px;">특기 사항 (발주서 하단 기재)</label>
-              <textarea id="subOrderTermsNotes" oninput="updateSubOrderPreview()" rows="2" style="width: 100%; padding: 6px 10px; font-size: 0.82rem; line-height: 1.4; border: 1px solid var(--border-color, #475569); border-radius: 6px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc); resize: vertical;">1. 납기 준수 요망  2. 검사성적서 및 밀시트 동봉 요망  3. 불량 발생 시 즉시 통보 요망</textarea>
+              <label style="display: block; font-size: 0.78rem; font-weight: 700; color: var(--text-secondary, #475569); margin-bottom: 4px;">특기 사항 (발주서 하단 기재)</label>
+              <textarea id="subOrderTermsNotes" oninput="updateSubOrderPreview()" rows="2" style="width: 100%; padding: 6px 10px; font-size: 0.82rem; line-height: 1.4; border: 1px solid var(--input-border, #cbd5e1); border-radius: 6px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a); resize: vertical;">1. 납기 준수 요망  2. 검사성적서 및 밀시트 동봉 요망  3. 불량 발생 시 즉시 통보 요망</textarea>
             </div>
           </div>
         </div>

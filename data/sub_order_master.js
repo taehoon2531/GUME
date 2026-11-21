@@ -521,32 +521,29 @@ window.renderSubOrderFormTable = function() {
 
   window.subOrderItems.forEach((row, idx) => {
     const tr = document.createElement('tr');
-    tr.style.borderBottom = '1px solid var(--border-color, #334155)';
+    tr.style.borderBottom = '1px solid var(--input-border, #cbd5e1)';
     tr.innerHTML = `
-      <td style="text-align: center; font-weight: 700; color: #94a3b8; width: 36px;">${idx + 1}</td>
+      <td style="text-align: center; font-weight: 700; color: var(--text-secondary, #64748b); width: 36px;">${idx + 1}</td>
       <td>
-        <input type="text" value="${escapeHTML(row.name || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'name', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.82rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);" placeholder="품명 (예: PLAIN WASHER)">
+        <input type="text" value="${escapeHTML(row.name || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'name', this.value)" style="width: 100%; padding: 5px 8px; font-size: 0.82rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);" placeholder="품명 (예: PLAIN WASHER)">
       </td>
-      <td>
-        <input type="text" value="${escapeHTML(row.material || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'material', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.82rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);" placeholder="재질/표면 (예: F436M)">
+      <td style="width: 95px;">
+        <input type="text" value="${escapeHTML(row.material || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'material', this.value)" style="width: 100%; padding: 5px 8px; font-size: 0.82rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);" placeholder="재질 (F436M)">
       </td>
-      <td>
-        <input type="text" value="${escapeHTML(row.spec || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'spec', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.82rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);" placeholder="규격 (예: M42)">
+      <td style="width: 105px;">
+        <input type="text" value="${escapeHTML(row.spec || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'spec', this.value)" style="width: 100%; padding: 5px 8px; font-size: 0.82rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);" placeholder="규격 (M42)">
       </td>
-      <td style="width: 55px;">
-        <input type="text" value="${escapeHTML(row.unit || 'EA')}" oninput="onSubOrderItemFieldChange(${idx}, 'unit', this.value)" style="width: 100%; padding: 4px 4px; font-size: 0.82rem; text-align: center; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);">
+      <td style="width: 45px;">
+        <input type="text" value="${escapeHTML(row.unit || 'EA')}" oninput="onSubOrderItemFieldChange(${idx}, 'unit', this.value)" style="width: 100%; padding: 5px 4px; font-size: 0.82rem; text-align: center; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);">
       </td>
       <td style="width: 70px;">
-        <input type="number" value="${row.qty || ''}" oninput="onSubOrderItemFieldChange(${idx}, 'qty', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.82rem; text-align: right; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);" placeholder="수량">
+        <input type="number" value="${row.qty || ''}" oninput="onSubOrderItemFieldChange(${idx}, 'qty', this.value)" style="width: 100%; padding: 5px 6px; font-size: 0.82rem; text-align: right; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);" placeholder="수량">
       </td>
-      <td style="width: 80px;">
-        <input type="number" value="${row.price || ''}" oninput="onSubOrderItemFieldChange(${idx}, 'price', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.82rem; text-align: right; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);" placeholder="단가 (원)">
+      <td style="width: 95px;">
+        <input type="text" value="${escapeHTML(row.remark || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'remark', this.value)" style="width: 100%; padding: 5px 8px; font-size: 0.82rem; border: 1px solid var(--input-border, #cbd5e1); border-radius: 4px; background: var(--input-bg, #ffffff); color: var(--text-primary, #0f172a);" placeholder="비고 (용융도금 등)">
       </td>
-      <td>
-        <input type="text" value="${escapeHTML(row.remark || '')}" oninput="onSubOrderItemFieldChange(${idx}, 'remark', this.value)" style="width: 100%; padding: 4px 6px; font-size: 0.82rem; border: 1px solid #475569; border-radius: 4px; background: var(--bg-primary, #0f172a); color: var(--text-primary, #f8fafc);" placeholder="비고 (용융도금 등)">
-      </td>
-      <td style="text-align: center; width: 40px;">
-        <button type="button" class="btn btn-sm" onclick="removeSubOrderItem(${idx})" style="background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 3px 6px; border-radius: 4px;" title="품목 삭제">✕</button>
+      <td style="text-align: center; width: 36px;">
+        <button type="button" class="btn btn-sm" onclick="removeSubOrderItem(${idx})" style="background: rgba(239, 68, 68, 0.12); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); padding: 2px 6px; border-radius: 4px;" title="품목 삭제">✕</button>
       </td>
     `;
     tbody.appendChild(tr);
@@ -560,8 +557,6 @@ window.addSubOrderItem = function(data) {
     spec: '',
     unit: 'EA',
     qty: 100,
-    price: '',
-    amount: '',
     remark: ''
   };
   window.subOrderItems.push(item);
@@ -582,11 +577,6 @@ window.removeSubOrderItem = function(idx) {
 window.onSubOrderItemFieldChange = function(idx, field, value) {
   if (!window.subOrderItems[idx]) return;
   window.subOrderItems[idx][field] = value;
-  if (field === 'qty' || field === 'price') {
-    const q = parseFloat(window.subOrderItems[idx].qty) || 0;
-    const p = parseFloat(window.subOrderItems[idx].price) || 0;
-    window.subOrderItems[idx].amount = (q > 0 && p > 0) ? Math.round(q * p) : '';
-  }
   updateSubOrderPreview();
 };
 
@@ -613,181 +603,219 @@ window.updateSubOrderPreview = function() {
   const sMobile = (document.getElementById('subOrderSenderMobile') || {}).value || '010-6645-9311';
 
   let totalQty = 0;
-  let totalAmt = 0;
-  let hasPrice = false;
 
   let tableRowsHtml = '';
   window.subOrderItems.forEach((row, idx) => {
     const q = parseFloat(row.qty) || 0;
-    const p = parseFloat(row.price) || 0;
-    const amt = (q > 0 && p > 0) ? Math.round(q * p) : 0;
     if (q > 0) totalQty += q;
-    if (amt > 0) {
-      totalAmt += amt;
-      hasPrice = true;
-    }
-
-    const priceText = p > 0 ? (typeof formatNumber === 'function' ? formatNumber(p) : p.toLocaleString()) : '-';
-    const amtText = amt > 0 ? (typeof formatNumber === 'function' ? formatNumber(amt) : amt.toLocaleString()) : '-';
 
     tableRowsHtml += `
-      <tr style="height: 28px; border-bottom: 1px solid #94a3b8;">
-        <td style="text-align: center; border-right: 1px solid #94a3b8; font-size: 0.85rem;">${idx + 1}</td>
-        <td style="padding: 4px 8px; font-weight: 700; border-right: 1px solid #94a3b8; font-size: 0.85rem; color: #0f172a;">${escapeHTML(row.name || '')}</td>
-        <td style="padding: 4px 8px; text-align: center; border-right: 1px solid #94a3b8; font-size: 0.85rem; color: #1e293b;">${escapeHTML(row.material || '')}</td>
-        <td style="padding: 4px 8px; border-right: 1px solid #94a3b8; font-size: 0.85rem; font-weight: 600; color: #0f172a;">${escapeHTML(row.spec || '')}</td>
-        <td style="text-align: center; border-right: 1px solid #94a3b8; font-size: 0.85rem;">${escapeHTML(row.unit || 'EA')}</td>
-        <td style="text-align: right; padding: 4px 8px; border-right: 1px solid #94a3b8; font-size: 0.85rem; font-weight: 700;">${q > 0 ? q.toLocaleString() : ''}</td>
-        <td style="text-align: right; padding: 4px 8px; border-right: 1px solid #94a3b8; font-size: 0.85rem;">${priceText}</td>
-        <td style="text-align: right; padding: 4px 8px; border-right: 1px solid #94a3b8; font-size: 0.85rem; font-weight: 700;">${amtText}</td>
-        <td style="padding: 4px 8px; font-size: 0.82rem; color: #334155;">${escapeHTML(row.remark || '')}</td>
+      <tr style="height: 27px; border-bottom: 1px solid #000;">
+        <td style="text-align: center; border-right: 1px solid #000; font-size: 0.85rem; padding: 2px 4px;">${idx + 1}</td>
+        <td style="padding: 2px 8px; font-weight: 700; border-right: 1px solid #000; font-size: 0.85rem; color: #000;">${escapeHTML(row.name || '')}</td>
+        <td style="padding: 2px 6px; text-align: center; border-right: 1px solid #000; font-size: 0.85rem; color: #000;">${escapeHTML(row.material || '')}</td>
+        <td style="padding: 2px 8px; border-right: 1px solid #000; font-size: 0.85rem; color: #000;">${escapeHTML(row.spec || '')}</td>
+        <td style="text-align: center; border-right: 1px solid #000; font-size: 0.85rem; padding: 2px 4px;">${escapeHTML(row.unit || 'EA')}</td>
+        <td style="text-align: right; padding: 2px 8px; border-right: 1px solid #000; font-size: 0.85rem; font-weight: 700; color: #000;">${q > 0 ? q.toLocaleString() : ''}</td>
+        <td style="padding: 2px 8px; font-size: 0.82rem; color: #000;">${escapeHTML(row.remark || '')}</td>
       </tr>
     `;
   });
 
-  // Minimum filler rows (to make A4 paper look neat)
-  const minRows = Math.max(9, window.subOrderItems.length);
-  for (let i = window.subOrderItems.length; i < minRows; i++) {
+  // Pad to 16 rows to match the exact authentic SNW PO layout
+  const targetRowCount = Math.max(16, window.subOrderItems.length);
+  for (let i = window.subOrderItems.length; i < targetRowCount; i++) {
     tableRowsHtml += `
-      <tr style="height: 28px; border-bottom: 1px solid #cbd5e1;">
-        <td style="text-align: center; border-right: 1px solid #cbd5e1; color: #cbd5e1; font-size: 0.8rem;">${i + 1}</td>
-        <td style="border-right: 1px solid #cbd5e1;">&nbsp;</td>
-        <td style="border-right: 1px solid #cbd5e1;">&nbsp;</td>
-        <td style="border-right: 1px solid #cbd5e1;">&nbsp;</td>
-        <td style="border-right: 1px solid #cbd5e1;">&nbsp;</td>
-        <td style="border-right: 1px solid #cbd5e1;">&nbsp;</td>
-        <td style="border-right: 1px solid #cbd5e1;">&nbsp;</td>
-        <td style="border-right: 1px solid #cbd5e1;">&nbsp;</td>
+      <tr style="height: 27px; border-bottom: 1px solid #000;">
+        <td style="text-align: center; border-right: 1px solid #000; color: #64748b; font-size: 0.8rem; padding: 2px 4px;">${i + 1}</td>
+        <td style="border-right: 1px solid #000;">&nbsp;</td>
+        <td style="border-right: 1px solid #000;">&nbsp;</td>
+        <td style="border-right: 1px solid #000;">&nbsp;</td>
+        <td style="border-right: 1px solid #000;">&nbsp;</td>
+        <td style="border-right: 1px solid #000;">&nbsp;</td>
         <td>&nbsp;</td>
       </tr>
     `;
   }
 
-  const vatAmt = hasPrice ? Math.round(totalAmt * 0.1) : 0;
-  const grandTotal = totalAmt + vatAmt;
-
   paper.innerHTML = `
-    <div style="text-align: center; margin-bottom: 16px; border-bottom: 2px solid #0f172a; padding-bottom: 10px;">
-      <h1 style="font-size: 1.9rem; font-weight: 800; letter-spacing: 14px; margin: 0 0 6px 0; color: #0f172a;">&lt; 발  주  서 &gt;</h1>
-      <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem; color: #334155; margin-top: 6px;">
-        <span><strong>발주번호:</strong> <span style="font-family: monospace; font-weight: 700; color: #0f172a;">${escapeHTML(poNo)}</span></span>
-        <span><strong>발주일자:</strong> <span style="font-weight: 700; color: #0f172a;">${escapeHTML(poDate)}</span></span>
+    <!-- Top Header -->
+    <div style="text-align: center; margin-bottom: 14px;">
+      <h1 style="font-size: 26pt; font-weight: 800; letter-spacing: 16px; margin: 0 0 8px 0; color: #000000; font-family: 'Malgun Gothic', '맑은 고딕', sans-serif;">&lt; &nbsp;발 &nbsp;주 &nbsp;서 &nbsp;&gt;</h1>
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; font-size: 9.5pt; color: #000000; margin-top: 6px; padding: 0 4px;">
+        <span><strong>발주번호 :</strong> <span style="font-family: monospace; font-weight: 700; letter-spacing: 0.5px;">${escapeHTML(poNo)}</span></span>
+        <span><strong>일 &nbsp; &nbsp;자 :</strong> <span style="font-weight: 700;">${escapeHTML(poDate)}</span></span>
       </div>
     </div>
 
-    <!-- Receiver & Sender Double Box Table -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; font-size: 0.85rem;">
-      <!-- 수신처 Box -->
-      <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #475569;">
+    <!-- Double Box Table (수신 & 발신) -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; font-size: 8.8pt;">
+      <!-- 수신處 Box -->
+      <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000;">
         <tr>
-          <th rowspan="5" style="width: 28px; background: #f8fafc; border-right: 1.5px solid #475569; writing-mode: vertical-rl; text-orientation: upright; font-weight: 800; color: #1e293b; letter-spacing: 4px; padding: 6px 0; text-align: center;">수신</th>
-          <th style="width: 55px; background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; font-weight: 600;">상 호</th>
-          <td style="border-bottom: 1px solid #cbd5e1; padding: 4px 8px; font-weight: 700; color: #0f172a; font-size: 0.92rem;">${escapeHTML(rComp)}</td>
+          <th rowspan="5" style="width: 28px; background: #f8fafc; border: 1px solid #000; writing-mode: vertical-rl; text-orientation: upright; font-weight: 800; color: #000; letter-spacing: 6px; padding: 6px 0; text-align: center;">수신</th>
+          <th style="width: 55px; background: #f1f5f9; border: 1px solid #000; padding: 4px 6px; text-align: center; font-weight: 600;">상 호</th>
+          <td style="border: 1px solid #000; padding: 4px 8px; font-weight: 700; color: #000; font-size: 0.95rem;">${escapeHTML(rComp)}</td>
         </tr>
         <tr>
-          <th style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; font-weight: 600;">전 화</th>
-          <td style="border-bottom: 1px solid #cbd5e1; padding: 4px 8px;">${escapeHTML(rPhone)}</td>
+          <th style="background: #f1f5f9; border: 1px solid #000; padding: 4px 6px; text-align: center; font-weight: 600;">전 화</th>
+          <td style="border: 1px solid #000; padding: 4px 8px;">${escapeHTML(rPhone)}</td>
         </tr>
         <tr>
-          <th style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; font-weight: 600;">F A X</th>
-          <td style="border-bottom: 1px solid #cbd5e1; padding: 4px 8px;">${escapeHTML(rFax || '-')}</td>
+          <th style="background: #f1f5f9; border: 1px solid #000; padding: 4px 6px; text-align: center; font-weight: 600;">FAX</th>
+          <td style="border: 1px solid #000; padding: 4px 8px;">${escapeHTML(rFax || '-')}</td>
         </tr>
         <tr>
-          <th style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; font-weight: 600;">담당자</th>
-          <td style="border-bottom: 1px solid #cbd5e1; padding: 4px 8px; font-weight: 600; color: #0f172a;">${escapeHTML(rPerson)}</td>
+          <th style="background: #f1f5f9; border: 1px solid #000; padding: 4px 6px; text-align: center; font-weight: 600;">담당자</th>
+          <td style="border: 1px solid #000; padding: 4px 8px; font-weight: 600; color: #000;">${escapeHTML(rPerson)}</td>
         </tr>
         <tr>
-          <th style="background: #f1f5f9; border-right: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; font-weight: 600;">H. P.</th>
-          <td style="padding: 4px 8px; color: #2563eb; font-weight: 600;">${escapeHTML(rMobile || '-')}</td>
+          <th style="background: #f1f5f9; border: 1px solid #000; padding: 4px 6px; text-align: center; font-weight: 600;">H.P.</th>
+          <td style="border: 1px solid #000; padding: 4px 8px; font-weight: 600; color: #1e40af;">${escapeHTML(rMobile || '-')}</td>
         </tr>
       </table>
 
-      <!-- 발신처 Box -->
-      <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #475569;">
+      <!-- 발신處 Box -->
+      <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000;">
         <tr>
-          <th rowspan="5" style="width: 28px; background: #f8fafc; border-right: 1.5px solid #475569; writing-mode: vertical-rl; text-orientation: upright; font-weight: 800; color: #1e293b; letter-spacing: 4px; padding: 6px 0; text-align: center;">발신</th>
-          <th style="width: 55px; background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; font-weight: 600;">상 호</th>
-          <td style="border-bottom: 1px solid #cbd5e1; padding: 4px 8px; font-weight: 700; color: #0f172a; font-size: 0.92rem;">${escapeHTML(sComp)}</td>
+          <th rowspan="5" style="width: 28px; background: #f8fafc; border: 1px solid #000; writing-mode: vertical-rl; text-orientation: upright; font-weight: 800; color: #000; letter-spacing: 6px; padding: 6px 0; text-align: center;">발신</th>
+          <th style="width: 55px; background: #f1f5f9; border: 1px solid #000; padding: 4px 6px; text-align: center; font-weight: 600;">상 호</th>
+          <td style="border: 1px solid #000; padding: 4px 8px; font-weight: 700; color: #000; font-size: 0.95rem;">${escapeHTML(sComp)}</td>
         </tr>
         <tr>
-          <th style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; font-weight: 600;">전 화</th>
-          <td style="border-bottom: 1px solid #cbd5e1; padding: 4px 8px;">${escapeHTML(sPhone)}</td>
+          <th style="background: #f1f5f9; border: 1px solid #000; padding: 4px 6px; text-align: center; font-weight: 600;">전 화</th>
+          <td style="border: 1px solid #000; padding: 4px 8px;">${escapeHTML(sPhone)}</td>
         </tr>
         <tr>
-          <th style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; font-weight: 600;">F A X</th>
-          <td style="border-bottom: 1px solid #cbd5e1; padding: 4px 8px;">${escapeHTML(sFax)}</td>
+          <th style="background: #f1f5f9; border: 1px solid #000; padding: 4px 6px; text-align: center; font-weight: 600;">FAX</th>
+          <td style="border: 1px solid #000; padding: 4px 8px;">${escapeHTML(sFax)}</td>
         </tr>
         <tr>
-          <th style="background: #f1f5f9; border-right: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; font-weight: 600;">담당자</th>
-          <td style="border-bottom: 1px solid #cbd5e1; padding: 4px 8px; font-weight: 600; color: #0f172a;">${escapeHTML(sMgr)}</td>
+          <th style="background: #f1f5f9; border: 1px solid #000; padding: 4px 6px; text-align: center; font-weight: 600;">담당자</th>
+          <td style="border: 1px solid #000; padding: 4px 8px; font-weight: 600; color: #000;">${escapeHTML(sMgr)}</td>
         </tr>
         <tr>
-          <th style="background: #f1f5f9; border-right: 1px solid #cbd5e1; padding: 4px 6px; text-align: center; font-weight: 600;">H. P.</th>
-          <td style="padding: 4px 8px; color: #2563eb; font-weight: 600;">${escapeHTML(sMobile)}</td>
+          <th style="background: #f1f5f9; border: 1px solid #000; padding: 4px 6px; text-align: center; font-weight: 600;">H.P.</th>
+          <td style="border: 1px solid #000; padding: 4px 8px; font-weight: 600; color: #1e40af;">${escapeHTML(sMobile)}</td>
         </tr>
       </table>
     </div>
 
-    <!-- Logistics meta bar (납기일 / 납품장소) -->
-    <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px solid #cbd5e1; padding: 6px 12px; margin-bottom: 10px; font-size: 0.85rem; border-radius: 4px;">
-      <span><strong>납기일자:</strong> <span style="font-weight: 700; color: #dc2626;">${escapeHTML(poDueDate)}</span></span>
-      <span><strong>납품장소:</strong> <span style="font-weight: 700; color: #0f172a;">${escapeHTML(deliveryLoc)}</span></span>
-      <span><strong>총 품목수:</strong> <span style="font-weight: 700; color: #0f172a;">${window.subOrderItems.length}개 품목</span></span>
-    </div>
-
-    <!-- Main Items Grid -->
-    <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #0f172a; margin-bottom: 12px; font-size: 0.85rem;">
+    <!-- Main Items Grid (7 Columns) -->
+    <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000; font-size: 8.8pt;">
       <thead>
-        <tr style="background: #e2e8f0; height: 32px; border-bottom: 1.5px solid #0f172a;">
-          <th style="width: 32px; border-right: 1px solid #94a3b8; text-align: center;">순</th>
-          <th style="border-right: 1px solid #94a3b8; text-align: center;">품 명</th>
-          <th style="width: 110px; border-right: 1px solid #94a3b8; text-align: center;">재질 / 표면</th>
-          <th style="width: 120px; border-right: 1px solid #94a3b8; text-align: center;">규 격</th>
-          <th style="width: 45px; border-right: 1px solid #94a3b8; text-align: center;">단위</th>
-          <th style="width: 65px; border-right: 1px solid #94a3b8; text-align: center;">수 량</th>
-          <th style="width: 75px; border-right: 1px solid #94a3b8; text-align: center;">단 가</th>
-          <th style="width: 85px; border-right: 1px solid #94a3b8; text-align: center;">금 액</th>
-          <th style="width: 110px; text-align: center;">비 고</th>
+        <tr style="background: #e2e8f0; height: 30px; border-bottom: 1.5px solid #000;">
+          <th style="width: 38px; border: 1px solid #000; text-align: center;">순</th>
+          <th style="border: 1px solid #000; text-align: center;">품 명</th>
+          <th style="width: 110px; border: 1px solid #000; text-align: center;">재 질</th>
+          <th style="width: 180px; border: 1px solid #000; text-align: center;">규 격</th>
+          <th style="width: 45px; border: 1px solid #000; text-align: center;">단위</th>
+          <th style="width: 70px; border: 1px solid #000; text-align: center;">수 량</th>
+          <th style="width: 120px; border: 1px solid #000; text-align: center;">비 고</th>
         </tr>
       </thead>
       <tbody>
         ${tableRowsHtml}
       </tbody>
       <tfoot>
-        <tr style="background: #f1f5f9; height: 32px; font-weight: 700; border-top: 1.5px solid #0f172a;">
-          <td colspan="5" style="text-align: center; border-right: 1px solid #94a3b8;">합 계</td>
-          <td style="text-align: right; padding: 4px 8px; border-right: 1px solid #94a3b8; color: #0f172a;">${totalQty.toLocaleString()}</td>
-          <td style="border-right: 1px solid #94a3b8;">&nbsp;</td>
-          <td style="text-align: right; padding: 4px 8px; border-right: 1px solid #94a3b8; color: #1e40af;">${hasPrice ? totalAmt.toLocaleString() : '-'}</td>
-          <td>&nbsp;</td>
+        <tr style="background: #f1f5f9; height: 30px; font-weight: 700; border-top: 1.5px solid #000;">
+          <td colspan="5" style="border: 1px solid #000; text-align: center; letter-spacing: 10px; font-weight: 800;">합 &nbsp; &nbsp;계</td>
+          <td style="border: 1px solid #000; text-align: right; padding: 4px 8px; color: #000; font-weight: 800;">${totalQty.toLocaleString()}</td>
+          <td style="border: 1px solid #000;">&nbsp;</td>
         </tr>
-        ${hasPrice ? `
-        <tr style="background: #ffffff; height: 26px; font-size: 0.8rem; border-top: 1px solid #cbd5e1;">
-          <td colspan="5" style="text-align: right; padding-right: 10px; color: #64748b;">공급가액: ${totalAmt.toLocaleString()}원 | 부가세(10%): ${vatAmt.toLocaleString()}원</td>
-          <td colspan="4" style="text-align: right; padding: 4px 10px; font-weight: 800; color: #dc2626;">총 발주금액(VAT포함): ${grandTotal.toLocaleString()}원</td>
-        </tr>` : ''}
       </tfoot>
     </table>
 
-    <!-- Notice Remarks Box -->
-    <div style="border: 1px solid #94a3b8; padding: 8px 12px; margin-bottom: 20px; font-size: 0.82rem; background: #fafafa; border-radius: 4px;">
-      <strong style="color: #0f172a;">[특기 사항]</strong>
-      <div style="margin-top: 3px; color: #334155; line-height: 1.5; white-space: pre-wrap;">${escapeHTML(termsNotes)}</div>
-    </div>
+    <!-- 참고사항 Box -->
+    <table style="width: 100%; border-collapse: collapse; border: 1.5px solid #000; margin-top: 10px; font-size: 8.8pt;">
+      <tr>
+        <th style="width: 28px; background: #f8fafc; border-right: 1px solid #000; writing-mode: vertical-rl; text-orientation: upright; font-weight: 800; color: #000; letter-spacing: 4px; padding: 8px 0; text-align: center; vertical-align: middle;">참고사항</th>
+        <td style="padding: 8px 12px; line-height: 1.8; vertical-align: middle;">
+          <div><strong>* 입고요청일 :</strong> <span style="font-weight: 700; color: #dc2626;">${escapeHTML(poDueDate ? poDueDate + '까지 입고요청합니다.' : '협의 후 납품')}</span></div>
+          <div><strong>* 납품장소 :</strong> <span style="font-weight: 600;">${escapeHTML(deliveryLoc || '본사 출하반')}</span></div>
+          ${termsNotes ? `<div><strong>* 특기사항 :</strong> ${escapeHTML(termsNotes).replace(/\n/g, '<br>')}</div>` : ''}
+        </td>
+      </tr>
+    </table>
 
-    <!-- Official Signature / Stamp Line -->
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; padding-top: 6px;">
-      <div style="font-size: 0.8rem; color: #64748b;">
-        * 본 발주서는 (주)에스앤더블류 구매부 통합 대시보드 시스템에서 전자적으로 발행되었습니다.
+    <!-- Official Signature Line -->
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-top: 12px; font-size: 8.5pt;">
+      <div style="color: #64748b;">
+        * 본 발주서는 (주)에스앤더블류 구매부 전산 시스템에서 전자적으로 발행되었습니다.
       </div>
-      <div style="font-size: 1.05rem; font-weight: 800; color: #0f172a; letter-spacing: 2px;">
-        (주)에스앤더블류 대표이사 <span style="font-size: 0.8rem; font-weight: 600; color: #dc2626; border: 1.5px solid #dc2626; padding: 2px 5px; border-radius: 4px; margin-left: 6px;">직인생략</span>
+      <div style="font-size: 11pt; font-weight: 800; color: #000000; letter-spacing: 2px;">
+        (주)에스앤더블류 대표이사 <span style="font-size: 8.5pt; font-weight: 700; color: #dc2626; border: 1.5px solid #dc2626; padding: 2px 5px; border-radius: 3px; margin-left: 6px;">직인생략</span>
       </div>
     </div>
   `;
 };
 
 window.printSubOrder = function() {
+  const paper = document.getElementById('subOrderPaperPreview');
+  if (!paper) return;
+
+  try {
+    const printWin = window.open('', '_blank', 'width=900,height=1000');
+    if (printWin) {
+      printWin.document.open();
+      printWin.document.write(`<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>발주서 - (주)에스앤더블류</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 12mm 14mm 10mm 14mm;
+    }
+    * {
+      box-sizing: border-box;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Malgun Gothic', '맑은 고딕', Dotum, sans-serif;
+      background: #ffffff;
+      color: #000000;
+    }
+    .no-print-bar {
+      margin-bottom: 12px;
+      padding: 8px 14px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    @media print {
+      .no-print-bar { display: none !important; }
+      body { margin: 0; padding: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print-bar">
+    <span style="font-size: 13px; font-weight: 600; color: #1e3a8a;">📄 발주서 인쇄 미리보기</span>
+    <button onclick="window.print()" style="padding: 6px 18px; background: #2563eb; color: #fff; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; font-size: 13px;">🖨️ 인쇄 / PDF 저장</button>
+  </div>
+  ${paper.innerHTML}
+</body>
+</html>`);
+      printWin.document.close();
+      printWin.focus();
+      setTimeout(() => {
+        try { printWin.print(); } catch(e) {}
+      }, 350);
+      return;
+    }
+  } catch (err) {
+    console.warn('Popup print blocked, falling back to direct window.print:', err);
+  }
+
+  // Fallback to direct print
   document.body.classList.add('printing-suborder');
   window.print();
   setTimeout(() => {
@@ -816,29 +844,39 @@ window.downloadSubOrderExcel = function() {
 
   let rowsXml = '';
   let totalQty = 0;
-  let totalAmt = 0;
 
   window.subOrderItems.forEach((row, idx) => {
     const q = parseFloat(row.qty) || 0;
-    const p = parseFloat(row.price) || 0;
-    const amt = (q > 0 && p > 0) ? Math.round(q * p) : 0;
     totalQty += q;
-    totalAmt += amt;
 
     rowsXml += `
-      <tr style="height:26px;">
+      <tr style="height:25px;">
         <td style="border:1px solid #000; text-align:center;">${idx + 1}</td>
         <td style="border:1px solid #000; font-weight:bold;">${escapeHTML(row.name || '')}</td>
         <td style="border:1px solid #000; text-align:center;">${escapeHTML(row.material || '')}</td>
         <td style="border:1px solid #000;">${escapeHTML(row.spec || '')}</td>
         <td style="border:1px solid #000; text-align:center;">${escapeHTML(row.unit || 'EA')}</td>
         <td style="border:1px solid #000; text-align:right;">${q > 0 ? q : ''}</td>
-        <td style="border:1px solid #000; text-align:right;">${p > 0 ? p : ''}</td>
-        <td style="border:1px solid #000; text-align:right;">${amt > 0 ? amt : ''}</td>
         <td style="border:1px solid #000;">${escapeHTML(row.remark || '')}</td>
       </tr>
     `;
   });
+
+  // Pad to 16 rows to match company Excel standard
+  const targetRows = Math.max(16, window.subOrderItems.length);
+  for (let i = window.subOrderItems.length; i < targetRows; i++) {
+    rowsXml += `
+      <tr style="height:25px;">
+        <td style="border:1px solid #000; text-align:center;">${i + 1}</td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+        <td style="border:1px solid #000;"></td>
+      </tr>
+    `;
+  }
 
   const html = `
     <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
@@ -846,84 +884,79 @@ window.downloadSubOrderExcel = function() {
       <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
       <!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>발주서</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
       <style>
-        body { font-family: 'Malgun Gothic', sans-serif; font-size: 10pt; }
+        body { font-family: 'Malgun Gothic', '맑은 고딕', sans-serif; font-size: 10pt; }
         table { border-collapse: collapse; width: 100%; }
         th, td { padding: 4px 6px; }
       </style>
     </head>
     <body>
       <table>
-        <tr><td colspan="9" style="text-align:center; font-size:18pt; font-weight:bold; letter-spacing:10px;">&lt; 발 주 서 &gt;</td></tr>
+        <tr><td colspan="7" style="text-align:center; font-size:22pt; font-weight:bold; letter-spacing:14px; height:45px;">&lt; &nbsp;발 &nbsp;주 &nbsp;서 &nbsp;&gt;</td></tr>
         <tr>
-          <td colspan="4" style="font-weight:bold;">발주번호: ${escapeHTML(poNo)}</td>
-          <td colspan="5" style="text-align:right; font-weight:bold;">일자: ${escapeHTML(poDate)}</td>
+          <td colspan="3" style="font-weight:bold;">발주번호 : ${escapeHTML(poNo)}</td>
+          <td colspan="4" style="text-align:right; font-weight:bold;">일 &nbsp; &nbsp;자 : ${escapeHTML(poDate)}</td>
         </tr>
-        <tr><td colspan="9"></td></tr>
+        <tr><td colspan="7" style="height:6px;"></td></tr>
         <tr>
-          <th rowspan="5" style="border:1px solid #000; background:#eee; text-align:center;">수<br>신</th>
-          <th style="border:1px solid #000; background:#f5f5f5;">상 호</th>
-          <td colspan="2" style="border:1px solid #000; font-weight:bold;">${escapeHTML(rComp)}</td>
-          <th rowspan="5" style="border:1px solid #000; background:#eee; text-align:center;">발<br>신</th>
-          <th style="border:1px solid #000; background:#f5f5f5;">상 호</th>
-          <td colspan="3" style="border:1px solid #000; font-weight:bold;">${escapeHTML(sComp)}</td>
+          <th rowspan="5" style="border:1px solid #000; background:#eee; text-align:center; vertical-align:middle; width:30px;">수<br><br>신</th>
+          <th style="border:1px solid #000; background:#f5f5f5; width:60px;">상 호</th>
+          <td style="border:1px solid #000; font-weight:bold;" colspan="2">${escapeHTML(rComp)}</td>
+          <th rowspan="5" style="border:1px solid #000; background:#eee; text-align:center; vertical-align:middle; width:30px;">발<br><br>신</th>
+          <th style="border:1px solid #000; background:#f5f5f5; width:60px;">상 호</th>
+          <td style="border:1px solid #000; font-weight:bold;">${escapeHTML(sComp)}</td>
         </tr>
         <tr>
           <th style="border:1px solid #000; background:#f5f5f5;">전 화</th>
-          <td colspan="2" style="border:1px solid #000;">${escapeHTML(rPhone)}</td>
+          <td style="border:1px solid #000;" colspan="2">${escapeHTML(rPhone)}</td>
           <th style="border:1px solid #000; background:#f5f5f5;">전 화</th>
-          <td colspan="3" style="border:1px solid #000;">${escapeHTML(sPhone)}</td>
+          <td style="border:1px solid #000;">${escapeHTML(sPhone)}</td>
         </tr>
         <tr>
-          <th style="border:1px solid #000; background:#f5f5f5;">F A X</th>
-          <td colspan="2" style="border:1px solid #000;">${escapeHTML(rFax)}</td>
-          <th style="border:1px solid #000; background:#f5f5f5;">F A X</th>
-          <td colspan="3" style="border:1px solid #000;">${escapeHTML(sFax)}</td>
+          <th style="border:1px solid #000; background:#f5f5f5;">FAX</th>
+          <td style="border:1px solid #000;" colspan="2">${escapeHTML(rFax)}</td>
+          <th style="border:1px solid #000; background:#f5f5f5;">FAX</th>
+          <td style="border:1px solid #000;">${escapeHTML(sFax)}</td>
         </tr>
         <tr>
           <th style="border:1px solid #000; background:#f5f5f5;">담당자</th>
-          <td colspan="2" style="border:1px solid #000;">${escapeHTML(rPerson)}</td>
+          <td style="border:1px solid #000;" colspan="2">${escapeHTML(rPerson)}</td>
           <th style="border:1px solid #000; background:#f5f5f5;">담당자</th>
-          <td colspan="3" style="border:1px solid #000;">${escapeHTML(sMgr)}</td>
+          <td style="border:1px solid #000; font-weight:bold;">${escapeHTML(sMgr)}</td>
         </tr>
         <tr>
-          <th style="border:1px solid #000; background:#f5f5f5;">H. P.</th>
-          <td colspan="2" style="border:1px solid #000;">${escapeHTML(rMobile)}</td>
-          <th style="border:1px solid #000; background:#f5f5f5;">H. P.</th>
-          <td colspan="3" style="border:1px solid #000;">${escapeHTML(sMobile)}</td>
+          <th style="border:1px solid #000; background:#f5f5f5;">H.P.</th>
+          <td style="border:1px solid #000;" colspan="2">${escapeHTML(rMobile)}</td>
+          <th style="border:1px solid #000; background:#f5f5f5;">H.P.</th>
+          <td style="border:1px solid #000;">${escapeHTML(sMobile)}</td>
         </tr>
-        <tr><td colspan="9"></td></tr>
-        <tr>
-          <td colspan="4"><strong>납기일자:</strong> ${escapeHTML(poDueDate)}</td>
-          <td colspan="5" style="text-align:right;"><strong>납품장소:</strong> ${escapeHTML(deliveryLoc)}</td>
-        </tr>
-        <tr style="background:#ddd; font-weight:bold; height:30px;">
-          <th style="border:1px solid #000; width:40px;">순</th>
-          <th style="border:1px solid #000;">품 명</th>
-          <th style="border:1px solid #000;">재질 / 표면</th>
-          <th style="border:1px solid #000;">규 격</th>
-          <th style="border:1px solid #000;">단위</th>
-          <th style="border:1px solid #000;">수 량</th>
-          <th style="border:1px solid #000;">단 가</th>
-          <th style="border:1px solid #000;">금 액</th>
-          <th style="border:1px solid #000;">비 고</th>
+        <tr><td colspan="7" style="height:6px;"></td></tr>
+        <tr style="background:#ddd; font-weight:bold; height:28px;">
+          <th style="border:1px solid #000; width:40px; text-align:center;">순</th>
+          <th style="border:1px solid #000; text-align:center;">품 명</th>
+          <th style="border:1px solid #000; width:110px; text-align:center;">재 질</th>
+          <th style="border:1px solid #000; width:180px; text-align:center;">규 격</th>
+          <th style="border:1px solid #000; width:45px; text-align:center;">단위</th>
+          <th style="border:1px solid #000; width:75px; text-align:center;">수 량</th>
+          <th style="border:1px solid #000; width:120px; text-align:center;">비 고</th>
         </tr>
         ${rowsXml}
         <tr style="background:#eee; font-weight:bold; height:28px;">
-          <td colspan="5" style="border:1px solid #000; text-align:center;">합 계</td>
-          <td style="border:1px solid #000; text-align:right;">${totalQty}</td>
-          <td style="border:1px solid #000;"></td>
-          <td style="border:1px solid #000; text-align:right;">${totalAmt > 0 ? totalAmt : ''}</td>
+          <td colspan="5" style="border:1px solid #000; text-align:center; letter-spacing:10px;">합 &nbsp; &nbsp;계</td>
+          <td style="border:1px solid #000; text-align:right;">${totalQty.toLocaleString()}</td>
           <td style="border:1px solid #000;"></td>
         </tr>
-        <tr><td colspan="9"></td></tr>
+        <tr><td colspan="7" style="height:6px;"></td></tr>
         <tr>
-          <td colspan="9" style="border:1px solid #000; padding:8px;">
-            <strong>[특기 사항]</strong><br>${escapeHTML(termsNotes).replace(/\n/g, '<br>')}
+          <th style="border:1px solid #000; background:#eee; text-align:center; vertical-align:middle;">참<br><br>고<br><br>사<br><br>항</th>
+          <td colspan="6" style="border:1px solid #000; padding:8px; line-height:1.6;">
+            * 입고요청일 : ${escapeHTML(poDueDate ? poDueDate + '까지 입고요청합니다.' : '협의 후 납품')}<br>
+            * 납품장소 : ${escapeHTML(deliveryLoc || '본사 출하반')}<br>
+            ${termsNotes ? '* 특기사항 : ' + escapeHTML(termsNotes).replace(/\n/g, '<br>') : ''}
           </td>
         </tr>
-        <tr><td colspan="9"></td></tr>
+        <tr><td colspan="7" style="height:10px;"></td></tr>
         <tr>
-          <td colspan="9" style="text-align:right; font-size:12pt; font-weight:bold;">(주)에스앤더블류 대표이사 [직인생략]</td>
+          <td colspan="7" style="text-align:right; font-size:12pt; font-weight:bold;">(주)에스앤더블류 대표이사 [직인생략]</td>
         </tr>
       </table>
     </body>
@@ -941,6 +974,7 @@ window.downloadSubOrderExcel = function() {
   URL.revokeObjectURL(url);
   if (typeof showToast === 'function') showToast(`'${a.download}' 엑셀 파일이 다운로드되었습니다.`, 'success');
 };
+
 
 window.copySubOrderText = function() {
   const poNo = (document.getElementById('subOrderPoNo') || {}).value || '';
