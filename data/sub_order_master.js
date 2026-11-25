@@ -635,6 +635,11 @@ window.initSubOrderView = function(force) {
     renderSubOrderQuickChips(vMeta);
   }
 
+  // 7. Update bank doc button for active vendor
+  if (typeof updateSubOrderBankDocButton === 'function') {
+    updateSubOrderBankDocButton(v);
+  }
+
   window.subOrderInitialized = true;
 };
 
@@ -1537,6 +1542,9 @@ window.onSubOrderVendorChange = function(vendorName) {
   }
   const titleBadge = document.getElementById('currentVendorHeaderTitle');
   if (titleBadge) titleBadge.textContent = vendorName;
+  if (typeof updateSubOrderBankDocButton === 'function') {
+    updateSubOrderBankDocButton(vendorName);
+  }
 
   // Re-render vendor pills to highlight active vendor
   if (typeof renderSubOrderVendorPills === 'function') {

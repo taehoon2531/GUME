@@ -316,6 +316,24 @@ window.VENDOR_BANK_DOCS = {
     type: "pdf",
     size: "318 KB",
     rawVendor: "한국종합상사, 한국종합상사(구 부원기업), 부원기업"
+  },
+  "갑진와샤": {
+    vendor: "갑진와샤",
+    fileName: "갑진와샤,기업은행통장사본.jpg",
+    path: "통장사본/갑진와샤,기업은행통장사본.jpg",
+    ext: "jpg",
+    type: "image",
+    size: "829 KB",
+    rawVendor: "갑진와샤, 갑진와셔, (주)갑진와샤, (주)갑진와셔"
+  },
+  "갑진와셔": {
+    vendor: "갑진와셔",
+    fileName: "갑진와샤,기업은행통장사본.jpg",
+    path: "통장사본/갑진와샤,기업은행통장사본.jpg",
+    ext: "jpg",
+    type: "image",
+    size: "829 KB",
+    rawVendor: "갑진와샤, 갑진와셔, (주)갑진와샤, (주)갑진와셔"
   }
 };
 
