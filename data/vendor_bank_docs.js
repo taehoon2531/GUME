@@ -334,6 +334,24 @@ window.VENDOR_BANK_DOCS = {
     type: "image",
     size: "829 KB",
     rawVendor: "갑진와샤, 갑진와셔, (주)갑진와샤, (주)갑진와셔"
+  },
+  "강남기업사": {
+    vendor: "강남기업사",
+    fileName: "강남기업사,기업은행통장사본.jpg",
+    path: "통장사본/강남기업사,기업은행통장사본.jpg",
+    ext: "jpg",
+    type: "image",
+    size: "1.4 MB",
+    rawVendor: "강남기업사, (주)강남기업사"
+  },
+  "(주)강남기업사": {
+    vendor: "강남기업사",
+    fileName: "강남기업사,기업은행통장사본.jpg",
+    path: "통장사본/강남기업사,기업은행통장사본.jpg",
+    ext: "jpg",
+    type: "image",
+    size: "1.4 MB",
+    rawVendor: "강남기업사, (주)강남기업사"
   }
 };
 
