@@ -1,7 +1,8 @@
 ﻿# 올메탈(AllMetal) 폐초경 및 폐팁 시세 자동 업데이트 스크립트
-# 최신 공지 기준: 2026-11-18 (wr_id=178)
+# 최신 공지 기준: 2026-11-20 (wr_id=180)
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]::Tls12 -bor [System.Net.SecurityProtocolType]::Tls11 -bor [System.Net.SecurityProtocolType]::Tls
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 if (-not $scriptDir) { $scriptDir = Get-Location }
@@ -18,7 +19,7 @@ Write-Host "==========================================================" -Foregro
 
 # 1. 기존 데이터 로드
 $existingData = @()
-$maxId = 178
+$maxId = 180
 
 if (Test-Path $jsonPath) {
     try {
@@ -58,33 +59,38 @@ while ($consecutiveFails -lt 4 -and $checkId -le ($maxId + 40)) {
             }
 
             $endmill = 0
-            if ($html -match '폐초경\(엔드밀\)[\s\S]*?<td[^>]*>([0-9,]+)') {
+            if ($html -match '폐초경\(엔드밀\)[\s\S]*?<td[^>]*>\s*([0-9,]+)') {
                 $endmill = [int]($matches[1] -replace ',', '')
             }
 
             $tip = 0
-            if ($html -match '폐초경\(팁\)[\s\S]*?<td[^>]*>([0-9,]+)') {
+            if ($html -match '폐초경\(팁\)[\s\S]*?<td[^>]*>\s*([0-9,]+)') {
                 $tip = [int]($matches[1] -replace ',', '')
             }
 
             $lump = 0
-            if ($html -match '초경\(덩어리\)[\s\S]*?<td[^>]*>([0-9,~]+)') {
+            if ($html -match '초경\(덩어리\)[\s\S]*?<td[^>]*>\s*([0-9,~]+)') {
                 $valStr = $matches[1] -replace ',', ''
                 if ($valStr -match '([0-9]+)~([0-9]+)') {
-                    $lump = [int](([double]$matches[1] + [double]$matches[2]) / 2)
+                    $v1 = [double]$matches[1]
+                    $v2 = [double]$matches[2]
+                    if ($v1 -lt 1000) { $v1 = $v1 * 1000 }
+                    if ($v2 -lt 1000) { $v2 = $v2 * 1000 }
+                    $lump = [int](($v1 + $v2) / 2)
                 } else {
                     $lump = [int]($valStr -replace '[^0-9]', '')
+                    if ($lump -lt 1000 -and $lump -gt 0) { $lump = $lump * 1000 }
                 }
                 if ($lump -gt 200000) { $lump = 57500 }
             }
 
             $hss = 0
-            if ($html -match 'HSS\(하이스\)[\s\S]*?<td[^>]*>([0-9,]+)') {
+            if ($html -match 'HSS\(하이스\)[\s\S]*?<td[^>]*>\s*([0-9,]+)') {
                 $hss = [int]($matches[1] -replace ',', '')
             }
 
             if ($tip -gt 0 -or $endmill -gt 0) {
-                Write-Host "[발견] wr_id=$checkId ($date): 폐팁 $($tip.ToString('N0'))원, 엔드밀 $($endmill.ToString('N0'))원" -ForegroundColor Green
+                Write-Host "[발견] wr_id=$checkId ($date): 폐팁 $($tip.ToString('N0'))원, 엔드밀 $($endmill.ToString('N0'))원, 덩어리 $($lump.ToString('N0'))원, 하이스 $($hss.ToString('N0'))원" -ForegroundColor Green
                 $newEntries += [PSCustomObject]@{
                     id = $checkId
                     date = $date

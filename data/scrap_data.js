@@ -1,4 +1,4 @@
-// Scrap Metal Price History from allmetal.co.kr
+﻿// Scrap Metal Price History from allmetal.co.kr
 window.SCRAP_PRICES_DATA = [
     {
         "id":  14,
@@ -1318,6 +1318,24 @@ window.SCRAP_PRICES_DATA = [
         "id":  178,
         "date":  "2026-11-18",
         "title":  "26/11/18 고철, 비철, 폐전선 등 스크랩 단가 안내(동계열 추가 인하 -200)",
+        "tip":  60000,
+        "endmill":  75000,
+        "lump":  57500,
+        "hss":  5500
+    },
+    {
+        "id":  179,
+        "date":  "2026-11-19",
+        "title":  "26/11/19 고철, 비철, 폐전선 등 스크랩 단가 안내(동계열 대량 매입 중지 -800 / 동계열 가격변동에 주의바랍니다)",
+        "tip":  60000,
+        "endmill":  75000,
+        "lump":  57500,
+        "hss":  5500
+    },
+    {
+        "id":  180,
+        "date":  "2026-11-20",
+        "title":  "26/11/20 고철, 비철, 폐전선 등 스크랩 단가 안내(동계열 대량 매입 중지 -500 / 동계열 가격변동에 주의바랍니다)",
         "tip":  60000,
         "endmill":  75000,
         "lump":  57500,
