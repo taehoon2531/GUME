@@ -10,7 +10,8 @@ $projectRoot = Split-Path -Parent $scriptDir
 if (-not (Test-Path (Join-Path $projectRoot "index.html"))) { $projectRoot = $scriptDir }
 Set-Location $projectRoot
 
-$txtPath = Join-Path $projectRoot "raw_data\소모품.txt"
+$txtName = "$([char]0xC18C)$([char]0xBAA8)$([char]0xD488).txt"
+$txtPath = Join-Path $projectRoot "raw_data\$txtName"
 $outPath = Join-Path $projectRoot "data\data.js"
 
 function Escape-JsString([string]$s) {
@@ -95,10 +96,13 @@ foreach ($line in $oldLines) {
 }
 [void]$sb.Append("];")
 
+$totalCount = $novRows.Count + $oldLines.Count
+if ($totalCount -lt 1000) {
+    Write-Error "Safety abort: parsed row count ($totalCount) is unexpectedly low. Not overwriting $outPath."
+    exit 1
+}
 $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
 [System.IO.File]::WriteAllText($outPath, $sb.ToString(), $utf8NoBom)
-
-$totalCount = $novRows.Count + $oldLines.Count
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "Compiled successfully -> $outPath" -ForegroundColor Green
 Write-Host "  New (2026-11+) unique rows: $($novRows.Count)"
