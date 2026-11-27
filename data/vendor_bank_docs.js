@@ -352,6 +352,33 @@ window.VENDOR_BANK_DOCS = {
     type: "image",
     size: "1.4 MB",
     rawVendor: "강남기업사, (주)강남기업사"
+  },
+  "화진볼트산업": {
+    vendor: "화진볼트산업",
+    fileName: "[기업은행]화진볼트산업 통장사본.pdf",
+    path: "통장사본/[기업은행]화진볼트산업 통장사본.pdf",
+    ext: "pdf",
+    type: "pdf",
+    size: "2.8 MB",
+    rawVendor: "화진볼트산업, 화진볼트, (주)화진볼트산업"
+  },
+  "화진볼트": {
+    vendor: "화진볼트산업",
+    fileName: "[기업은행]화진볼트산업 통장사본.pdf",
+    path: "통장사본/[기업은행]화진볼트산업 통장사본.pdf",
+    ext: "pdf",
+    type: "pdf",
+    size: "2.8 MB",
+    rawVendor: "화진볼트산업, 화진볼트, (주)화진볼트산업"
+  },
+  "(주)화진볼트산업": {
+    vendor: "화진볼트산업",
+    fileName: "[기업은행]화진볼트산업 통장사본.pdf",
+    path: "통장사본/[기업은행]화진볼트산업 통장사본.pdf",
+    ext: "pdf",
+    type: "pdf",
+    size: "2.8 MB",
+    rawVendor: "화진볼트산업, 화진볼트, (주)화진볼트산업"
   }
 };
 
