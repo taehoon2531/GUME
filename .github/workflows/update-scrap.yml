@@ -1,0 +1,40 @@
+name: Auto Update Scrap Prices
+
+on:
+  schedule:
+    # 평일(월~금) 한국시간 오전 10:30, 오후 15:30 자동 실행 (UTC 기준 01:30, 06:30)
+    - cron: '30 1 * * 1-5'
+    - cron: '30 6 * * 1-5'
+  workflow_dispatch:
+    # GitHub Actions 탭에서 수동으로 'Run workflow' 버튼 클릭 시 즉시 실행
+
+permissions:
+  contents: write
+
+jobs:
+  update-scrap:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch latest AllMetal scrap prices
+        run: python3 scripts/update_scrap.py
+
+      - name: Commit and push if updated
+        run: |
+          if git diff --quiet; then
+            echo "새로운 스크랩 시세 공지가 없어 변경사항 없이 종료합니다."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/scrap_prices.json data/scrap_data.js index.html sw.js
+          git commit -m "chore(scrap): auto-update scrap prices from AllMetal"
+          git push
